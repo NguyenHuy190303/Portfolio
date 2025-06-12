@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="URL_ĐẾN_ẢNH_BÌA_CỦA_BẠN.png" alt="Nguyen Huy Banner">
+  <img src="[URL_ĐẾN_ẢNH_BÌA_CỦA_BẠN.png](https://media.eventhosts.cc/Conferences/ICCV2025/img/iccv_honolulu.jpg)" alt="Nguyen Huy Banner">
 </p>
 
 <h1 align="center">Hi there, I'm Huy! 👋</h1>
