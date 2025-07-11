@@ -40,6 +40,22 @@ const translations = {
     'contact.message': 'Nội dung',
     'contact.send_btn': 'Gửi tin nhắn',
     
+    // Publications
+    'publications.title': 'Công bố Khoa học',
+    'publications.subtitle': 'Nghiên cứu và công bố khoa học trong lĩnh vực trí tuệ nhân tạo, học máy và y sinh học.',
+    'publications.status.published': 'Đã xuất bản',
+    'publications.status.accepted': 'Đã chấp nhận',
+    'publications.status.under_review': 'Đang xem xét',
+    'publications.noPublications': 'Chưa có công bố',
+    'publications.comingSoon': 'Các công bố mới sẽ được cập nhật sớm',
+
+    // Experience
+    'experience.title': 'Kinh nghiệm & Vai trò Lãnh đạo',
+    'experience.subtitle': 'Hành trình nghề nghiệp và các vai trò lãnh đạo trong nghiên cứu và phát triển công nghệ.',
+    'experience.present': 'Hiện tại',
+    'experience.responsibilities': 'Trách nhiệm chính',
+    'experience.achievements': 'Thành tựu',
+
     // Certificates
     'certificates.title': 'Chứng chỉ & Thành tựu',
     'certificates.subtitle': 'Các chứng chỉ chuyên nghiệp và thành tựu thể hiện chuyên môn trong AI, học máy và đổi mới công nghệ.',
@@ -49,7 +65,7 @@ const translations = {
     'certificates.skillsTech': 'Kỹ năng & Công nghệ',
     'certificates.noResults': 'Không tìm thấy chứng chỉ',
     'certificates.tryDifferent': 'Thử chọn một danh mục khác',
-    
+
     // Languages
     'language.english': 'English',
     'language.vietnamese': 'Tiếng Việt'
@@ -83,6 +99,22 @@ const translations = {
     'contact.message': 'Message',
     'contact.send_btn': 'Send Message',
     
+    // Publications
+    'publications.title': 'Research Publications',
+    'publications.subtitle': 'Research and scientific publications in artificial intelligence, machine learning, and biomedical informatics.',
+    'publications.status.published': 'Published',
+    'publications.status.accepted': 'Accepted',
+    'publications.status.under_review': 'Under Review',
+    'publications.noPublications': 'No publications yet',
+    'publications.comingSoon': 'New publications will be updated soon',
+
+    // Experience
+    'experience.title': 'Experience & Leadership',
+    'experience.subtitle': 'Professional journey and leadership roles in research and technology development.',
+    'experience.present': 'Present',
+    'experience.responsibilities': 'Key Responsibilities',
+    'experience.achievements': 'Achievements',
+
     // Certificates
     'certificates.title': 'Certifications & Achievements',
     'certificates.subtitle': 'Professional certifications and achievements demonstrating expertise in AI, machine learning, and technology innovation.',
@@ -92,7 +124,7 @@ const translations = {
     'certificates.skillsTech': 'Skills & Technologies',
     'certificates.noResults': 'No certificates found',
     'certificates.tryDifferent': 'Try selecting a different category',
-    
+
     // Languages
     'language.english': 'English',
     'language.vietnamese': 'Tiếng Việt'
@@ -102,7 +134,7 @@ const translations = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('vi');
+  const [language, setLanguageState] = useState<Language>('en');
 
   // Load language from localStorage on mount
   useEffect(() => {
