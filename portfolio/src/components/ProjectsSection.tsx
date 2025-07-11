@@ -1,9 +1,13 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 type Project = {
-  name: string;
+  nameKey: string;
   image: string;
-  desc: string;
+  descKey: string;
   tech: string[];
   github?: string;
   demo?: string;
@@ -11,31 +15,33 @@ type Project = {
 
 const projects: Project[] = [
   {
-    name: "LLM-based Clinical Question Answering",
+    nameKey: "projects.clinicalQA.name",
     image: "/proj1.jpg",
-    desc: "Hệ thống hỏi đáp y khoa sử dụng RAG với mô hình Llama2 fine-tuned.",
+    descKey: "projects.clinicalQA.description",
     tech: ["Python", "LangChain", "LLM", "Streamlit"],
     github: "https://github.com/NguyenHuy190303/clinical-qa",
   },
   {
-    name: "CT-Scan Tumor Segmentation",
+    nameKey: "projects.tumorSegmentation.name",
     image: "/proj2.jpg",
-    desc: "Mô hình UNet++ phân đoạn khối u trên ảnh CT-Scan.",
+    descKey: "projects.tumorSegmentation.description",
     tech: ["PyTorch", "Medical Imaging", "Computer Vision"],
   },
 ];
 
 export default function ProjectsSection() {
+  const { t } = useLanguage();
+
   return (
     <section id="projects" className="py-24 px-6 max-w-6xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-10">Các dự án nổi bật</h2>
+      <h2 className="text-3xl font-bold text-center mb-10">{t('projects.title')}</h2>
       <div className="grid md:grid-cols-2 gap-10">
-        {projects.map((p) => (
-          <div key={p.name} className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow">
-            <Image src={p.image} alt={p.name} width={400} height={192} className="h-48 w-full object-cover" />
+        {projects.map((p, index) => (
+          <div key={index} className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow">
+            <Image src={p.image} alt={t(p.nameKey)} width={400} height={192} className="h-48 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h3 className="text-xl font-semibold">{p.name}</h3>
-              <p className="text-sm opacity-80">{p.desc}</p>
+              <h3 className="text-xl font-semibold">{t(p.nameKey)}</h3>
+              <p className="text-sm opacity-80">{t(p.descKey)}</p>
               <div className="flex gap-2 flex-wrap">
                 {p.tech.map((t) => (
                   <span

@@ -3,31 +3,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { certificates, certificateCategories, Certificate } from '@/data/certificates';
-
-interface Language {
-  code: 'en' | 'vi';
-  name: string;
-  flag: string;
-}
-
-const languages: Language[] = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' }
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface CertificateCardProps {
   certificate: Certificate;
-  language: 'en' | 'vi';
   onClick: () => void;
   isVisible: boolean;
 }
 
-const CertificateCard: React.FC<CertificateCardProps> = ({ 
-  certificate, 
-  language, 
-  onClick, 
-  isVisible 
+const CertificateCard: React.FC<CertificateCardProps> = ({
+  certificate,
+  onClick,
+  isVisible
 }) => {
+  const { language, t } = useLanguage();
   return (
     <div
       className={`group relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 
@@ -125,11 +114,11 @@ const CertificateCard: React.FC<CertificateCardProps> = ({
 
 interface ModalProps {
   certificate: Certificate | null;
-  language: 'en' | 'vi';
   onClose: () => void;
 }
 
-const CertificateModal: React.FC<ModalProps> = ({ certificate, language, onClose }) => {
+const CertificateModal: React.FC<ModalProps> = ({ certificate, onClose }) => {
+  const { language, t } = useLanguage();
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -223,7 +212,7 @@ const CertificateModal: React.FC<ModalProps> = ({ certificate, language, onClose
 
             <div>
               <h4 className="text-white font-semibold mb-2">
-                {language === 'en' ? 'Skills & Technologies' : 'Kỹ năng & Công nghệ'}
+                {t('certificates.skillsTech')}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {certificate.skills.map((skill, index) => (
@@ -241,7 +230,7 @@ const CertificateModal: React.FC<ModalProps> = ({ certificate, language, onClose
             <div className="pt-4 border-t border-gray-700/50">
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">
-                  {language === 'en' ? 'Completed' : 'Hoàn thành'}: {certificate.date}
+                  {t('certificates.completed')}: {certificate.date}
                 </span>
                 {certificate.credentialUrl && (
                   <a
@@ -252,7 +241,7 @@ const CertificateModal: React.FC<ModalProps> = ({ certificate, language, onClose
                       hover:bg-cyan-500/30 border border-cyan-500/50 hover:border-cyan-400 
                       text-cyan-300 rounded-lg transition-all duration-300"
                   >
-                    {language === 'en' ? 'View Credential' : 'Xem Chứng chỉ'}
+                    {t('certificates.viewCredential')}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                         d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -269,7 +258,7 @@ const CertificateModal: React.FC<ModalProps> = ({ certificate, language, onClose
 };
 
 export default function CertificatesSection() {
-  const [language, setLanguage] = useState<'en' | 'vi'>('en');
+  const { language, t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [visibleCards, setVisibleCards] = useState<Set<string>>(new Set());
@@ -312,7 +301,7 @@ export default function CertificatesSection() {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 
             bg-clip-text text-transparent">
-            {language === 'en' ? 'Certifications & Achievements' : 'Chứng chỉ & Thành tựu'}
+            {t('certificates.title')}
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             {language === 'en' 
@@ -323,26 +312,7 @@ export default function CertificatesSection() {
         </div>
 
         {/* Controls */}
-        <div className="flex flex-col lg:flex-row justify-between items-center gap-6 mb-12">
-          {/* Language Switcher */}
-          <div className="flex items-center gap-2 p-1 bg-gray-800/50 rounded-lg border border-gray-700/50">
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => setLanguage(lang.code)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-300 ${
-                  language === lang.code
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700/50'
-                }`}
-                aria-pressed={language === lang.code}
-              >
-                <span className="text-lg">{lang.flag}</span>
-                <span className="font-medium">{lang.name}</span>
-              </button>
-            ))}
-          </div>
-
+        <div className="flex justify-center items-center gap-6 mb-12">
           {/* Category Filter */}
           <div className="flex flex-wrap justify-center gap-2">
             {certificateCategories.map((category) => (
@@ -376,7 +346,6 @@ export default function CertificatesSection() {
             >
               <CertificateCard
                 certificate={certificate}
-                language={language}
                 onClick={() => setSelectedCertificate(certificate)}
                 isVisible={visibleCards.has(certificate.id)}
               />
@@ -404,7 +373,6 @@ export default function CertificatesSection() {
       {/* Modal */}
       <CertificateModal
         certificate={selectedCertificate}
-        language={language}
         onClose={() => setSelectedCertificate(null)}
       />
     </section>

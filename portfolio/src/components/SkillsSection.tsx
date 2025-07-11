@@ -2,8 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function SkillsSection() {
+  const { t } = useLanguage();
   const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
   const { ref: skillsRef, isVisible: skillsVisible } = useScrollAnimation();
   const [animatedSkills, setAnimatedSkills] = useState(false);
@@ -16,7 +18,7 @@ export default function SkillsSection() {
 
   const skillCategories = [
     {
-      title: "💻 Ngôn ngữ lập trình",
+      titleKey: "skills.programming.title",
       icon: "🐍",
       skills: [
         { name: "Python", level: 95 },
@@ -26,17 +28,18 @@ export default function SkillsSection() {
       ]
     },
     {
-      title: "🤖 Frameworks AI/ML",
+      titleKey: "skills.aiFrameworks.title",
       icon: "🧠",
       skills: [
         { name: "PyTorch", level: 90 },
         { name: "TensorFlow", level: 85 },
         { name: "Scikit-learn", level: 90 },
         { name: "OpenCV", level: 85 },
+        { name: "Pandas", level: 88 },
       ]
     },
     {
-      title: "🔧 Công cụ phát triển",
+      titleKey: "skills.devTools.title",
       icon: "⚡",
       skills: [
         { name: "Git", level: 90 },
@@ -46,7 +49,7 @@ export default function SkillsSection() {
       ]
     },
     {
-      title: "🎯 Chuyên môn chính",
+      titleKey: "skills.expertise.title",
       icon: "🚀",
       skills: [
         { name: "Computer Vision", level: 95 },
@@ -89,11 +92,11 @@ export default function SkillsSection() {
           }`}
         >
           <h2 className="text-4xl sm:text-5xl font-bold mb-6 bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent">
-            Kỹ năng chuyên môn
+            {t('skills.title')}
           </h2>
           <div className="w-20 h-1 bg-accent mx-auto rounded-full animate-pulse"></div>
           <p className="mt-6 text-foreground-secondary text-lg max-w-2xl mx-auto">
-            Các công nghệ và kỹ năng tôi sử dụng để tạo ra những giải pháp AI tiên tiến
+            {t('skills.subtitle')}
           </p>
         </div>
 
@@ -110,7 +113,7 @@ export default function SkillsSection() {
                 <span className="text-3xl mr-3 animate-bounce" style={{ animationDelay: `${categoryIndex * 500}ms` }}>
                   {category.icon}
                 </span>
-                <h3 className="text-xl font-semibold text-accent">{category.title}</h3>
+                <h3 className="text-xl font-semibold text-accent">{t(category.titleKey)}</h3>
               </div>
               
               <div className="space-y-4">
@@ -127,8 +130,8 @@ export default function SkillsSection() {
           skillsVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
         }`}>
           <h3 className="text-2xl font-semibold mb-6 text-center text-accent flex items-center justify-center gap-3">
-            <span className="animate-spin">🛠️</span> 
-            Tech Stack khác
+            <span className="animate-spin">🛠️</span>
+            {t('skills.additionalTech')}
           </h3>
           <div className="flex flex-wrap justify-center gap-4">
             {["LlamaIndex", "LangChain", "Hugging Face", "Overleaf", "Ngrok", "FastAPI", "React", "Next.js"].map((tech, index) => (

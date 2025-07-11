@@ -4,14 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// Tạo typing effect cho mảng titles
-const TITLES = [
-  "Hello there! I'm an AI Research Engineer building innovative solutions.",
-  "Hello there! I'm a Deep Learning Engineer turning data into human-centric technology.",
-  "Hello there! I'm an Innovation Builder collaborating on technologies that improve lives.",
-  "Hello there! I'm a Tech Explorer guiding ideas from concept to real-world impact.",
-  "Hello there! I design intelligent algorithms to solve complex challenges."
-];
+// Typing effect for titles - will be populated with translations
 
 function useTypingEffect(texts: string[], typingSpeed = 120, pause = 1500) {
   const [currentText, setCurrentText] = useState("");
@@ -59,6 +52,16 @@ function useTypingEffect(texts: string[], typingSpeed = 120, pause = 1500) {
 
 export default function HeroSection() {
   const { t } = useLanguage();
+
+  // Get typing titles from translations
+  const TITLES = [
+    t('hero.typing.1'),
+    t('hero.typing.2'),
+    t('hero.typing.3'),
+    t('hero.typing.4'),
+    t('hero.typing.5')
+  ];
+
   const typingText = useTypingEffect(TITLES);
 
   return (
@@ -94,34 +97,34 @@ export default function HeroSection() {
         <div className="absolute bottom-20 right-10 w-2 h-2 bg-accent rounded-full shadow-neon-cyan animate-cyber-float animate-delay-300"></div>
       </div>
       
-      {/* Avatar with cyberpunk glow */}
-      <div className="relative animate-scaleIn">
-        <div className="relative hover-lift">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent via-accent-tertiary to-accent-secondary animate-neon-glow blur-lg opacity-50"></div>
+      {/* Avatar with subtle cyberpunk styling */}
+      <div className="relative animate-fadeInUp">
+        <div className="relative group">
+          {/* Subtle background glow - only visible on hover */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent/20 via-accent-tertiary/20 to-accent-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
           <Image
             src="/Leo-avatar.jpg"
             alt="Ảnh đại diện Nguyễn Quốc Huy"
             width={200}
             height={200}
-            className="relative rounded-full object-cover border-2 border-accent shadow-cyber hologram-effect transition-all duration-300"
+            className="relative rounded-full object-cover border-2 border-accent/60 hover:border-accent transition-all duration-300 shadow-lg"
           />
         </div>
-        {/* Cyberpunk status indicator */}
-        <div className="absolute bottom-4 right-4 w-8 h-8 bg-accent-secondary rounded-full border-2 border-background animate-neon-flicker shadow-neon-green">
-          <div className="w-full h-full bg-accent-secondary rounded-full animate-ping opacity-75"></div>
+        {/* Subtle status indicator */}
+        <div className="absolute bottom-4 right-4 w-6 h-6 bg-accent-secondary rounded-full border-2 border-background shadow-sm">
+          <div className="w-full h-full bg-accent-secondary rounded-full opacity-80"></div>
         </div>
       </div>
 
       <div className="space-y-6 animate-fadeInUp animate-delay-200">
         <div className="space-y-2 animate-fadeInLeft animate-delay-300 font-mono">
           <p className="text-sm sm:text-base text-accent-secondary">
-            &gt; System.Initialize()
+            {t('hero.system.init')}
           </p>
           <p className="text-sm sm:text-base text-accent-tertiary">
-            &gt; Loading Profile: Research_Engineer.exe
+            {t('hero.system.loading')}
           </p>
-          <p className="text-sm sm:text-base text-foreground-secondary">
-            &gt; Status: <span className="text-accent">ONLINE</span> | Ready for Innovation
+          <p className="text-sm sm:text-base text-foreground-secondary" dangerouslySetInnerHTML={{ __html: t('hero.system.status') }}>
           </p>
         </div>
         <h1 className="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-accent via-accent-tertiary to-accent-secondary bg-clip-text text-transparent animate-fadeInUp animate-delay-400 hero-title-readable">
@@ -163,7 +166,7 @@ export default function HeroSection() {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
           <span className="relative inline-flex items-center gap-3">
-            <span className="text-xl">💾</span> MY CV HERE
+            <span className="text-xl">💾</span> {t('hero.cv.button')}
           </span>
         </a>
         <a
@@ -174,7 +177,7 @@ export default function HeroSection() {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent-tertiary/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
           <span className="relative inline-flex items-center gap-3">
-            <span className="text-xl">📡</span> CONNECT WITH ME
+            <span className="text-xl">📡</span> {t('hero.schedule.button')}
           </span>
         </a>
       </div>
