@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 type Project = {
   name: string;
   image: string;
@@ -31,7 +32,7 @@ export default function ProjectsSection() {
       <div className="grid md:grid-cols-2 gap-10">
         {projects.map((p) => (
           <div key={p.name} className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow">
-            <img src={p.image} alt={p.name} className="h-48 w-full object-cover" />
+            <Image src={p.image} alt={p.name} width={400} height={192} className="h-48 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
               <h3 className="text-xl font-semibold">{p.name}</h3>
               <p className="text-sm opacity-80">{p.desc}</p>
@@ -48,7 +49,7 @@ export default function ProjectsSection() {
               <div className="flex gap-4 mt-2">
                 {p.github && (
                   <a href={p.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                    <img src="/github.svg" alt="GitHub" className="w-5 h-5" />
+                    <Image src="/github.svg" alt="GitHub" width={20} height={20} className="w-5 h-5" />
                   </a>
                 )}
                 {p.demo && (
