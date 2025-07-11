@@ -101,10 +101,10 @@ export default function Navbar() {
               className="font-bold text-lg sm:text-xl font-mono bg-gradient-to-r from-accent to-accent-tertiary bg-clip-text text-transparent hover-scale transition-transform group"
             >
               <span className="inline-flex items-center gap-1.5 sm:gap-2">
-                <span className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-accent to-accent-secondary rounded-lg flex items-center justify-center text-background text-xs sm:text-sm font-bold group-hover:rotate-12 transition-transform shadow-neon-cyan">
+                <span className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-accent to-accent-secondary rounded-lg flex items-center justify-center text-background text-xs sm:text-sm font-bold group-hover:rotate-12 transition-transform shadow-lg">
                   Leo
                 </span>
-                <span className="text-accent font-bold text-glow hidden sm:inline">
+                <span className="text-accent font-bold text-glow-subtle hidden sm:inline">
                   .dev
                 </span>
               </span>
@@ -122,19 +122,21 @@ export default function Navbar() {
                       e.preventDefault();
                       handleSmoothScroll(l.href);
                     }}
-                    className={`relative text-foreground-secondary hover:text-accent transition-all duration-300
+                    className={`relative transition-all duration-300
                       nav-item-adaptive rounded-lg group font-mono whitespace-nowrap
-                      hover:scale-105 ${
-                      activeSection === l.href ? 'text-accent bg-accent/10 border border-accent/30 scale-105' : ''
+                      hover:scale-105 nav-text-enhanced ${
+                      activeSection === l.href
+                        ? 'text-accent bg-accent/8 border border-accent/20 scale-105'
+                        : 'text-foreground hover:text-accent'
                     }`}
                   >
                     {activeSection === l.href && (
-                      <div className="absolute inset-0 rounded-lg bg-accent/20 animate-neon-flicker" />
+                      <div className="absolute inset-0 rounded-lg bg-accent/10 animate-subtle-glow" />
                     )}
                     <span className="relative font-medium">{t(l.labelKey)}</span>
                     <span
                       className={`absolute bottom-0 left-0 h-0.5 bg-accent transition-all duration-300 ${
-                        activeSection === l.href ? 'w-full shadow-neon-cyan' : 'w-0 group-hover:w-full'
+                        activeSection === l.href ? 'w-full shadow-sm' : 'w-0 group-hover:w-full'
                       }`}
                     ></span>
                   </a>
@@ -157,8 +159,8 @@ export default function Navbar() {
               className="hidden sm:block px-3 lg:px-4 xl:px-5 py-1.5 lg:py-2 text-xs lg:text-sm
                 bg-gradient-to-r from-accent to-accent-secondary text-background rounded-lg
                 hover:from-accent-secondary hover:to-accent-tertiary transition-all duration-300
-                font-mono font-bold hover-lift group shadow-neon-cyan whitespace-nowrap
-                hover:scale-105"
+                font-mono font-bold hover-lift group shadow-lg whitespace-nowrap
+                hover:scale-105 text-readable"
             >
               <span className="inline-flex items-center gap-1 lg:gap-2">
                 <span className="text-sm lg:text-base">💾</span>
@@ -193,10 +195,10 @@ export default function Navbar() {
                     handleSmoothScroll(l.href);
                     setIsMobileMenuOpen(false);
                   }}
-                  className={`block py-3 px-4 rounded-lg font-mono text-sm transition-all duration-300 ${
+                  className={`block py-3 px-4 rounded-lg font-mono text-sm transition-all duration-300 nav-text-enhanced ${
                     activeSection === l.href
-                      ? 'text-accent bg-accent/10 border border-accent/30'
-                      : 'text-foreground-secondary hover:text-accent hover:bg-accent/5'
+                      ? 'text-accent bg-accent/8 border border-accent/20'
+                      : 'text-foreground hover:text-accent hover:bg-accent/5'
                   }`}
                 >
                   {t(l.labelKey)}
@@ -211,7 +213,7 @@ export default function Navbar() {
                 <a
                   href="/Nguyen_Huy_CV.pdf"
                   download
-                  className="block w-full py-3 px-4 text-center bg-gradient-to-r from-accent to-accent-secondary text-background rounded-lg font-mono font-bold transition-all duration-300 hover:from-accent-secondary hover:to-accent-tertiary"
+                  className="block w-full py-3 px-4 text-center bg-gradient-to-r from-accent to-accent-secondary text-background rounded-lg font-mono font-bold transition-all duration-300 hover:from-accent-secondary hover:to-accent-tertiary text-readable"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   💾 Download CV

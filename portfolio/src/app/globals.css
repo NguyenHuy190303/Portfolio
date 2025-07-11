@@ -97,8 +97,19 @@ body::before {
 
 @keyframes neon-flicker {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
-  75% { opacity: 0.9; }
+  50% { opacity: 0.95; }
+  75% { opacity: 0.98; }
+}
+
+@keyframes subtle-glow {
+  0%, 100% {
+    text-shadow: 0 0 3px currentColor;
+    opacity: 1;
+  }
+  50% {
+    text-shadow: 0 0 6px currentColor;
+    opacity: 0.95;
+  }
 }
 
 @keyframes cyber-float {
@@ -210,11 +221,30 @@ body::before {
 }
 
 .text-glow {
-  text-shadow: 
-    0 0 5px currentColor,
-    0 0 10px currentColor,
-    0 0 15px currentColor,
-    0 0 20px currentColor;
+  text-shadow:
+    0 0 3px currentColor,
+    0 0 6px currentColor;
+}
+
+.text-glow-subtle {
+  text-shadow:
+    0 0 2px currentColor,
+    0 0 4px rgba(0, 255, 255, 0.3);
+}
+
+.text-readable {
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.8),
+    0 0 2px currentColor;
+  font-weight: 500;
+}
+
+.nav-text-enhanced {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 3px rgba(0, 255, 255, 0.2);
+  font-weight: 500;
+  letter-spacing: 0.025em;
 }
 
 .hologram-effect {
@@ -853,5 +883,54 @@ button, a, [role="button"] {
   .nav-actions-container {
     min-width: auto;
     gap: 0.5rem;
+  }
+}
+
+/* Accessibility and readability improvements */
+.nav-text-enhanced {
+  /* Improve contrast for better readability */
+  color: rgba(224, 224, 224, 0.95);
+}
+
+.nav-text-enhanced:hover {
+  color: rgb(0, 255, 255);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 4px rgba(0, 255, 255, 0.3);
+}
+
+/* Active state with better contrast */
+.nav-item-active {
+  color: rgb(0, 255, 255) !important;
+  background: rgba(0, 255, 255, 0.08) !important;
+  border-color: rgba(0, 255, 255, 0.2) !important;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .animate-subtle-glow,
+  .animate-neon-flicker {
+    animation: none !important;
+  }
+
+  .nav-text-enhanced {
+    text-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.8),
+      0 0 2px rgba(0, 255, 255, 0.2);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .nav-text-enhanced {
+    color: rgb(255, 255, 255);
+    text-shadow:
+      0 1px 3px rgba(0, 0, 0, 1),
+      0 0 1px rgba(0, 255, 255, 0.5);
+  }
+
+  .nav-item-active {
+    background: rgba(0, 255, 255, 0.15) !important;
+    border-color: rgba(0, 255, 255, 0.4) !important;
   }
 }

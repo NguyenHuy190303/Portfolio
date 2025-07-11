@@ -45,6 +45,7 @@ module.exports = {
       animation: {
         'neon-glow': 'neon-glow 2s ease-in-out infinite',
         'neon-flicker': 'neon-flicker 3s ease-in-out infinite',
+        'subtle-glow': 'subtle-glow 4s ease-in-out infinite',
         'cyber-float': 'cyber-float 6s ease-in-out infinite',
         'matrix-rain': 'matrix-rain 3s linear infinite',
         'hologram': 'hologram 4s ease-in-out infinite',
