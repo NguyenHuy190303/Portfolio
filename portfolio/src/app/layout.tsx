@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import React from "react";
 
 const inter = Inter({
@@ -29,10 +31,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.variable} antialiased`}>
-        <Navbar />
-        <main className="relative">
-          {children}
-        </main>
+        <LanguageProvider>
+          <Navbar />
+          <main className="relative">
+            {children}
+          </main>
+          <ScrollToTopButton />
+        </LanguageProvider>
       </body>
     </html>
   );
