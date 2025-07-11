@@ -787,3 +787,71 @@ button, a, [role="button"] {
 .prevent-layout-shift {
   contain: layout style paint;
 }
+
+/* Enhanced Navbar Responsive Utilities */
+.navbar-adaptive {
+  width: clamp(320px, 98vw, 1600px);
+  padding-left: clamp(1rem, 2vw, 2rem);
+  padding-right: clamp(1rem, 2vw, 2rem);
+  padding-top: clamp(0.75rem, 1.5vh, 1rem);
+  padding-bottom: clamp(0.75rem, 1.5vh, 1rem);
+}
+
+.nav-links-container {
+  gap: clamp(0.25rem, 1vw, 1rem);
+  max-width: min(70vw, 1000px);
+}
+
+.nav-item-adaptive {
+  padding: clamp(0.375rem, 0.75vw, 0.75rem) clamp(0.5rem, 1vw, 1rem);
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  min-width: clamp(60px, 8vw, 120px);
+  text-align: center;
+}
+
+.nav-actions-container {
+  gap: clamp(0.5rem, 1vw, 1rem);
+  min-width: clamp(120px, 20vw, 200px);
+}
+
+/* Navbar content scaling for ultra-wide screens */
+@media (min-width: 1920px) {
+  .navbar-adaptive {
+    max-width: 1800px;
+  }
+
+  .nav-links-container {
+    max-width: 1200px;
+    gap: 1.5rem;
+  }
+
+  .nav-item-adaptive {
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+/* Navbar optimizations for tablet landscape */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .nav-item-adaptive {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .nav-links-container {
+    gap: 0.5rem;
+  }
+}
+
+/* Enhanced mobile navbar */
+@media (max-width: 767px) {
+  .navbar-adaptive {
+    width: 98vw;
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-actions-container {
+    min-width: auto;
+    gap: 0.5rem;
+  }
+}

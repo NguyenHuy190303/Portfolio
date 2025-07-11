@@ -22,6 +22,19 @@ module.exports = {
         'glow-pink': 'var(--glow-pink)',
         'glow-green': 'var(--glow-green)',
       },
+      maxWidth: {
+        'navbar': '1600px',
+        'navbar-content': '1400px',
+      },
+      minWidth: {
+        'navbar': '320px',
+        'nav-item': '60px',
+      },
+      spacing: {
+        'navbar-x': 'clamp(1rem, 2vw, 2rem)',
+        'navbar-y': 'clamp(0.75rem, 1.5vw, 1rem)',
+        'nav-gap': 'clamp(0.25rem, 1vw, 1rem)',
+      },
       backdropBlur: {
         xs: '2px',
       },
