@@ -124,7 +124,7 @@ export default function HeroSection() {
             &gt; Status: <span className="text-accent">ONLINE</span> | Ready for Innovation
           </p>
         </div>
-        <h1 className="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-accent via-accent-tertiary to-accent-secondary bg-clip-text text-transparent animate-fadeInUp animate-delay-400 cyber-text">
+        <h1 className="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-accent via-accent-tertiary to-accent-secondary bg-clip-text text-transparent animate-fadeInUp animate-delay-400 hero-title-readable">
           {t('hero.title')}
         </h1>
         <div className="text-2xl sm:text-3xl text-accent-tertiary font-mono animate-fadeInRight animate-delay-500">
