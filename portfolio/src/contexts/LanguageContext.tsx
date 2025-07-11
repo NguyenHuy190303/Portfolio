@@ -165,7 +165,7 @@ const translations = {
     // Hero Section
     'hero.title': 'Nguyen Quoc Huy',
     'hero.alias': 'alias: ',
-    'hero.description': 'Research Engineer passionate about creating advanced technological solutions in artificial intelligence and scientific research.',
+    'hero.description': 'I am an AI Research Engineer with a background in information technology and a passion for leveraging technology to improve lives. My experience designing and implementing AI algorithms and models allows me to approach complex challenges with creative problem-solving and critical thinking skills. I bring a collaborative spirit fostered through teamwork and project management experience, and effectively communicate complex technical concepts to diverse audiences.',
     'hero.cta': 'Explore Projects',
     'hero.typing.1': 'Hello there! I\'m an AI Research Engineer building innovative solutions.',
     'hero.typing.2': 'Hello there! I\'m a Deep Learning Engineer turning data into human-centric technology.',
