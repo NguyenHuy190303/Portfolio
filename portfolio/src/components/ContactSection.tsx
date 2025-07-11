@@ -1,70 +1,124 @@
+"use client";
+
 import React from "react";
+import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export default function ContactSection() {
+  const { t } = useLanguage();
+  
   return (
-    <section id="contact" className="py-24 px-6 max-w-4xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-10">Liên hệ với tôi</h2>
-      <div className="grid md:grid-cols-2 gap-10">
-        <div className="space-y-4">
-          <p>
-            <strong>Email:</strong> huy.ai@example.com
-          </p>
-          <p>
-            <strong>Điện thoại:</strong> +84 123 456 789
-          </p>
-          <p>
-            <strong>Nơi ở:</strong> TP. Hồ Chí Minh, Việt Nam
-          </p>
-          <div className="flex gap-4 mt-4">
-            <a href="https://github.com/NguyenHuy190303" target="_blank" rel="noopener noreferrer">
-              <img src="/github.svg" alt="GitHub" className="w-6 h-6" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/huy-nguyen-5552b22aa"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/linkedin.svg" alt="LinkedIn" className="w-6 h-6" />
-            </a>
+    <section id="contact" className="py-24 px-6 max-w-4xl mx-auto relative">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent" />
+      
+      <div className="relative">
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+          {t('contact.title')}
+        </h2>
+        
+        <div className="grid md:grid-cols-2 gap-12">
+          <div className="space-y-6">
+            <div className="p-6 rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 border border-cyan-500/20 backdrop-blur-sm">
+              <h3 className="text-xl font-bold text-cyan-300 mb-4 font-mono">📧 {t('contact.info')}</h3>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <span className="text-cyan-400">✉</span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">{t('contact.email')}</p>
+                    <p className="text-white font-mono">nguyenhuy190303@gmail.com</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <span className="text-green-400">📱</span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">{t('contact.phone')}</p>
+                    <p className="text-white font-mono">+358 417472926</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <span className="text-purple-400">📍</span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">{t('contact.location')}</p>
+                    <p className="text-white">Helsinki, Finland</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex gap-4 mt-6 pt-6 border-t border-gray-700/50">
+                <a 
+                  href="https://github.com/NguyenHuy190303" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-lg bg-gray-800/50 border border-gray-600/50 hover:border-cyan-400/60 hover:bg-cyan-500/10 transition-all duration-300 group"
+                >
+                  <Image src="/github.svg" alt="GitHub" width={24} height={24} 
+                    className="filter brightness-0 invert group-hover:scale-110 transition-transform" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/huy-nguyen-5552b22aa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 rounded-lg bg-gray-800/50 border border-gray-600/50 hover:border-cyan-400/60 hover:bg-cyan-500/10 transition-all duration-300 group"
+                >
+                  <Image src="/linkedin.svg" alt="LinkedIn" width={24} height={24} 
+                    className="filter brightness-0 invert group-hover:scale-110 transition-transform" />
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-        <form
-          className="space-y-4"
-          action="https://formspree.io/f/moqgwgkd" // replace with actual
-          method="POST"
-        >
-          <input
-            type="text"
-            name="name"
-            placeholder="Họ tên"
-            required
-            className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-transparent"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-transparent"
-          />
-          <input
-            type="text"
-            name="subject"
-            placeholder="Tiêu đề"
-            className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-transparent"
-          />
-          <textarea
-            name="message"
-            rows={5}
-            placeholder="Nội dung"
-            className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-transparent"
-          />
-          <button
-            type="submit"
-            className="px-6 py-2 rounded bg-teal-500 text-white hover:opacity-90"
+          
+          <form
+            className="space-y-6 p-6 rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 border border-cyan-500/20 backdrop-blur-sm"
+            action="https://formspree.io/f/moqgwgkd"
+            method="POST"
           >
-            Gửi tin nhắn
-          </button>
-        </form>
+            <h3 className="text-xl font-bold text-cyan-300 mb-4 font-mono">💬 {t('contact.send')}</h3>
+            
+            <div className="space-y-4">
+              <input
+                type="text"
+                name="name"
+                placeholder={t('contact.name')}
+                required
+                className="w-full border border-gray-600/50 rounded-lg px-4 py-3 bg-gray-800/50 text-white placeholder-gray-400 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder={t('contact.email')}
+                required
+                className="w-full border border-gray-600/50 rounded-lg px-4 py-3 bg-gray-800/50 text-white placeholder-gray-400 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+              />
+              <input
+                type="text"
+                name="subject"
+                placeholder={t('contact.subject')}
+                className="w-full border border-gray-600/50 rounded-lg px-4 py-3 bg-gray-800/50 text-white placeholder-gray-400 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+              />
+              <textarea
+                name="message"
+                rows={5}
+                placeholder={t('contact.message')}
+                className="w-full border border-gray-600/50 rounded-lg px-4 py-3 bg-gray-800/50 text-white placeholder-gray-400 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 resize-vertical"
+              />
+              <button
+                type="submit"
+                className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-400/25 font-mono"
+              >
+                🚀 {t('contact.send_btn')}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
   );
