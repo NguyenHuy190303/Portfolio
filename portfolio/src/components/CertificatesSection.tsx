@@ -16,7 +16,7 @@ const CertificateCard: React.FC<CertificateCardProps> = ({
   onClick,
   isVisible
 }) => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   return (
     <div
       className={`group relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 

@@ -19,7 +19,7 @@ export default function ContactSection() {
 
         {/* Direct Contact Section */}
         <div className="text-center mb-16">
-          <h3 className="text-xl font-bold text-cyan-300 mb-4 font-mono">
+          <h3 className="text-xl font-bold text-accent mb-4 font-mono">
             {t('contact.direct.title')}
           </h3>
           <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
@@ -57,7 +57,7 @@ export default function ContactSection() {
         <div className="grid md:grid-cols-2 gap-12">
           <div className="space-y-6">
             <div className="p-6 rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 border border-cyan-500/20 backdrop-blur-sm">
-              <h3 className="text-xl font-bold text-cyan-300 mb-4 font-mono">📧 {t('contact.info')}</h3>
+              <h3 className="text-xl font-bold text-accent mb-4 font-mono">📧 {t('contact.info')}</h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
@@ -123,7 +123,7 @@ export default function ContactSection() {
             action="https://formspree.io/f/moqgwgkd"
             method="POST"
           >
-            <h3 className="text-xl font-bold text-cyan-300 mb-4 font-mono">💬 {t('contact.send')}</h3>
+            <h3 className="text-xl font-bold text-accent mb-4 font-mono">💬 {t('contact.send')}</h3>
             
             <div className="space-y-4">
               <input
