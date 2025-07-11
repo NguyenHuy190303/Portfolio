@@ -130,7 +130,7 @@ export default function HeroSection() {
         <div className="text-2xl sm:text-3xl text-accent-tertiary font-mono animate-fadeInRight animate-delay-500">
           <span className="text-foreground-secondary">{t('hero.alias')}</span>
           <span className="bg-gradient-to-r from-accent-tertiary to-accent bg-clip-text text-transparent hover-scale inline-block animate-neon-flicker">
-            "Leo"
+            &quot;Leo&quot;
           </span>
         </div>
       </div>

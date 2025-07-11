@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 export default function PublicationsSection() {
   const certificates = [
     {
@@ -17,18 +18,20 @@ export default function PublicationsSection() {
       <div className="mb-12">
         <h3 className="font-semibold mb-4">Công bố khoa học</h3>
         <p>
-          Nguyễn Quốc Huy et al., "Applications of Deep Learning in Cancer
-          Detection", <em>AACR Conference</em>, 2024.
+          Nguyễn Quốc Huy et al., &quot;Applications of Deep Learning in Cancer
+          Detection&quot;, <em>AACR Conference</em>, 2024.
         </p>
       </div>
       <div>
         <h3 className="font-semibold mb-4">Chứng chỉ</h3>
         <div className="grid grid-cols-2 gap-4">
           {certificates.map((c) => (
-            <img
+            <Image
               key={c.img}
               src={c.img}
               alt={c.alt}
+              width={300}
+              height={200}
               className="rounded shadow cursor-pointer hover:opacity-80"
             />
           ))}
