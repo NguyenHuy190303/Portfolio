@@ -67,7 +67,7 @@ const translations = {
     'hero.typing.5': 'Giải quyết vấn đề bằng code & sự tò mò',
     'hero.system.init': '&gt; System.Initialize()',
     'hero.system.loading': '&gt; Loading Profile: AI_Researcher_x_Entrepreneur.exe',
-    'hero.system.status': '&gt; Status: <span class="text-accent">ONLINE</span> | <span class="inline-block animate-fadeInLeft text-accent font-bold">Xin chào!</span> Đang kết nối Nghiên cứu & Thực tiễn',
+    'hero.system.status': '&gt; Status: <span class="text-accent">ONLINE</span> | Xin chào! Đang kết nối Nghiên cứu & Thực tiễn',
     'hero.cv.button': 'TẢI CV CỦA TÔI',
     'hero.schedule.button': 'LÊN LỊCH HẸN',
     
@@ -174,7 +174,7 @@ const translations = {
     'hero.typing.5': 'Solving problems with code & curiosity',
     'hero.system.init': '&gt; System.Initialize()',
     'hero.system.loading': '&gt; Loading Profile: AI_Researcher_x_Entrepreneur.exe',
-    'hero.system.status': '&gt; Status: <span class="text-accent">ONLINE</span> | <span class="inline-block animate-fadeInLeft text-accent font-bold">Hello there!</span> Bridging Research & Reality',
+    'hero.system.status': '&gt; Status: <span class="text-accent">ONLINE</span> | Hello there! Bridging Research & Reality',
     'hero.cv.button': 'DOWNLOAD CV',
     'hero.schedule.button': 'SCHEDULE A CALL',
     
