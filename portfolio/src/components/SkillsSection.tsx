@@ -83,7 +83,8 @@ export default function SkillsSection() {
   );
 
   return (
-    <section id="skills" className="section-padding">
+    <section id="skills" className="section-padding bg-transparent relative">
+      <div className="absolute top-0 left-0 w-full h-full bg-background -z-10 o-[-1] bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:16px_16px]"></div>
       <div className="max-w-6xl mx-auto">
         <div 
           ref={titleRef}

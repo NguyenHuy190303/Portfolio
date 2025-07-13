@@ -67,27 +67,12 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="min-h-screen flex flex-col justify-center items-center text-center gap-8 section-padding relative overflow-hidden"
+      className="min-h-screen flex flex-col justify-center items-center text-center gap-8 section-padding relative overflow-hidden bg-transparent"
     >
       {/* Cyberpunk background effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent-tertiary/10 pointer-events-none"></div>
       
-      {/* Matrix rain effect */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute text-accent-secondary text-xs font-mono opacity-30 animate-matrix-rain"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${3 + Math.random() * 2}s`
-            }}
-          >
-            {Math.random() > 0.5 ? '010101' : '110100'}
-          </div>
-        ))}
-      </div>
+      
       
       {/* Floating neon particles */}
       <div className="absolute inset-0 pointer-events-none">

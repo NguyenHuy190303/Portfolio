@@ -14,8 +14,11 @@ type Publication = {
   abstract: string;
 };
 
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
 export default function PublicationsSection() {
   const { t } = useLanguage();
+  const { ref, isVisible } = useScrollAnimation();
 
   const publications: Publication[] = [
     {
@@ -66,11 +69,11 @@ export default function PublicationsSection() {
   };
 
   return (
-    <section id="publications" className="py-24 px-6 max-w-6xl mx-auto relative">
+    <section id="publications" className="py-24 px-6 max-w-6xl mx-auto relative bg-transparent">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
 
-      <div className="relative">
+      <div ref={ref} className={`relative transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
           {t('publications.title')}
         </h2>

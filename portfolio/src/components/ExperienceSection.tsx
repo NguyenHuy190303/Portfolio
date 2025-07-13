@@ -31,176 +31,179 @@ type Experience = {
 const experiences: Experience[] = [
   {
     title: {
-      en: "CEO & Founder",
-      vi: "CEO & Người sáng lập"
+      en: "Co-CEO & AI Research Lead",
+      vi: "Đồng Sáng lập & Trưởng nhóm Nghiên cứu AI"
     },
-    org: "Capybara Company",
+    org: "VLAI",
     time: {
-      en: "2024 – Present",
-      vi: "2024 – Hiện tại"
+      en: "July 2025 – Present",
+      vi: "Tháng 7, 2025 – Hiện tại"
     },
     description: {
-      en: "Leading a technology startup focused on innovative AI solutions and digital transformation services.",
-      vi: "Lãnh đạo startup công nghệ tập trung vào các giải pháp AI sáng tạo và dịch vụ chuyển đổi số."
+      en: "Co-leading a startup to build a focused learning ecosystem, while directing the core AI research and development of our multi-agent system.",
+      vi: "Đồng lãnh đạo một startup nhằm xây dựng một hệ sinh thái học tập tập trung, đồng thời chỉ đạo nghiên cứu và phát triển lõi AI cho hệ thống đa tác nhân của chúng tôi."
     },
     responsibilities: {
       en: [
-        "Strategic planning and business development",
-        "Team leadership and organizational management",
-        "Product vision and technology roadmap",
-        "Client relationship management and partnerships"
+        "Defining the company's strategic vision and product roadmap.",
+        "Leading R&D on Multi-Agent Systems and Context Engineering.",
+        "Architecting the backend infrastructure using Python (FastAPI).",
+        "Guiding the team based on the 'Specification-Driven Design' philosophy."
       ],
       vi: [
-        "Lập kế hoạch chiến lược và phát triển kinh doanh",
-        "Lãnh đạo nhóm và quản lý tổ chức",
-        "Tầm nhìn sản phẩm và lộ trình công nghệ",
-        "Quản lý quan hệ khách hàng và đối tác"
+        "Định hình tầm nhìn chiến lược và lộ trình sản phẩm của công ty.",
+        "Dẫn dắt R&D về Hệ thống Đa Tác nhân và Kỹ thuật Ngữ cảnh.",
+        "Kiến trúc hạ tầng backend sử dụng Python (FastAPI).",
+        "Dẫn dắt đội ngũ dựa trên triết lý 'Thiết kế dựa trên Đặc tả'."
       ]
     },
     achievements: {
       en: [
-        "Successfully launched multiple AI-powered products",
-        "Built and managed a diverse team of 15+ professionals",
-        "Established strategic partnerships with key industry players"
+        "Secured initial seed funding based on the strategic vision.",
+        "Developed the foundational multi-agent architecture.",
+        "Built and mentored a core team of engineers and researchers."
       ],
       vi: [
-        "Thành công ra mắt nhiều sản phẩm được hỗ trợ bởi AI",
-        "Xây dựng và quản lý đội ngũ đa dạng 15+ chuyên gia",
-        "Thiết lập quan hệ đối tác chiến lược với các đơn vị hàng đầu"
+        "Huy động thành công vốn hạt giống dựa trên tầm nhìn chiến lược.",
+        "Phát triển kiến trúc đa tác nhân nền tảng.",
+        "Xây dựng và cố vấn đội ngũ kỹ sư và nhà nghiên cứu cốt lõi."
       ]
     },
     type: 'leadership'
   },
   {
     title: {
-      en: "Tech Leader",
-      vi: "Trưởng nhóm Công nghệ"
+      en: "AI Researcher",
+      vi: "Nghiên cứu viên AI"
     },
-    org: "VLAI Team",
+    org: "AIMA",
     time: {
-      en: "2023 – Present",
-      vi: "2023 – Hiện tại"
+      en: "June 2024 – Present",
+      vi: "Tháng 6, 2024 – Hiện tại"
     },
     description: {
-      en: "Leading technical initiatives and AI research projects, driving innovation in machine learning and deep learning applications.",
-      vi: "Lãnh đạo các sáng kiến kỹ thuật và dự án nghiên cứu AI, thúc đẩy đổi mới trong ứng dụng học máy và học sâu."
+      en: "Collaborating with doctors and medical experts to advance AI-powered solutions in healthcare, focusing on bridging the gap between advanced technology and clinical application.",
+      vi: "Hợp tác với các bác sĩ và chuyên gia y tế để thúc đẩy các giải pháp do AI cung cấp trong lĩnh vực chăm sóc sức khỏe, tập trung vào việc thu hẹp khoảng cách giữa công nghệ tiên tiến và ứng dụng lâm sàng."
     },
     responsibilities: {
       en: [
-        "Technical architecture and system design",
-        "Research direction and project management",
-        "Code review and quality assurance",
-        "Mentoring junior developers and researchers"
+        "Developing and implementing AI models for medical image analysis.",
+        "Conducting research on the application of LLMs in diagnostics.",
+        "Working closely with medical teams to ensure clinical relevance.",
+        "Contributing to research papers and internal knowledge sharing."
       ],
       vi: [
-        "Kiến trúc kỹ thuật và thiết kế hệ thống",
-        "Định hướng nghiên cứu và quản lý dự án",
-        "Đánh giá mã nguồn và đảm bảo chất lượng",
-        "Hướng dẫn các nhà phát triển và nghiên cứu viên trẻ"
+        "Phát triển và triển khai các mô hình AI để phân tích hình ảnh y tế.",
+        "Thực hiện nghiên cứu về ứng dụng của LLM trong chẩn đoán.",
+        "Làm việc chặt chẽ với các đội ngũ y tế để đảm bảo sự phù hợp lâm sàng.",
+        "Đóng góp vào các bài báo nghiên cứu và chia sẻ kiến thức nội bộ."
       ]
     },
     achievements: {
       en: [
-        "Led development of 5+ successful AI projects",
-        "Improved team productivity by 40% through process optimization",
-        "Published 3 research papers in top-tier conferences"
+        "Contributed to a 10% improvement in diagnostic accuracy in a pilot study.",
+        "Co-authored a paper submitted to a leading medical AI journal.",
+        "Received positive feedback from clinical partners on model usability."
       ],
       vi: [
-        "Dẫn dắt phát triển 5+ dự án AI thành công",
-        "Cải thiện năng suất nhóm 40% thông qua tối ưu hóa quy trình",
-        "Xuất bản 3 bài báo nghiên cứu tại các hội nghị hàng đầu"
-      ]
-    },
-    type: 'leadership'
-  },
-  {
-    title: {
-      en: "Researcher",
-      vi: "Nghiên cứu viên"
-    },
-    org: "AIMA Research Lab",
-    time: {
-      en: "08/2024 – Present",
-      vi: "08/2024 – Hiện tại"
-    },
-    description: {
-      en: "Conducting advanced research on Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) applications in biomedical informatics.",
-      vi: "Thực hiện nghiên cứu tiên tiến về mô hình ngôn ngữ lớn (LLM) và ứng dụng RAG trong tin học y sinh."
-    },
-    responsibilities: {
-      en: [
-        "Research and development of LLM architectures",
-        "Implementation of RAG systems for biomedical data",
-        "Collaboration with medical professionals",
-        "Publication of research findings"
-      ],
-      vi: [
-        "Nghiên cứu và phát triển kiến trúc LLM",
-        "Triển khai hệ thống RAG cho dữ liệu y sinh",
-        "Hợp tác với các chuyên gia y tế",
-        "Xuất bản các phát hiện nghiên cứu"
-      ]
-    },
-    achievements: {
-      en: [
-        "Developed novel RAG architecture for medical Q&A",
-        "Achieved 15% improvement in biomedical information retrieval",
-        "Collaborated on 2 high-impact research publications"
-      ],
-      vi: [
-        "Phát triển kiến trúc RAG mới cho hỏi đáp y tế",
-        "Đạt được cải thiện 15% trong truy xuất thông tin y sinh",
-        "Hợp tác trong 2 công bố nghiên cứu có tác động cao"
+        "Đóng góp vào việc cải thiện 10% độ chính xác chẩn đoán trong một nghiên cứu thí điểm.",
+        "Đồng tác giả một bài báo được gửi đến một tạp chí AI y tế hàng đầu.",
+        "Nhận được phản hồi tích cực từ các đối tác lâm sàng về khả năng sử dụng của mô hình."
       ]
     },
     type: 'research'
   },
   {
     title: {
-      en: "Team Lead",
-      vi: "Trưởng nhóm"
+      en: "Tech Lead Researcher",
+      vi: "Trưởng nhóm Nghiên cứu Kỹ thuật"
     },
-    org: "UIT AI Club",
+    org: "VLAI",
     time: {
       en: "2023 – 2024",
       vi: "2023 – 2024"
     },
     description: {
-      en: "Led a team in developing medical image classification systems using Vision Transformer architectures.",
-      vi: "Dẫn dắt nhóm phát triển hệ thống phân loại ảnh y tế sử dụng kiến trúc Vision Transformer."
+      en: "Led research and development for key AI projects, including the award-winning Mental Health Care chatbot.",
+      vi: "Dẫn dắt nghiên cứu và phát triển cho các dự án AI trọng điểm, bao gồm chatbot Chăm sóc Sức khỏe Tinh thần đã đoạt giải."
     },
     responsibilities: {
       en: [
-        "Project planning and team coordination",
-        "Technical implementation and architecture design",
-        "Data preprocessing and model training",
-        "Performance evaluation and optimization"
+        "Led an international team of 4 members to develop the Mental Health Care chatbot.",
+        "Designed the system architecture and core NLP models.",
+        "Managed project timeline, resources, and cross-cultural communication.",
+        "Mentored team members in advanced NLP and chatbot technologies."
       ],
       vi: [
-        "Lập kế hoạch dự án và điều phối nhóm",
-        "Triển khai kỹ thuật và thiết kế kiến trúc",
-        "Tiền xử lý dữ liệu và huấn luyện mô hình",
-        "Đánh giá hiệu suất và tối ưu hóa"
+        "Lãnh đạo một nhóm quốc tế gồm 4 thành viên phát triển chatbot Chăm sóc Sức khỏe Tinh thần.",
+        "Thiết kế kiến trúc hệ thống và các mô hình NLP lõi.",
+        "Quản lý tiến độ, tài nguyên và giao tiếp đa văn hóa của dự án.",
+        "Cố vấn các thành viên trong nhóm về NLP và công nghệ chatbot tiên tiến."
       ]
     },
     achievements: {
       en: [
-        "Achieved 92% accuracy in medical image classification",
-        "Led team of 8 members to successful project completion",
-        "Presented findings at university research symposium"
+        "Won First Prize at the university-level research competition as a third-year student.",
+        "The project was recognized for its innovation and social impact.",
+        "Successfully deployed a functional prototype for user testing."
       ],
       vi: [
-        "Đạt độ chính xác 92% trong phân loại ảnh y tế",
-        "Dẫn dắt nhóm 8 thành viên hoàn thành dự án thành công",
-        "Trình bày kết quả tại hội thảo nghiên cứu đại học"
+        "Giành giải Nhất tại cuộc thi nghiên cứu khoa học cấp trường khi còn là sinh viên năm 3.",
+        "Dự án được công nhận về sự đổi mới và tác động xã hội.",
+        "Triển khai thành công một nguyên mẫu hoạt động để người dùng thử nghiệm."
       ]
     },
-    type: 'development'
+    type: 'research'
+  },
+  {
+    title: {
+      en: "Time-Series Research Team Leader",
+      vi: "Trưởng nhóm Nghiên cứu Chuỗi thời gian"
+    },
+    org: "AI VietNam",
+    time: {
+      en: "2022 – 2023",
+      vi: "2022 – 2023"
+    },
+    description: {
+      en: "Led a research group of 4 members focused on advancing time-series forecasting and analysis models.",
+      vi: "Dẫn dắt một nhóm nghiên cứu gồm 4 thành viên tập trung vào việc phát triển các mô hình dự báo và phân tích chuỗi thời gian tiên tiến."
+    },
+    responsibilities: {
+      en: [
+        "Exploring and implementing state-of-the-art time-series models.",
+        "Conducting experiments and benchmarking model performance.",
+        "Coordinating research activities and knowledge sharing within the team.",
+        "Preparing research findings for potential publication."
+      ],
+      vi: [
+        "Khám phá và triển khai các mô hình chuỗi thời gian tiên tiến nhất.",
+        "Thực hiện các thí nghiệm và đo lường hiệu suất của mô hình.",
+        "Điều phối các hoạt động nghiên cứu và chia sẻ kiến thức trong nhóm.",
+        "Chuẩn bị các kết quả nghiên cứu để có khả năng xuất bản."
+      ]
+    },
+    achievements: {
+      en: [
+        "Improved forecasting accuracy by 15% on benchmark datasets.",
+        "Developed a novel anomaly detection algorithm for time-series data.",
+        "Fostered a collaborative and productive research environment."
+      ],
+      vi: [
+        "Cải thiện độ chính xác dự báo 15% trên các bộ dữ liệu tiêu chuẩn.",
+        "Phát triển một thuật toán phát hiện bất thường mới cho dữ liệu chuỗi thời gian.",
+        "Thúc đẩy một môi trường nghiên cứu hợp tác và hiệu quả."
+      ]
+    },
+    type: 'research'
   }
 ];
 
+import { useStaggeredAnimation } from "@/hooks/useScrollAnimation";
+
 export default function ExperienceSection() {
   const { t, language } = useLanguage();
+  const { ref, isVisible, visibleItems } = useStaggeredAnimation(experiences.length);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -221,11 +224,11 @@ export default function ExperienceSection() {
   };
 
   return (
-    <section id="experience" className="py-24 px-6 max-w-6xl mx-auto relative">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/5 to-transparent" />
+    <section id="experience" className="py-24 px-6 max-w-6xl mx-auto relative bg-transparent">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/5 to-transparent -z-10" />
+      <div className="absolute inset-0 -z-20 h-full w-full bg-background bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
 
-      <div className="relative">
+      <div className={`relative transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
           {t('experience.title')}
         </h2>
@@ -233,13 +236,13 @@ export default function ExperienceSection() {
           {t('experience.subtitle')}
         </p>
 
-        <div className="relative">
+        <div ref={ref} className="relative">
           {/* Timeline line */}
           <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent via-accent-secondary to-accent-tertiary"></div>
 
           <div className="space-y-12">
             {experiences.map((exp, index) => (
-              <div key={index} className="relative flex items-start gap-8">
+              <div key={index} className={`relative flex items-start gap-8 transition-all duration-500 ${visibleItems.has(index) ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[-20px]'}`}>
                 {/* Timeline dot */}
                 <div className={`relative z-10 w-16 h-16 rounded-full bg-gradient-to-r ${getTypeColor(exp.type)} flex items-center justify-center text-2xl shadow-lg`}>
                   {getTypeIcon(exp.type)}

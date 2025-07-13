@@ -3,20 +3,20 @@
 @tailwind utilities;
 
 :root {
-  /* Cyberpunk Color Palette */
-  --background: #0a0a0f;
-  --background-secondary: #121218;
-  --background-tertiary: #1a1a24;
-  --foreground: #e0e0e0;
-  --foreground-secondary: #a0a0b0;
-  --accent: #00ffff; /* Neon cyan */
-  --accent-hover: #ff00ff; /* Neon magenta */
-  --accent-secondary: #00ff41; /* Matrix green */
-  --accent-tertiary: #ff0080; /* Hot pink */
-  --border: #333344;
-  --glow-cyan: #00ffff;
-  --glow-pink: #ff00ff;
-  --glow-green: #00ff41;
+  /* Professional & Modern Color Palette */
+  --background: #111111; /* Near-black charcoal */
+  --background-secondary: #1D1D1D; /* Dark gray */
+  --background-tertiary: #2a2a2a; /* Lighter gray for depth */
+  --foreground: #F5F5F5; /* Soft off-white */
+  --foreground-secondary: #A0A0A0; /* Muted gray for secondary text */
+  --accent: #3B82F6; /* Professional blue */
+  --accent-hover: #60A5FA; /* Lighter blue for hover */
+  --accent-secondary: #10B981; /* Emerald green for secondary actions */
+  --accent-tertiary: #F97316; /* Warm orange for highlights */
+  --border: #333333; /* Subtle border color */
+  --glow-cyan: #3B82F6; /* Adjusted to new accent */
+  --glow-pink: #F97316; /* Adjusted to new accent */
+  --glow-green: #10B981; /* Adjusted to new accent */
 }
 
 * {
@@ -30,33 +30,14 @@ html {
 }
 
 body {
-  font-family: 'Inter', 'Courier New', monospace;
+  font-family: 'Inter', 'Helvetica Neue', 'Arial', sans-serif; /* More standard, professional fonts */
   background: var(--background);
   color: var(--foreground);
   line-height: 1.6;
   overflow-x: hidden;
 }
 
-/* Cyberpunk Grid Background */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  z-index: -1;
-  animation: grid-move 20s linear infinite;
-}
-
-@keyframes grid-move {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(50px, 50px); }
-}
+/* Removed Cyberpunk Grid Background */
 
 /* Section styling */
 .section-padding {
@@ -95,11 +76,7 @@ body::before {
   }
 }
 
-@keyframes neon-flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.95; }
-  75% { opacity: 0.98; }
-}
+
 
 @keyframes subtle-glow {
   0%, 100% {
@@ -212,13 +189,7 @@ body::before {
   transform: scale(1.1);
 }
 
-.cyber-text {
-  text-shadow:
-    0 0 10px var(--glow-cyan),
-    0 0 20px var(--glow-cyan),
-    0 0 30px var(--glow-cyan);
-  animation: neon-flicker 3s ease-in-out infinite;
-}
+
 
 .hero-title-readable {
   text-shadow:

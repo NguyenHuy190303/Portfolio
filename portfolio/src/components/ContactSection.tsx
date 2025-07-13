@@ -8,7 +8,7 @@ export default function ContactSection() {
   const { t } = useLanguage();
   
   return (
-    <section id="contact" className="py-24 px-6 max-w-4xl mx-auto relative">
+    <section id="contact" className="py-24 px-6 max-w-4xl mx-auto relative bg-transparent">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent" />
       
@@ -54,8 +54,8 @@ export default function ContactSection() {
           </div>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-12">
-          <div className="space-y-6">
+        <div className="flex justify-center">
+          <div className="space-y-6 max-w-md w-full">
             <div className="p-6 rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 border border-cyan-500/20 backdrop-blur-sm">
               <h3 className="text-xl font-bold text-accent mb-4 font-mono">📧 {t('contact.info')}</h3>
               <div className="space-y-4">
@@ -117,49 +117,6 @@ export default function ContactSection() {
               </div>
             </div>
           </div>
-          
-          <form
-            className="space-y-6 p-6 rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 border border-cyan-500/20 backdrop-blur-sm"
-            action="https://formspree.io/f/moqgwgkd"
-            method="POST"
-          >
-            <h3 className="text-xl font-bold text-accent mb-4 font-mono">💬 {t('contact.send')}</h3>
-            
-            <div className="space-y-4">
-              <input
-                type="text"
-                name="name"
-                placeholder={t('contact.name')}
-                required
-                className="w-full border border-gray-600/50 rounded-lg px-4 py-3 bg-gray-800/50 text-white placeholder-gray-400 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder={t('contact.email')}
-                required
-                className="w-full border border-gray-600/50 rounded-lg px-4 py-3 bg-gray-800/50 text-white placeholder-gray-400 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-              />
-              <input
-                type="text"
-                name="subject"
-                placeholder={t('contact.subject')}
-                className="w-full border border-gray-600/50 rounded-lg px-4 py-3 bg-gray-800/50 text-white placeholder-gray-400 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
-              />
-              <textarea
-                name="message"
-                rows={5}
-                placeholder={t('contact.message')}
-                className="w-full border border-gray-600/50 rounded-lg px-4 py-3 bg-gray-800/50 text-white placeholder-gray-400 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 resize-vertical"
-              />
-              <button
-                type="submit"
-                className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-400/25 font-mono"
-              >
-                🚀 {t('contact.send_btn')}
-              </button>
-            </div>
-          </form>
         </div>
       </div>
     </section>

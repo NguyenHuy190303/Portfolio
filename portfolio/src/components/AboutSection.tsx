@@ -10,7 +10,7 @@ export default function AboutSection() {
   const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation();
 
   return (
-    <section id="about" className="section-padding bg-background-secondary/30">
+    <section id="about" className="section-padding bg-transparent relative">
       <div className="max-w-6xl mx-auto">
         <div 
           ref={titleRef}

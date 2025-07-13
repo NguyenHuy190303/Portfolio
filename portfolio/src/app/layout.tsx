@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Starfield from "@/components/Starfield";
 import Navbar from "@/components/Navbar";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -32,6 +33,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} antialiased`}>
         <LanguageProvider>
+          <Starfield />
           <Navbar />
           <main className="relative">
             {children}

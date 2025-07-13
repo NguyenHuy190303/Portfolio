@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { certificates, certificateCategories, Certificate } from '@/data/certificates';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 interface CertificateCardProps {
   certificate: Certificate;
@@ -261,44 +262,26 @@ export default function CertificatesSection() {
   const { language, t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
-  const [visibleCards, setVisibleCards] = useState<Set<string>>(new Set());
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  // Intersection Observer for lazy loading
-  useEffect(() => {
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const cardId = entry.target.getAttribute('data-card-id');
-            if (cardId) {
-              setVisibleCards(prev => new Set([...prev, cardId]));
-            }
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '50px' }
-    );
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, []);
+  const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation();
+  const { ref: gridRef, isVisible: gridVisible } = useScrollAnimation();
 
   const filteredCertificates = certificates.filter(cert => 
     selectedCategory === 'all' || cert.category === selectedCategory
   );
 
   return (
-    <section id="certificates" className="py-20 px-4 relative">
+    <section id="certificates" className="py-20 px-4 relative bg-transparent">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent" />
       
       <div className="max-w-7xl mx-auto relative">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-16 transition-all duration-1000 ${
+            titleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 
             bg-clip-text text-transparent">
             {t('certificates.title')}
@@ -312,7 +295,9 @@ export default function CertificatesSection() {
         </div>
 
         {/* Controls */}
-        <div className="flex justify-center items-center gap-6 mb-12">
+        <div className={`flex justify-center items-center gap-6 mb-12 transition-all duration-1000 ${
+          titleVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`} style={{ transitionDelay: '200ms' }}>
           {/* Category Filter */}
           <div className="flex flex-wrap justify-center gap-2">
             {certificateCategories.map((category) => (
@@ -332,22 +317,24 @@ export default function CertificatesSection() {
         </div>
 
         {/* Certificates Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div 
+          ref={gridRef}
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-1000 ${
+            gridVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           {filteredCertificates.map((certificate, index) => (
             <div
               key={certificate.id}
-              data-card-id={certificate.id}
-              ref={(el) => {
-                if (el && observerRef.current) {
-                  observerRef.current.observe(el);
-                }
-              }}
-              style={{ animationDelay: `${index * 100}ms` }}
+              className={`transition-all duration-700 ${
+                gridVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: `${index * 100 + 400}ms` }}
             >
               <CertificateCard
                 certificate={certificate}
                 onClick={() => setSelectedCertificate(certificate)}
-                isVisible={visibleCards.has(certificate.id)}
+                isVisible={gridVisible}
               />
             </div>
           ))}

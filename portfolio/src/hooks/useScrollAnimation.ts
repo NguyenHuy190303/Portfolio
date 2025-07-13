@@ -34,6 +34,7 @@ export function useScrollAnimation() {
 }
 
 export function useStaggeredAnimation(itemCount: number, delay: number = 100) {
+  const [isVisible, setIsVisible] = useState(false);
   const [visibleItems, setVisibleItems] = useState(new Set<number>());
   const ref = useRef<HTMLDivElement>(null);
 
@@ -41,6 +42,7 @@ export function useStaggeredAnimation(itemCount: number, delay: number = 100) {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          setIsVisible(true);
           // Animate items with staggered delay
           for (let i = 0; i < itemCount; i++) {
             setTimeout(() => {
@@ -66,5 +68,5 @@ export function useStaggeredAnimation(itemCount: number, delay: number = 100) {
     };
   }, [itemCount, delay]);
 
-  return { ref, visibleItems };
+  return { ref, isVisible, visibleItems };
 }
