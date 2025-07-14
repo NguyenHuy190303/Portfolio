@@ -7,6 +7,7 @@ import ProjectsSection from "@/components/ProjectsSection";
 import PublicationsSection from "@/components/PublicationsSection";
 import CertificatesSection from "@/components/CertificatesSection";
 import ContactSection from "@/components/ContactSection";
+import CaseStudiesSection from "@/components/CaseStudiesSection";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <SkillsSection />
       <ExperienceSection />
       <ProjectsSection />
+      <CaseStudiesSection />
       <PublicationsSection />
       <CertificatesSection />
       <ContactSection />

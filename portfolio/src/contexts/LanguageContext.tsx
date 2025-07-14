@@ -31,13 +31,20 @@ const translations = {
     'about.stats.title': 'Thống kê',
     'about.stats.experience': 'Năm kinh nghiệm',
     'about.stats.projects': 'Dự án',
-    'about.stats.publications': 'Nghiên cứu',
+    'about.stats.models': 'Mô hình AI',
     'about.stats.accuracy': 'Độ chính xác mô hình',
     'about.education.title': 'Học vấn',
     'about.education.masters.degree': 'Thạc sĩ Khoa học Máy tính',
     'about.education.masters.school': 'Đại học Khoa học Tự nhiên, ĐHQG-HCM',
     'about.education.bachelors.degree': 'Cử nhân Công nghệ Thông tin',
     'about.education.bachelors.school': 'Đại học Khoa học Tự nhiên, ĐHQG-HCM',
+    'about.expertise.title': 'Chuyên môn AI & ML',
+    'about.expertise.llm': 'Mô hình ngôn ngữ lớn (LLMs)',
+    'about.expertise.transformer': 'Kiến trúc Transformer',
+    'about.expertise.generative': 'Generative AI & GANs',
+    'about.expertise.mlops': 'MLOps & Triển khai mô hình',
+    'about.expertise.vector': 'Cơ sở dữ liệu Vector & RAG',
+    'about.expertise.agent': 'Hệ thống tác tử AI',
 
     // Skills Section
     'skills.title': 'Năng lực chuyên môn',
@@ -50,10 +57,24 @@ const translations = {
 
     // Projects Section
     'projects.title': 'Các dự án nổi bật',
-    'projects.clinicalQA.name': 'LLM-based Clinical Question Answering',
-    'projects.clinicalQA.description': 'Hệ thống hỏi đáp y khoa sử dụng RAG với mô hình Llama2 fine-tuned.',
-    'projects.tumorSegmentation.name': 'CT-Scan Tumor Segmentation',
-    'projects.tumorSegmentation.description': 'Mô hình UNet++ phân đoạn khối u trên ảnh CT-Scan.',
+    'projects.subtitle': 'Một vài dự án tiêu biểu thể hiện chuyên môn kỹ thuật và tác động thực tế.',
+    'projects.capybara.name': 'Capybara: The Lakehouse & Scraper',
+    'projects.capybara.description': 'Cốt lõi của nỗ lực kinh doanh và nghiên cứu của tôi. Một hệ sinh thái cho việc học sâu và tập trung, được cung cấp bởi một hệ thống AI đa tác nhân. Thành phần scraper thu thập dữ liệu chất lượng cao để cung cấp cho các mô hình học tập.',
+    'projects.mentalCare.name': 'Mental-Care-AI',
+    'projects.mentalCare.description': 'Một hệ thống hỗ trợ sức khỏe tâm thần do AI điều khiển sử dụng LlamaIndex để cung cấp lời khuyên tâm lý thời gian thực, chẩn đoán tình trạng và theo dõi tiến trình của người dùng.',
+    'projects.fdaMa.name': 'FDA-MA: Paper & Repository',
+    'projects.fdaMa.description': 'Kho lưu trữ chính thức cho một bài báo nghiên cứu, thể hiện khả năng chuyển đổi các khái niệm lý thuyết phức tạp thành mã th��c tế, có thể tái tạo.',
+    'projects.dental.name': 'DENTAL: Image Segmentation',
+    'projects.dental.description': 'Các mô hình AI tiên tiến để phân đoạn và phân tích hình ảnh nha khoa, thể hiện chuyên môn về thị giác máy tính cho các ứng dụng y tế chuyên biệt.',
+    'projects.fashion.name': 'AI Fashion Recommendations',
+    'projects.fashion.description': 'Một nền tảng đề xuất trang phục thời trang tận dụng AI để cá nhân hóa phong cách cho người dùng.',
+    'projects.creative.name': 'Creative Motion',
+    'projects.creative.description': 'Một nền tảng sáng tạo được thiết kế để khơi dậy sự đổi mới và trí tưởng tượng, được xây dựng bằng các công nghệ hiện đại.',
+
+    // Case Studies Section
+    'caseStudies.title': 'Nghiên cứu điển hình',
+    'caseStudies.subtitle': 'Các phân tích sâu về các dự án và thách thức kỹ thuật.',
+    'caseStudies.readMore': 'Đọc thêm',
     
     // Hero Section
     'hero.title': 'Nguyễn Huy',
@@ -138,13 +159,20 @@ const translations = {
     'about.stats.title': 'Statistics',
     'about.stats.experience': 'Years Experience',
     'about.stats.projects': 'Projects',
-    'about.stats.publications': 'Publications',
+    'about.stats.models': 'AI Models',
     'about.stats.accuracy': 'Model Accuracy',
     'about.education.title': 'Education',
     'about.education.masters.degree': 'Master of Computer Science',
     'about.education.masters.school': 'University of Science, VNU-HCM',
     'about.education.bachelors.degree': 'Bachelor of Information Technology',
     'about.education.bachelors.school': 'University of Science, VNU-HCM',
+    'about.expertise.title': 'AI & ML Expertise',
+    'about.expertise.llm': 'Large Language Models (LLMs)',
+    'about.expertise.transformer': 'Transformer Architecture',
+    'about.expertise.generative': 'Generative AI & GANs',
+    'about.expertise.mlops': 'MLOps & Model Deployment',
+    'about.expertise.vector': 'Vector Databases & RAG',
+    'about.expertise.agent': 'AI Agent Systems',
 
     // Skills Section
     'skills.title': 'Technical Expertise',
@@ -157,10 +185,24 @@ const translations = {
 
     // Projects Section
     'projects.title': 'Featured Projects',
-    'projects.clinicalQA.name': 'LLM-based Clinical Question Answering',
-    'projects.clinicalQA.description': 'A medical Q&A system using RAG with a fine-tuned Llama2 model.',
-    'projects.tumorSegmentation.name': 'CT-Scan Tumor Segmentation',
-    'projects.tumorSegmentation.description': 'An UNet++ model for tumor segmentation on CT-Scan images.',
+    'projects.subtitle': 'A small selection of recent projects that showcase technical expertise and real-world impact.',
+    'projects.capybara.name': 'Capybara: The Lakehouse & Scraper',
+    'projects.capybara.description': 'The core of my entrepreneurial and research efforts. An ecosystem for deep, focused learning, powered by a multi-agent AI system. The scraper component gathers high-quality data to feed the learning models.',
+    'projects.mentalCare.name': 'Mental-Care-AI',
+    'projects.mentalCare.description': 'An AI-driven mental health support system using the LlamaIndex framework to provide real-time psychological advice, diagnose conditions, and track user progress.',
+    'projects.fdaMa.name': 'FDA-MA: Paper & Repository',
+    'projects.fdaMa.description': 'The official repository for a research paper, demonstrating the ability to translate complex theoretical concepts into practical, reproducible code.',
+    'projects.dental.name': 'DENTAL: Image Segmentation',
+    'projects.dental.description': 'Advanced AI models for dental image segmentation and analysis, showcasing expertise in computer vision for specialized medical applications.',
+    'projects.fashion.name': 'AI Fashion Recommendations',
+    'projects.fashion.description': 'A fashion-forward outfit recommendation platform leveraging AI to personalize style for users.',
+    'projects.creative.name': 'Creative Motion',
+    'projects.creative.description': 'A creative platform designed to spark innovation and imagination, built with modern technologies.',
+
+    // Case Studies Section
+    'caseStudies.title': 'Case Studies',
+    'caseStudies.subtitle': 'Deep dives into projects and technical challenges.',
+    'caseStudies.readMore': 'Read More',
     
     // Hero Section
     'hero.title': 'Huy Nguyen',

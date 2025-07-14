@@ -10,6 +10,7 @@ const linkKeys = [
   { href: "#skills", labelKey: "nav.skills" },
   { href: "#experience", labelKey: "nav.experience" },
   { href: "#projects", labelKey: "nav.projects" },
+  { href: "#case-studies", labelKey: "nav.caseStudies" },
   { href: "#publications", labelKey: "nav.publications" },
   { href: "#certificates", labelKey: "nav.certificates" },
   { href: "#contact", labelKey: "nav.contact" },
@@ -83,37 +84,53 @@ export default function Navbar() {
       </div>
 
       <nav
-        className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-40 transition-all duration-500 ${
+        className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-40 transition-all duration-500 
+          max-w-[95vw] w-auto min-w-fit ${
           isScrolled
             ? 'glass-effect border border-accent/30 shadow-cyber backdrop-blur-xl'
             : 'bg-transparent border border-accent/10'
-        } rounded-2xl navbar-adaptive`}
+        } rounded-2xl px-3 sm:px-4 lg:px-6 py-2 sm:py-3`}
       >
-        <div className="flex items-center justify-between w-full nav-actions-container">
-          {/* Logo Section - Flexible */}
-          <div className="flex-shrink-0">
+        <div className="flex items-center justify-between w-full gap-2 sm:gap-4">
+          {/* Logo Section - Compact */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <a
               href="#hero"
               onClick={(e) => {
                 e.preventDefault();
                 handleSmoothScroll("#hero");
               }}
-              className="font-bold text-lg sm:text-xl font-mono bg-gradient-to-r from-accent to-accent-tertiary bg-clip-text text-transparent hover-scale transition-transform group"
+              className="font-bold text-base sm:text-lg lg:text-xl font-mono bg-gradient-to-r from-accent to-accent-tertiary bg-clip-text text-transparent hover-scale transition-transform group"
             >
-              <span className="inline-flex items-center gap-1.5 sm:gap-2">
-                <span className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-accent to-accent-secondary rounded-lg flex items-center justify-center text-background text-xs sm:text-sm font-bold group-hover:rotate-12 transition-transform shadow-lg">
+              <span className="inline-flex items-center gap-1 sm:gap-1.5">
+                <span className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-gradient-to-r from-accent to-accent-secondary rounded-lg flex items-center justify-center text-background text-xs sm:text-sm font-bold group-hover:rotate-12 transition-transform shadow-lg">
                   Leo
                 </span>
-                <span className="text-accent font-bold text-glow-subtle hidden sm:inline">
+                <span className="text-accent font-bold text-glow-subtle hidden sm:inline text-sm lg:text-base">
                   .dev
                 </span>
               </span>
             </a>
+            <a
+              href="/Nguyen_Huy_CV.pdf"
+              download
+              className="hidden lg:inline-flex px-2 xl:px-3 py-1 xl:py-1.5 text-xs xl:text-sm
+                bg-gradient-to-r from-accent to-accent-secondary text-background rounded-lg
+                hover:from-accent-secondary hover:to-accent-tertiary transition-all duration-300
+                font-mono font-bold hover-lift group shadow-lg whitespace-nowrap
+                hover:scale-105"
+            >
+              <span className="inline-flex items-center gap-1">
+                <span className="text-xs xl:text-sm">💾</span>
+                <span className="hidden xl:inline">CV.exe</span>
+                <span className="xl:hidden">CV</span>
+              </span>
+            </a>
           </div>
 
-          {/* Navigation Links - Adaptive Container */}
-          <div className="hidden md:flex flex-1 justify-center">
-            <ul className="flex items-center nav-links-container">
+          {/* Navigation Links - Responsive Container */}
+          <div className="hidden md:flex flex-1 justify-center overflow-hidden">
+            <ul className="flex items-center gap-1 lg:gap-2 xl:gap-3 max-w-full overflow-x-auto scrollbar-hide">
               {linkKeys.map((l) => (
                 <li key={l.href} className="flex-shrink-0">
                   <a
@@ -122,9 +139,9 @@ export default function Navbar() {
                       e.preventDefault();
                       handleSmoothScroll(l.href);
                     }}
-                    className={`relative transition-all duration-300
-                      nav-item-adaptive rounded-lg group font-mono whitespace-nowrap
-                      hover:scale-105 nav-text-enhanced ${
+                    className={`relative transition-all duration-300 px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-xs lg:text-sm xl:text-base
+                      rounded-lg group font-mono whitespace-nowrap text-center
+                      hover:scale-105 ${
                       activeSection === l.href
                         ? 'text-accent bg-accent/8 border border-accent/20 scale-105'
                         : 'text-foreground hover:text-accent'
@@ -145,29 +162,11 @@ export default function Navbar() {
             </ul>
           </div>
 
-          {/* Action Items - Flexible Right Section */}
-          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0">
-            {/* Language Switcher */}
-            <div className="hidden sm:block">
-              <LanguageSwitcher className="scale-90 lg:scale-100" />
+          {/* Right Section - Language Switcher */}
+          <div className="flex items-center justify-end gap-2 flex-shrink-0">
+            <div className="hidden md:flex">
+              <LanguageSwitcher className="scale-75 lg:scale-90 xl:scale-100" />
             </div>
-
-            {/* CV Download Button */}
-            <a
-              href="/Nguyen_Huy_CV.pdf"
-              download
-              className="hidden sm:block px-3 lg:px-4 xl:px-5 py-1.5 lg:py-2 text-xs lg:text-sm
-                bg-gradient-to-r from-accent to-accent-secondary text-background rounded-lg
-                hover:from-accent-secondary hover:to-accent-tertiary transition-all duration-300
-                font-mono font-bold hover-lift group shadow-lg whitespace-nowrap
-                hover:scale-105 text-readable"
-            >
-              <span className="inline-flex items-center gap-1 lg:gap-2">
-                <span className="text-sm lg:text-base">💾</span>
-                <span className="hidden lg:inline">CV.exe</span>
-                <span className="lg:hidden">CV</span>
-              </span>
-            </a>
 
             {/* Mobile menu button */}
             <button
@@ -207,7 +206,7 @@ export default function Navbar() {
 
               {/* Mobile Actions */}
               <div className="pt-4 border-t border-accent/20 space-y-3">
-                <div className="flex justify-center">
+                <div className="flex justify-center items-center gap-4">
                   <LanguageSwitcher />
                 </div>
                 <a

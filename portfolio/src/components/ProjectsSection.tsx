@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useStaggeredAnimation } from "@/hooks/useScrollAnimation";
 
 type Project = {
   nameKey: string;
@@ -43,9 +44,21 @@ const projects: Project[] = [
     tech: ["Jupyter Notebook", "PyTorch", "Computer Vision", "UNet"],
     github: "https://github.com/NguyenHuy190303/DENTAL",
   },
+  {
+    nameKey: "AI Fashion Recommendations",
+    image: "/vercel.svg", // Placeholder image
+    descKey: "A fashion-forward outfit recommendation platform leveraging AI to personalize style for users.",
+    tech: ["NextJS", "TailwindCSS", "TypeScript", "AI"],
+    github: "https://github.com/NguyenHuy190303",
+  },
+  {
+    nameKey: "Creative Motion",
+    image: "/github.svg", // Placeholder image
+    descKey: "A creative platform designed to spark innovation and imagination, built with modern technologies.",
+    tech: ["NextJS", "TailwindCSS", "TypeScript", "GSAP"],
+    github: "https://github.com/NguyenHuy190303",
+  },
 ];
-
-import { useStaggeredAnimation } from "@/hooks/useScrollAnimation";
 
 export default function ProjectsSection() {
   const { t } = useLanguage();
@@ -53,35 +66,43 @@ export default function ProjectsSection() {
 
   return (
     <section id="projects" className="py-24 px-6 max-w-6xl mx-auto relative bg-transparent">
-      <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(var(--accent-secondary)_1px,transparent_1px)] [background-size:16px_16px]"></div>
       <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        <h2 className="text-3xl font-bold text-center mb-10">{t('projects.title')}</h2>
-        <div ref={ref} className="grid md:grid-cols-2 gap-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-accent to-accent-secondary bg-clip-text text-transparent">
+          {t('projects.title')}
+        </h2>
+        <p className="text-center text-foreground-secondary mb-16 max-w-3xl mx-auto">
+          {t('projects.subtitle')}
+        </p>
+        <div ref={ref} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((p, index) => (
-            <div key={index} className={`bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow transition-all duration-500 ${visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <Image src={p.image} alt={t(p.nameKey)} width={400} height={192} className="h-48 w-full object-cover" />
-              <div className="p-6 flex flex-col gap-3">
-                <h3 className="text-xl font-semibold">{t(p.nameKey)}</h3>
-                <p className="text-sm opacity-80">{t(p.descKey)}</p>
+            <div key={index} className={`glass-effect rounded-lg overflow-hidden shadow-lg transition-all duration-500 hover:shadow-accent/20 hover:-translate-y-2 ${visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              <Image src={p.image} alt={t(p.nameKey)} width={400} height={225} className="h-48 w-full object-cover" />
+              <div className="p-6 flex flex-col gap-4">
+                <h3 className="text-xl font-semibold text-accent">{t(p.nameKey)}</h3>
+                <p className="text-sm text-foreground-secondary flex-grow">{t(p.descKey)}</p>
                 <div className="flex gap-2 flex-wrap">
-                  {p.tech.map((t) => (
+                  {p.tech.map((tech) => (
                     <span
-                      key={t}
-                      className="px-2 py-0.5 bg-teal-500/10 text-teal-500 rounded text-xs"
+                      key={tech}
+                      className="px-2 py-1 bg-accent/10 text-accent rounded-full text-xs font-mono"
                     >
-                      {t}
+                      {tech}
                     </span>
                   ))}
                 </div>
-                <div className="flex gap-4 mt-2">
+                <div className="flex gap-4 mt-auto pt-4">
                   {p.github && (
-                    <a href={p.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                      <Image src="/github.svg" alt="GitHub" width={20} height={20} className="w-5 h-5" />
+                    <a href={p.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-foreground-secondary hover:text-accent transition-colors">
+                      <Image src="/github.svg" alt="GitHub" width={24} height={24} />
                     </a>
                   )}
                   {p.demo && (
-                    <a href={p.demo} target="_blank" rel="noopener noreferrer" className="text-sm underline">
+                    <a href={p.demo} target="_blank" rel="noopener noreferrer" className="text-sm text-accent hover:underline flex items-center gap-1">
                       Live Demo
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
                     </a>
                   )}
                 </div>

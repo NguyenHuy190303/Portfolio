@@ -3,20 +3,37 @@
 @tailwind utilities;
 
 :root {
-  /* Professional & Modern Color Palette */
-  --background: #111111; /* Near-black charcoal */
-  --background-secondary: #1D1D1D; /* Dark gray */
-  --background-tertiary: #2a2a2a; /* Lighter gray for depth */
-  --foreground: #F5F5F5; /* Soft off-white */
-  --foreground-secondary: #A0A0A0; /* Muted gray for secondary text */
-  --accent: #3B82F6; /* Professional blue */
-  --accent-hover: #60A5FA; /* Lighter blue for hover */
-  --accent-secondary: #10B981; /* Emerald green for secondary actions */
-  --accent-tertiary: #F97316; /* Warm orange for highlights */
-  --border: #333333; /* Subtle border color */
-  --glow-cyan: #3B82F6; /* Adjusted to new accent */
-  --glow-pink: #F97316; /* Adjusted to new accent */
-  --glow-green: #10B981; /* Adjusted to new accent */
+  /* Dark Theme (Default) */
+  --background: #0d1117; /* GitHub Dark-like */
+  --background-secondary: #161b22;
+  --background-tertiary: #21262d;
+  --foreground: #c9d1d9;
+  --foreground-secondary: #8b949e;
+  --accent: #58a6ff; /* Blue */
+  --accent-hover: #79c0ff;
+  --accent-secondary: #3fb950; /* Green */
+  --accent-tertiary: #f778ba; /* Pink */
+  --border: #30363d;
+  --glow-cyan: #58a6ff;
+  --glow-pink: #f778ba;
+  --glow-green: #3fb950;
+}
+
+.light {
+  /* Light Theme */
+  --background: #ffffff;
+  --background-secondary: #f6f8fa;
+  --background-tertiary: #eaeef2;
+  --foreground: #24292f;
+  --foreground-secondary: #57606a;
+  --accent: #0969da; /* Blue */
+  --accent-hover: #2c88d9;
+  --accent-secondary: #1a7f37; /* Green */
+  --accent-tertiary: #d12771; /* Pink */
+  --border: #d0d7de;
+  --glow-cyan: #0969da;
+  --glow-pink: #d12771;
+  --glow-green: #1a7f37;
 }
 
 * {
@@ -36,6 +53,7 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
 }
+
 
 /* Removed Cyberpunk Grid Background */
 
@@ -821,14 +839,14 @@ button, a, [role="button"] {
 
 .nav-links-container {
   gap: clamp(0.25rem, 1vw, 1rem);
-  max-width: min(70vw, 1000px);
+  max-width: min(60vw, 1000px);
 }
 
 .nav-item-adaptive {
   padding: clamp(0.375rem, 0.75vw, 0.75rem) clamp(0.5rem, 1vw, 1rem);
   font-size: clamp(0.75rem, 1.5vw, 0.875rem);
-  min-width: clamp(60px, 8vw, 120px);
   text-align: center;
+  flex-shrink: 1; /* Allow items to shrink */
 }
 
 .nav-actions-container {
@@ -967,3 +985,78 @@ button, a, [role="button"] {
       0 0 20px rgba(255, 0, 255, 0.1);
   }
 }
+
+/* ==========================================
+   NAVBAR RESPONSIVE UTILITIES
+   ========================================== */
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Navbar responsive breakpoints */
+@media (max-width: 1536px) {
+  nav ul {
+    gap: 0.5rem;
+  }
+  
+  nav li a {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 1280px) {
+  nav ul {
+    gap: 0.25rem;
+  }
+  
+  nav li a {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  nav {
+    max-width: 90vw;
+  }
+  
+  nav ul {
+    gap: 0.125rem;
+  }
+  
+  nav li a {
+    padding: 0.25rem 0.375rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Ensure navbar items don't wrap and stay readable */
+nav ul {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+}
+
+nav li {
+  flex-shrink: 0;
+}
+
+nav li a {
+  display: block;
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+/* ==========================================
+   END NAVBAR RESPONSIVE UTILITIES
+   ========================================== */

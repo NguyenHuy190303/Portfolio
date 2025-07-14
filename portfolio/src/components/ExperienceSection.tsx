@@ -34,7 +34,7 @@ const experiences: Experience[] = [
       en: "Co-CEO & AI Research Lead",
       vi: "Đồng Sáng lập & Trưởng nhóm Nghiên cứu AI"
     },
-    org: "VLAI",
+    org: "Capybara",
     time: {
       en: "July 2025 – Present",
       vi: "Tháng 7, 2025 – Hiện tại"

@@ -26,9 +26,9 @@ export default function AboutSection() {
         
         <div 
           ref={contentRef}
-          className="grid md:grid-cols-2 gap-12 items-center"
+          className="grid md:grid-cols-5 gap-12 items-start"
         >
-          <div className={`space-y-6 transition-all duration-1000 delay-200 ${
+          <div className={`md:col-span-3 space-y-6 transition-all duration-1000 delay-200 ${
             contentVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
           }`}>
             <div className="glass-effect p-8 rounded-2xl hover-lift hover:border-accent transition-all duration-300">
@@ -50,36 +50,7 @@ export default function AboutSection() {
                 {t('about.passion.description')}
               </p>
             </div>
-          </div>
-          
-          <div className={`space-y-6 transition-all duration-1000 delay-400 ${
-            contentVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
-          }`}>
-            <div className="glass-effect p-8 rounded-2xl hover-lift hover:border-accent transition-all duration-300">
-              <h3 className="text-2xl font-semibold mb-6 text-accent flex items-center gap-3">
-                <span className="animate-spin text-2xl">📊</span>
-                {t('about.stats.title')}
-              </h3>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-center hover-scale">
-                  <div className="text-3xl font-bold text-accent mb-2 animate-pulse">5+</div>
-                  <div className="text-sm text-foreground-secondary">{t('about.stats.experience')}</div>
-                </div>
-                <div className="text-center hover-scale">
-                  <div className="text-3xl font-bold text-accent mb-2 animate-pulse">20+</div>
-                  <div className="text-sm text-foreground-secondary">{t('about.stats.projects')}</div>
-                </div>
-                <div className="text-center hover-scale">
-                  <div className="text-3xl font-bold text-accent mb-2 animate-pulse">10+</div>
-                  <div className="text-sm text-foreground-secondary">{t('about.stats.publications')}</div>
-                </div>
-                <div className="text-center hover-scale">
-                  <div className="text-3xl font-bold text-accent mb-2 animate-pulse">95%</div>
-                  <div className="text-sm text-foreground-secondary">{t('about.stats.accuracy')}</div>
-                </div>
-              </div>
-            </div>
-            
+
             <div className="glass-effect p-8 rounded-2xl hover-lift hover:border-accent transition-all duration-300">
               <h3 className="text-2xl font-semibold mb-4 text-accent flex items-center gap-3">
                 <span className="animate-bounce">🎓</span>
@@ -94,6 +65,50 @@ export default function AboutSection() {
                   <div className="font-semibold">{t('about.education.bachelors.degree')}</div>
                   <div className="text-foreground-secondary text-sm">{t('about.education.bachelors.school')}</div>
                 </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className={`md:col-span-2 space-y-6 transition-all duration-1000 delay-400 ${
+            contentVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
+          }`}>
+            <div className="glass-effect p-8 rounded-2xl hover-lift hover:border-accent transition-all duration-300">
+              <h3 className="text-2xl font-semibold mb-6 text-accent flex items-center gap-3">
+                <span className="animate-spin text-2xl">📊</span>
+                {t('about.stats.title')}
+              </h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center hover-scale">
+                  <div className="text-3xl font-bold text-accent mb-2 animate-pulse">4+</div>
+                  <div className="text-sm text-foreground-secondary">{t('about.stats.experience')}</div>
+                </div>
+                <div className="text-center hover-scale">
+                  <div className="text-3xl font-bold text-accent mb-2 animate-pulse">50+</div>
+                  <div className="text-sm text-foreground-secondary">{t('about.stats.projects')}</div>
+                </div>
+                <div className="text-center hover-scale">
+                  <div className="text-3xl font-bold text-accent mb-2 animate-pulse">25+</div>
+                  <div className="text-sm text-foreground-secondary">{t('about.stats.models')}</div>
+                </div>
+                <div className="text-center hover-scale">
+                  <div className="text-3xl font-bold text-accent mb-2 animate-pulse">95%</div>
+                  <div className="text-sm text-foreground-secondary">{t('about.stats.accuracy')}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass-effect p-8 rounded-2xl hover-lift hover:border-accent transition-all duration-300">
+              <h3 className="text-2xl font-semibold mb-4 text-accent flex items-center gap-3">
+                <span className="animate-pulse">🔧</span>
+                {t('about.expertise.title')}
+              </h3>
+              <div className="space-y-2 text-sm text-foreground-secondary">
+                <p>• {t('about.expertise.llm')}</p>
+                <p>• {t('about.expertise.transformer')}</p>
+                <p>• {t('about.expertise.generative')}</p>
+                <p>• {t('about.expertise.mlops')}</p>
+                <p>• {t('about.expertise.vector')}</p>
+                <p>• {t('about.expertise.agent')}</p>
               </div>
             </div>
           </div>

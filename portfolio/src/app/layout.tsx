@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import React from "react";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,20 +27,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
+    <html suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.variable} antialiased`}>
-        <LanguageProvider>
-          <Starfield />
-          <Navbar />
-          <main className="relative">
-            {children}
-          </main>
-          <ScrollToTopButton />
-        </LanguageProvider>
+      <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <LanguageProvider>
+            <Starfield />
+            <Navbar />
+            <main className="relative">
+              {children}
+            </main>
+            <ScrollToTopButton />
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
