@@ -69,23 +69,23 @@ export default function PublicationsSection() {
   };
 
   return (
-    <section id="publications" className="py-24 px-6 max-w-6xl mx-auto relative bg-transparent">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
-
-      <div ref={ref} className={`relative transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-          {t('publications.title')}
-        </h2>
-        <p className="text-center text-foreground-secondary mb-16 max-w-3xl mx-auto">
-          {t('publications.subtitle')}
-        </p>
+    <section id="publications" className="section">
+      <div className="section-content">
+        <div ref={ref} className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div className="text-center mb-12">
+            <h2 className="section-title">
+              {t('publications.title')}
+            </h2>
+            <p className="section-subtitle">
+              {t('publications.subtitle')}
+            </p>
+          </div>
 
         <div className="space-y-8">
           {publications.map((pub, index) => (
             <div
               key={index}
-              className="p-6 rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 border border-purple-500/20 backdrop-blur-sm hover:border-purple-400/40 transition-all duration-300 hover:scale-[1.02] group"
+              className="card hover:scale-[1.02] group"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -99,7 +99,7 @@ export default function PublicationsSection() {
                 <span className="text-accent-tertiary font-mono text-sm">{pub.year}</span>
               </div>
 
-              <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-purple-300 transition-colors">
+              <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
                 {pub.title}
               </h3>
 
@@ -107,7 +107,7 @@ export default function PublicationsSection() {
                 {pub.authors}
               </p>
 
-              <p className="text-purple-300 font-medium mb-4">
+              <p className="text-accent font-medium mb-4">
                 <span className="text-foreground-secondary">Published in:</span> {pub.venue}
               </p>
 
@@ -116,12 +116,12 @@ export default function PublicationsSection() {
               </p>
 
               {pub.doi && (
-                <div className="mt-4 pt-4 border-t border-gray-700/50">
+                <div className="mt-4 pt-4 border-t border-border-muted">
                   <a
                     href={`https://doi.org/${pub.doi}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-accent hover:text-accent-tertiary transition-colors text-sm font-mono"
+                    className="inline-flex items-center gap-2 text-accent hover:text-accent-hover transition-colors text-sm font-mono"
                   >
                     🔗 DOI: {pub.doi}
                   </a>
@@ -129,19 +129,19 @@ export default function PublicationsSection() {
               )}
             </div>
           ))}
+          {publications.length === 0 && (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">📚</div>
+              <h3 className="text-xl font-bold text-foreground-secondary mb-2">
+                {t('publications.noPublications')}
+              </h3>
+              <p className="text-foreground-secondary">
+                {t('publications.comingSoon')}
+              </p>
+            </div>
+          )}
         </div>
-
-        {publications.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">📚</div>
-            <h3 className="text-xl font-bold text-foreground-secondary mb-2">
-              {t('publications.noPublications')}
-            </h3>
-            <p className="text-foreground-secondary">
-              {t('publications.comingSoon')}
-            </p>
-          </div>
-        )}
+        </div>
       </div>
     </section>
   );
