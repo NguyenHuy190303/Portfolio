@@ -3,37 +3,41 @@
 @tailwind utilities;
 
 :root {
-  /* Professional Dark Theme (Default) */
-  --background: #0f0f23;
-  --background-secondary: #1a1a2e;
-  --background-tertiary: #16213e;
-  --foreground: #e0e6ed;
-  --foreground-secondary: #a0a9b8;
-  --accent: #3b82f6; /* Professional Blue */
-  --accent-hover: #60a5fa;
-  --accent-secondary: #10b981; /* Professional Green */
-  --accent-tertiary: #8b5cf6; /* Professional Purple */
-  --border: #374151;
-  --card-background: rgba(26, 26, 46, 0.8);
-  --glass-background: rgba(59, 130, 246, 0.05);
-  --shadow-color: rgba(0, 0, 0, 0.25);
+  /* AI Research Engineer Theme (Dark) */
+  --background: #0a0a0f;
+  --background-secondary: #141423;
+  --background-tertiary: #1a1a2e;
+  --foreground: #f8fafc;
+  --foreground-secondary: #cbd5e1;
+  --accent: #06b6d4; /* Research Cyan */
+  --accent-hover: #22d3ee;
+  --accent-secondary: #10b981; /* Success Green */
+  --accent-tertiary: #8b5cf6; /* Neural Purple */
+  --border: #334155;
+  --card-background: rgba(20, 20, 35, 0.9);
+  --glass-background: rgba(6, 182, 212, 0.08);
+  --shadow-color: rgba(6, 182, 212, 0.15);
+  --neural-gradient: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  --research-accent: #f472b6;
 }
 
 .light {
-  /* Professional Light Theme */
+  /* AI Research Engineer Light Theme */
   --background: #ffffff;
   --background-secondary: #f8fafc;
   --background-tertiary: #f1f5f9;
-  --foreground: #1e293b;
-  --foreground-secondary: #64748b;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --accent-secondary: #10b981;
-  --accent-tertiary: #8b5cf6;
-  --border: #e2e8f0;
-  --card-background: rgba(248, 250, 252, 0.8);
-  --glass-background: rgba(59, 130, 246, 0.05);
-  --shadow-color: rgba(0, 0, 0, 0.1);
+  --foreground: #0f172a;
+  --foreground-secondary: #475569;
+  --accent: #06b6d4;
+  --accent-hover: #0891b2;
+  --accent-secondary: #059669;
+  --accent-tertiary: #7c3aed;
+  --border: #cbd5e1;
+  --card-background: rgba(248, 250, 252, 0.95);
+  --glass-background: rgba(6, 182, 212, 0.05);
+  --shadow-color: rgba(6, 182, 212, 0.1);
+  --neural-gradient: linear-gradient(135deg, #06b6d4 0%, #7c3aed 100%);
+  --research-accent: #ec4899;
 }
 
 * {
@@ -47,12 +51,13 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: linear-gradient(135deg, var(--background) 0%, var(--background-secondary) 100%);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  background: radial-gradient(ellipse at top, var(--background-secondary) 0%, var(--background) 100%);
   color: var(--foreground);
   line-height: 1.6;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  font-variant-ligatures: common-ligatures;
 }
 
 
@@ -69,14 +74,14 @@ body {
   }
 }
 
-/* Professional glassmorphism effect */
+/* AI Research Engineer glassmorphism */
 .glass-effect {
   background: var(--glass-background);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(6, 182, 212, 0.2);
   box-shadow: 
     0 8px 32px var(--shadow-color),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+    0 0 0 1px rgba(6, 182, 212, 0.1);
 }
 
 /* Professional Animations */
@@ -198,14 +203,15 @@ body {
 }
 
 .hero-title-enhanced {
-  text-shadow: 0 3px 12px var(--shadow-color);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  text-shadow: 0 4px 16px var(--shadow-color);
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.1;
-  background: linear-gradient(135deg, var(--foreground) 0%, var(--accent) 100%);
+  background: var(--neural-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .text-accent {
@@ -214,10 +220,11 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-tertiary) 100%);
+  background: var(--neural-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 600;
 }
 
 .text-readable {
@@ -228,26 +235,72 @@ body {
 .nav-text-enhanced {
   color: var(--foreground-secondary);
   font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.025em;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .nav-text-enhanced:hover {
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+/* AI Research Engineer specific styles */
+.neural-network-bg {
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+}
+
+.code-highlight {
+  background: rgba(6, 182, 212, 0.1);
+  border-left: 3px solid var(--accent);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+}
+
+.research-badge {
+  background: var(--neural-gradient);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ai-gradient {
+  background: var(--neural-gradient);
+}
+
+.research-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
   color: var(--accent);
 }
 
 .professional-card {
   background: var(--card-background);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px var(--shadow-color);
-  transition: all 0.3s ease;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 20px var(--shadow-color),
+    inset 0 1px 0 rgba(6, 182, 212, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .professional-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px var(--shadow-color);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 40px var(--shadow-color),
+    inset 0 1px 0 rgba(6, 182, 212, 0.2),
+    0 0 0 1px rgba(6, 182, 212, 0.1);
 }
 
 /* Entrance animations */
@@ -322,35 +375,57 @@ a:focus {
 
 /* Professional button styles */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  background: var(--neural-gradient);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
+  border-radius: 12px;
+  padding: 14px 28px;
   font-weight: 600;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.25);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(6, 182, 212, 0.4);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--accent);
   border: 2px solid var(--accent);
-  border-radius: 8px;
-  padding: 10px 22px;
+  border-radius: 12px;
+  padding: 12px 26px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-secondary:hover {
   background: var(--accent);
   color: white;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
 }
 
 @keyframes fadeInLeft {
