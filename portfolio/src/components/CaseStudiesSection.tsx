@@ -34,34 +34,34 @@ export default function CaseStudiesSection() {
   const { t, language } = useLanguage();
 
   return (
-    <section id="case-studies" className="py-24 px-6 max-w-6xl mx-auto">
-      <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 bg-clip-text text-transparent">
-        {t("caseStudies.title")}
-      </h2>
-      <p className="text-center text-foreground-secondary mb-16 max-w-3xl mx-auto">
-        {t("caseStudies.subtitle")}
-      </p>
-      <div className="grid md:grid-cols-2 gap-8">
-        {caseStudies.map((study, index) => (
-          <div key={index} className="p-6 rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 border border-pink-500/20 backdrop-blur-sm hover:border-pink-400/40 transition-all duration-300 hover:scale-[1.02] group">
-            <h3 className="text-xl font-bold text-foreground group-hover:text-pink-300 transition-colors mb-2">
-              {study.title[language]}
-            </h3>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {study.tags.map((tag, i) => (
-                <span key={i} className="text-xs font-mono bg-pink-500/10 text-pink-300 px-2 py-1 rounded">
-                  {tag}
-                </span>
-              ))}
+    <section id="case-studies" className="section">
+      <div className="section-content">
+        <div className="text-center mb-12">
+          <h2 className="section-title">{t("caseStudies.title")}</h2>
+          <p className="section-subtitle">{t("caseStudies.subtitle")}</p>
+        </div>
+        <div className="grid-2 gap-8">
+          {caseStudies.map((study, index) => (
+            <div key={index} className="card">
+              <h3 className="text-xl font-semibold text-foreground mb-3">
+                {study.title[language]}
+              </h3>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {study.tags.map((tag, i) => (
+                  <span key={i} className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <p className="text-foreground-secondary mb-4">
+                {study.description[language]}
+              </p>
+              <a href={study.link} className="text-accent font-medium hover:underline">
+                {t("caseStudies.readMore")}
+              </a>
             </div>
-            <p className="text-foreground-secondary mb-4">
-              {study.description[language]}
-            </p>
-            <a href={study.link} className="text-accent font-semibold hover:underline">
-              {t("caseStudies.readMore")}
-            </a>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -3,7 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useStaggeredAnimation } from "@/hooks/useScrollAnimation";
 
 type Project = {
   nameKey: string;
@@ -62,21 +61,17 @@ const projects: Project[] = [
 
 export default function ProjectsSection() {
   const { t } = useLanguage();
-  const { ref, isVisible, visibleItems } = useStaggeredAnimation(projects.length);
 
   return (
-    <section id="projects" className="py-24 px-6 max-w-6xl mx-auto relative bg-transparent">
-      <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(var(--accent-secondary)_1px,transparent_1px)] [background-size:16px_16px]"></div>
-      <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-accent to-accent-secondary bg-clip-text text-transparent">
-          {t('projects.title')}
-        </h2>
-        <p className="text-center text-foreground-secondary mb-16 max-w-3xl mx-auto">
-          {t('projects.subtitle')}
-        </p>
-        <div ref={ref} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <section id="projects" className="section">
+      <div className="section-content">
+        <div className="text-center mb-12">
+          <h2 className="section-title">{t('projects.title')}</h2>
+          <p className="section-subtitle">{t('projects.subtitle')}</p>
+        </div>
+        <div className="grid-3 gap-8">
           {projects.map((p, index) => (
-            <div key={index} className={`glass-effect rounded-lg overflow-hidden shadow-lg transition-all duration-500 hover:shadow-accent/20 hover:-translate-y-2 ${visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div key={index} className="card overflow-hidden">
               <Image src={p.image} alt={t(p.nameKey)} width={400} height={225} className="h-48 w-full object-cover" />
               <div className="p-6 flex flex-col gap-4">
                 <h3 className="text-xl font-semibold text-accent">{t(p.nameKey)}</h3>
