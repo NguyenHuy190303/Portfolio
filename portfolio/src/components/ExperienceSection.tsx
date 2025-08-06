@@ -31,8 +31,8 @@ type Experience = {
 const experiences: Experience[] = [
   {
     title: {
-      en: "Co-CEO & AI Research Lead",
-      vi: "Đồng Sáng lập & Trưởng nhóm Nghiên cứu AI"
+      en: "Founder Capybara team",
+      vi: "Người sáng lập đội Capybara"
     },
     org: "Capybara",
     time: {
@@ -40,33 +40,35 @@ const experiences: Experience[] = [
       vi: "Tháng 7, 2025 – Hiện tại"
     },
     description: {
-      en: "Co-leading a startup to build a focused learning ecosystem, while directing the core AI research and development of our multi-agent system.",
-      vi: "Đồng lãnh đạo một startup nhằm xây dựng một hệ sinh thái học tập tập trung, đồng thời chỉ đạo nghiên cứu và phát triển lõi AI cho hệ thống đa tác nhân của chúng tôi."
+      en: "Founded Capybara team to revolutionize focused learning through AI. Building a comprehensive learning ecosystem that combats attention fragmentation in the digital age.",
+      vi: "Thành lập đội Capybara để cách mạng hóa việc học tập tập trung thông qua AI. Xây dựng một hệ sinh thái học tập toàn diện chống lại sự phân tán chú ý trong thời đại kỹ thuật số."
     },
     responsibilities: {
       en: [
-        "Defining the company's strategic vision and product roadmap.",
-        "Leading R&D on Multi-Agent Systems and Context Engineering.",
-        "Architecting the backend infrastructure using Python (FastAPI).",
-        "Guiding the team based on the 'Specification-Driven Design' philosophy."
+        "Founded and architected the vision for Capybara: The Lakehouse learning ecosystem.",
+        "Developed comprehensive strategic plan combining Deep Work principles with AI technology.",
+        "Built and led multi-disciplinary team focused on combating attention economy.",
+        "Designed Specification-Driven Development methodology for scalable AI systems."
       ],
       vi: [
-        "Định hình tầm nhìn chiến lược và lộ trình sản phẩm của công ty.",
-        "Dẫn dắt R&D về Hệ thống Đa Tác nhân và Kỹ thuật Ngữ cảnh.",
-        "Kiến trúc hạ tầng backend sử dụng Python (FastAPI).",
-        "Dẫn dắt đội ngũ dựa trên triết lý 'Thiết kế dựa trên Đặc tả'."
+        "Thành lập và kiến tạo tầm nhìn cho hệ sinh thái học tập Capybara: The Lakehouse.",
+        "Phát triển kế hoạch chiến lược toàn diện kết hợp nguyên tắc Deep Work với công nghệ AI.",
+        "Xây dựng và lãnh đạo đội ngũ đa ngành tập trung chống lại nền kinh tế chú ý.",
+        "Thiết kế phương pháp Phát triển dựa trên Đặc tả cho hệ thống AI có thể mở rộng."
       ]
     },
     achievements: {
       en: [
-        "Secured initial seed funding based on the strategic vision.",
-        "Developed the foundational multi-agent architecture.",
-        "Built and mentored a core team of engineers and researchers."
+        "Conceptualized and documented comprehensive 6-part strategic framework.",
+        "Established Capybara's mission to reclaim deep, focused learning in digital age.",
+        "Created innovative Dual-Intake Experience combining content curation with AI tutoring.",
+        "Built foundational multi-agent system architecture for personalized learning."
       ],
       vi: [
-        "Huy động thành công vốn hạt giống dựa trên tầm nhìn chiến lược.",
-        "Phát triển kiến trúc đa tác nhân nền tảng.",
-        "Xây dựng và cố vấn đội ngũ kỹ sư và nhà nghiên cứu cốt lõi."
+        "Hình thành và tài liệu hóa khung chiến lược toàn diện gồm 6 phần.",
+        "Thiết lập sứ mệnh của Capybara nhằm tái chiếm việc học sâu, tập trung trong thời đại số.",
+        "Tạo ra Trải nghiệm Hấp thụ Kép sáng tạo kết hợp tuyển chọn nội dung với gia sư AI.",
+        "Xây dựng kiến trúc hệ thống đa tác nhân nền tảng cho việc học cá nhân hóa."
       ]
     },
     type: 'leadership'
