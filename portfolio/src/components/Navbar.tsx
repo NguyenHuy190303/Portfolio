@@ -75,10 +75,10 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Cyberpunk Progress bar */}
+      {/* Professional Progress bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-background-secondary z-50">
         <div
-          className="h-full bg-gradient-to-r from-accent via-accent-tertiary to-accent-secondary transition-all duration-300 shadow-neon-cyan"
+          className="h-full bg-gradient-to-r from-accent to-accent-hover transition-all duration-300"
           style={{ width: `${scrollProgress * 100}%` }}
         />
       </div>
@@ -87,7 +87,7 @@ export default function Navbar() {
         className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-40 transition-all duration-500 
           max-w-[95vw] w-auto min-w-fit ${
           isScrolled
-            ? 'glass-effect border border-accent/30 shadow-cyber backdrop-blur-xl'
+            ? 'professional-card border-accent/20'
             : 'bg-transparent border border-accent/10'
         } rounded-2xl px-3 sm:px-4 lg:px-6 py-2 sm:py-3`}
       >

@@ -69,35 +69,31 @@ export default function HeroSection() {
       id="hero"
       className="min-h-screen flex flex-col justify-center items-center text-center gap-8 section-padding relative overflow-hidden bg-transparent"
     >
-      {/* Cyberpunk background effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent-tertiary/10 pointer-events-none"></div>
+      {/* Professional background effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent-secondary/5 pointer-events-none"></div>
       
-      
-      
-      {/* Floating neon particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-10 w-3 h-3 bg-accent rounded-full shadow-neon-cyan animate-cyber-float"></div>
-        <div className="absolute top-40 right-20 w-2 h-2 bg-accent-tertiary rounded-full shadow-neon-pink animate-cyber-float animate-delay-200"></div>
-        <div className="absolute bottom-40 left-20 w-4 h-4 bg-accent-secondary rounded-full shadow-neon-green animate-cyber-float animate-delay-400"></div>
-        <div className="absolute bottom-20 right-10 w-2 h-2 bg-accent rounded-full shadow-neon-cyan animate-cyber-float animate-delay-300"></div>
+      {/* Subtle floating elements */}
+      <div className="absolute inset-0 pointer-events-none opacity-60">
+        <div className="absolute top-20 left-10 w-2 h-2 bg-accent/40 rounded-full animate-float"></div>
+        <div className="absolute top-40 right-20 w-1 h-1 bg-accent-secondary/40 rounded-full animate-float animate-delay-200"></div>
+        <div className="absolute bottom-40 left-20 w-3 h-3 bg-accent-tertiary/40 rounded-full animate-float animate-delay-400"></div>
+        <div className="absolute bottom-20 right-10 w-1 h-1 bg-accent/40 rounded-full animate-float animate-delay-300"></div>
       </div>
       
-      {/* Avatar with subtle cyberpunk styling */}
+      {/* Professional avatar styling */}
       <div className="relative animate-fadeInUp">
         <div className="relative group">
-          {/* Subtle background glow - only visible on hover */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent/20 via-accent-tertiary/20 to-accent-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
           <Image
             src="/Leo-avatar.jpg"
             alt="Ảnh đại diện Nguyễn Quốc Huy"
             width={200}
             height={200}
-            className="relative rounded-full object-cover border-2 border-accent/60 hover:border-accent transition-all duration-300 shadow-lg"
+            className="relative rounded-full object-cover border-3 border-accent/30 hover:border-accent/60 transition-all duration-300 shadow-xl hover-lift"
           />
         </div>
-        {/* Subtle status indicator */}
-        <div className="absolute bottom-4 right-4 w-6 h-6 bg-accent-secondary rounded-full border-2 border-background shadow-sm">
-          <div className="w-full h-full bg-accent-secondary rounded-full opacity-80"></div>
+        {/* Professional status indicator */}
+        <div className="absolute bottom-4 right-4 w-5 h-5 bg-accent-secondary rounded-full border-2 border-background shadow-md">
+          <div className="w-full h-full bg-accent-secondary rounded-full"></div>
         </div>
       </div>
 
@@ -112,33 +108,32 @@ export default function HeroSection() {
           <p className="text-sm sm:text-base text-foreground-secondary" dangerouslySetInnerHTML={{ __html: t('hero.system.status') }}>
           </p>
         </div>
-        <h1 className="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-accent via-accent-tertiary to-accent-secondary bg-clip-text text-transparent animate-fadeInUp animate-delay-400 hero-title-readable">
+        <h1 className="text-5xl sm:text-7xl font-bold hero-title-enhanced animate-fadeInUp animate-delay-400">
           {t('hero.title')}
         </h1>
-        <div className="text-2xl sm:text-3xl text-accent-tertiary font-mono animate-fadeInRight animate-delay-500">
+        <div className="text-2xl sm:text-3xl font-mono animate-fadeInRight animate-delay-500">
           <span className="text-foreground-secondary">{t('hero.alias')}</span>
-          <span className="bg-gradient-to-r from-accent-tertiary to-accent bg-clip-text text-transparent hover-scale inline-block animate-neon-flicker">
+          <span className="text-gradient hover-scale inline-block">
             &quot;Leo&quot;
           </span>
         </div>
       </div>
 
       <div className="h-20 flex items-center animate-fadeInUp animate-delay-600">
-        <div className="glass-effect px-8 py-4 rounded-lg border border-accent/30 hover:border-accent/50 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-r from-accent/10 via-accent-secondary/10 to-accent-tertiary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <h2 className="text-2xl sm:text-4xl font-mono text-accent cyber-text relative z-10">
+        <div className="professional-card px-8 py-4 rounded-lg border-accent/20">
+          <h2 className="text-2xl sm:text-4xl font-mono text-accent relative z-10">
             <span className="text-accent-secondary font-bold">&gt;</span>
             <span className="text-foreground-secondary mx-2">execute</span>
             <span className="text-accent-tertiary">[</span>
             <span className="inline-block animate-fadeInLeft text-accent font-bold">{typingText}</span>
-            <span className="border-r-2 border-accent animate-neon-flicker ml-1" />
+            <span className="border-r-2 border-accent ml-1 animate-pulse" />
             <span className="text-accent-tertiary">]</span>
             <span className="text-accent-secondary ml-2">--mode=active</span>
           </h2>
         </div>
       </div>
 
-      <p className="max-w-3xl px-4 text-lg sm:text-xl text-foreground-secondary leading-relaxed animate-fadeInUp animate-delay-700 font-mono glass-effect p-6 rounded-lg border border-accent/20">
+      <p className="max-w-3xl px-4 text-lg sm:text-xl text-foreground-secondary leading-relaxed animate-fadeInUp animate-delay-700 professional-card p-6 rounded-lg">
         <span className="text-accent-secondary"># </span>
         {t('hero.description')}
       </p>
@@ -147,7 +142,7 @@ export default function HeroSection() {
         <a
           href="/Nguyen_Huy_CV.pdf"
           download
-          className="px-8 py-4 rounded-lg bg-gradient-to-r from-accent to-accent-secondary text-background hover:from-accent-secondary hover:to-accent-tertiary transition-all duration-300 shadow-cyber font-mono font-bold hover-lift group relative overflow-hidden"
+          className="btn-primary font-mono hover-lift group relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
           <span className="relative inline-flex items-center gap-3">
@@ -158,7 +153,7 @@ export default function HeroSection() {
           href="https://calendly.com/nguyenhuy190303/30min"
           target="_blank"
           rel="noopener noreferrer"
-          className="px-8 py-4 rounded-lg border-2 border-accent-tertiary text-accent-tertiary hover:bg-accent-tertiary hover:text-background transition-all duration-300 font-mono font-bold glass-effect hover-lift group relative overflow-hidden"
+          className="btn-secondary font-mono hover-lift group relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent-tertiary/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
           <span className="relative inline-flex items-center gap-3">
@@ -173,7 +168,7 @@ export default function HeroSection() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="GitHub"
-          className="p-4 rounded-lg glass-effect hover:border-accent-secondary hover-scale transition-all duration-300 group relative"
+          className="p-4 rounded-lg professional-card hover-scale transition-all duration-300 group relative"
         >
           <div className="absolute inset-0 bg-accent-secondary/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-neon-glow"></div>
           <Image 
