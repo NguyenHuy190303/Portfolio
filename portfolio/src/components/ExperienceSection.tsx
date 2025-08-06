@@ -201,11 +201,9 @@ const experiences: Experience[] = [
   }
 ];
 
-import { useStaggeredAnimation } from "@/hooks/useScrollAnimation";
 
 export default function ExperienceSection() {
   const { t, language } = useLanguage();
-  const { ref, isVisible, visibleItems } = useStaggeredAnimation(experiences.length);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -218,91 +216,71 @@ export default function ExperienceSection() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'leadership': return 'from-yellow-400 to-orange-400';
-      case 'research': return 'from-blue-400 to-purple-400';
-      case 'development': return 'from-green-400 to-cyan-400';
-      default: return 'from-gray-400 to-gray-600';
+      case 'leadership': return 'from-accent to-accent-secondary';
+      case 'research': return 'from-accent-secondary to-accent-tertiary';
+      case 'development': return 'from-accent to-accent-tertiary';
+      default: return 'from-accent to-accent-hover';
     }
   };
 
   return (
-    <section id="experience" className="py-24 px-6 max-w-6xl mx-auto relative bg-transparent">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/5 to-transparent -z-10" />
-      <div className="absolute inset-0 -z-20 h-full w-full bg-background bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+    <section id="experience" className="section">
+      <div className="section-content">
+        <div className="text-center mb-12">
+          <h2 className="section-title">{t('experience.title')}</h2>
+          <p className="section-subtitle">{t('experience.subtitle')}</p>
+        </div>
 
-      <div className={`relative transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
-          {t('experience.title')}
-        </h2>
-        <p className="text-center text-foreground-secondary mb-16 max-w-3xl mx-auto">
-          {t('experience.subtitle')}
-        </p>
+        <div className="space-y-8">
+          {experiences.map((exp, index) => (
+            <div key={index} className="card">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-foreground">
+                    {exp.title[language]}
+                  </h3>
+                  <p className="text-accent font-medium text-sm">
+                    {exp.org}
+                  </p>
+                </div>
+                <span className="text-sm text-foreground-secondary bg-background-secondary px-3 py-1 rounded-full">
+                  {exp.time[language]}
+                </span>
+              </div>
 
-        <div ref={ref} className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent via-accent-secondary to-accent-tertiary"></div>
+              <p className="text-foreground-secondary mb-6">
+                {exp.description[language]}
+              </p>
 
-          <div className="space-y-12">
-            {experiences.map((exp, index) => (
-              <div key={index} className={`relative flex items-start gap-8 transition-all duration-500 ${visibleItems.has(index) ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[-20px]'}`}>
-                {/* Timeline dot */}
-                <div className={`relative z-10 w-16 h-16 rounded-full bg-gradient-to-r ${getTypeColor(exp.type)} flex items-center justify-center text-2xl shadow-lg`}>
-                  {getTypeIcon(exp.type)}
+              <div className="grid-2 gap-6">
+                <div>
+                  <h4 className="text-accent font-medium mb-3">
+                    {t('experience.responsibilities')}
+                  </h4>
+                  <ul className="space-y-2">
+                    {exp.responsibilities[language].map((resp, idx) => (
+                      <li key={idx} className="text-sm text-foreground-secondary">
+                        • {resp}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                {/* Content */}
-                <div className="flex-1 p-6 rounded-lg bg-gradient-to-br from-gray-900/50 to-gray-800/30 border border-cyan-500/20 backdrop-blur-sm hover:border-cyan-400/40 transition-all duration-300 hover:scale-[1.02] group">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-cyan-300 transition-colors">
-                        {exp.title[language]}
-                      </h3>
-                      <p className="text-accent-secondary font-mono text-sm">
-                        {exp.org}
-                      </p>
-                    </div>
-                    <span className="text-accent-tertiary font-mono text-sm bg-accent-tertiary/10 px-3 py-1 rounded-full">
-                      {exp.time[language]}
-                    </span>
-                  </div>
-
-                  <p className="text-foreground-secondary mb-6 leading-relaxed">
-                    {exp.description[language]}
-                  </p>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="text-accent font-semibold mb-3 flex items-center gap-2">
-                        <span>🎯</span> {t('experience.responsibilities')}
-                      </h4>
-                      <ul className="space-y-2">
-                        {exp.responsibilities[language].map((resp, idx) => (
-                          <li key={idx} className="text-sm text-foreground-secondary flex items-start gap-2">
-                            <span className="text-accent-secondary mt-1">▸</span>
-                            {resp}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div>
-                      <h4 className="text-accent-tertiary font-semibold mb-3 flex items-center gap-2">
-                        <span>🏆</span> {t('experience.achievements')}
-                      </h4>
-                      <ul className="space-y-2">
-                        {exp.achievements[language].map((achievement, idx) => (
-                          <li key={idx} className="text-sm text-foreground-secondary flex items-start gap-2">
-                            <span className="text-accent-tertiary mt-1">★</span>
-                            {achievement}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+                <div>
+                  <h4 className="text-accent font-medium mb-3">
+                    {t('experience.achievements')}
+                  </h4>
+                  <ul className="space-y-2">
+                    {exp.achievements[language].map((achievement, idx) => (
+                      <li key={idx} className="text-sm text-foreground-secondary">
+                        • {achievement}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
