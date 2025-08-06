@@ -205,23 +205,6 @@ const experiences: Experience[] = [
 export default function ExperienceSection() {
   const { t, language } = useLanguage();
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'leadership': return '👑';
-      case 'research': return '🔬';
-      case 'development': return '💻';
-      default: return '🚀';
-    }
-  };
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'leadership': return 'from-accent to-accent-secondary';
-      case 'research': return 'from-accent-secondary to-accent-tertiary';
-      case 'development': return 'from-accent to-accent-tertiary';
-      default: return 'from-accent to-accent-hover';
-    }
-  };
 
   return (
     <section id="experience" className="section">
