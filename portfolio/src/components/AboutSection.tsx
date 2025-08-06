@@ -9,9 +9,11 @@ export default function AboutSection() {
   return (
     <section id="about" className="section">
       <div className="section-content">
-        <div className="text-center mb-12">
-          <h2 className="section-title">{t('about.title')}</h2>
-          <p className="section-subtitle">{t('about.careerGoals.description')}</p>
+        <div className="mb-12">
+          <h2 className="section-title text-center">{t('about.title')}</h2>
+          <p className="text-lg text-foreground-secondary mb-8 max-w-none">
+            {t('about.careerGoals.description')}
+          </p>
         </div>
         
         <div className="grid-2 gap-8 mb-12">
