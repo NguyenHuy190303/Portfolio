@@ -18,7 +18,11 @@ export const metadata: Metadata = {
   description: "Portfolio của Nguyễn Quốc Huy - Nhà nghiên cứu AI và kỹ sư học sâu chuyên về phân tích hình ảnh y tế",
   keywords: "AI, Machine Learning, Deep Learning, Computer Vision, Medical Imaging, Portfolio",
   authors: [{ name: "Nguyễn Quốc Huy" }],
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
