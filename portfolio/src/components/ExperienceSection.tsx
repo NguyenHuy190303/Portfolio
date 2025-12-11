@@ -31,6 +31,44 @@ type Experience = {
 const experiences: Experience[] = [
   {
     title: {
+      en: "AI Engineer",
+      vi: "Kỹ sư AI"
+    },
+    org: "Trivita AI",
+    time: {
+      en: "September 2025 – Present",
+      vi: "Tháng 9, 2025 – Hiện tại"
+    },
+    description: {
+      en: "Working full-time as an AI Engineer, developing advanced AI solutions and contributing to the core technology stack.",
+      vi: "Làm việc toàn thời gian với vai trò Kỹ sư AI, phát triển các giải pháp AI tiên tiến và đóng góp vào nền tảng công nghệ cốt lõi."
+    },
+    responsibilities: {
+      en: [
+        "Developing and optimizing large-scale AI models for production environments.",
+        "Collaborating with cross-functional teams to integrate AI features into products.",
+        "Researching new model architectures to improve system performance and efficiency."
+      ],
+      vi: [
+        "Phát triển và tối ưu hóa các mô hình AI quy mô lớn cho môi trường sản xuất.",
+        "Hợp tác với các nhóm liên chức năng để tích hợp các tính năng AI vào sản phẩm.",
+        "Nghiên cứu các kiến trúc mô hình mới để cải thiện hiệu suất và hiệu quả hệ thống."
+      ]
+    },
+    achievements: {
+      en: [
+        "Successfully deployed key AI features to production.",
+        "Improved model inference speed by significant margins."
+      ],
+      vi: [
+        "Triển khai thành công các tính năng AI chính vào sản xuất.",
+        "Cải thiện đáng kể tốc độ suy luận của mô hình."
+      ]
+    },
+    type: 'development'
+  },
+  {
+    title: {
       en: "Founder Capybara team",
       vi: "Người sáng lập đội Capybara"
     },
@@ -205,65 +243,97 @@ const experiences: Experience[] = [
 export default function ExperienceSection() {
   const { t, language } = useLanguage();
 
-
   return (
-    <section id="experience" className="section">
+    <section id="experience" className="section relative">
+      {/* Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+      </div>
+
       <div className="section-content">
-        <div className="text-center mb-12">
-          <h2 className="section-title">{t('experience.title')}</h2>
-          <p className="section-subtitle">{t('experience.subtitle')}</p>
+        <div className="text-center mb-16">
+          <h2 className="section-title text-4xl md:text-5xl mb-4">
+            <span className="text-gradient">{t('experience.title')}</span>
+          </h2>
+          <p className="section-subtitle mx-auto text-lg">
+            {t('experience.subtitle')}
+          </p>
         </div>
 
-        <div className="space-y-8">
-          {experiences.map((exp, index) => (
-            <div key={index} className="card">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">
-                    {exp.title[language]}
-                  </h3>
-                  <p className="text-accent font-medium text-sm">
-                    {exp.org}
-                  </p>
+        <div className="relative">
+          {/* Timeline Line */}
+          <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-accent/50 to-transparent hidden md:block"></div>
+
+          <div className="space-y-12">
+            {experiences.map((exp, index) => (
+              <div key={index} className={`relative flex flex-col md:flex-row gap-8 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+
+                {/* Timeline Dot */}
+                <div className="absolute left-0 md:left-1/2 top-0 w-4 h-4 bg-accent rounded-full transform -translate-x-1/2 translate-y-2 shadow-[0_0_10px_var(--accent)] hidden md:block"></div>
+
+                {/* Content */}
+                <div className="w-full md:w-1/2">
+                  <div className={`glass-card p-8 hover:border-accent/50 transition-all duration-300 group ${index % 2 === 0 ? 'md:mr-12' : 'md:ml-12'}`}>
+                    <div className="flex flex-col gap-2 mb-6">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent border border-accent/20">
+                          {exp.time[language]}
+                        </span>
+                        <span className="text-xs text-foreground-muted uppercase tracking-wider">
+                          {exp.type}
+                        </span>
+                      </div>
+                      <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors">
+                        {exp.title[language]}
+                      </h3>
+                      <p className="text-lg text-foreground-secondary font-medium">
+                        {exp.org}
+                      </p>
+                    </div>
+
+                    <p className="text-foreground-secondary mb-6 leading-relaxed">
+                      {exp.description[language]}
+                    </p>
+
+                    <div className="space-y-6">
+                      <div>
+                        <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
+                          {t('experience.responsibilities')}
+                        </h4>
+                        <ul className="space-y-2">
+                          {exp.responsibilities[language].map((resp, idx) => (
+                            <li key={idx} className="text-sm text-foreground-secondary flex items-start gap-2">
+                              <span className="text-accent mt-1.5">•</span>
+                              <span>{resp}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {exp.achievements[language].length > 0 && (
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                            {t('experience.achievements')}
+                          </h4>
+                          <ul className="space-y-2">
+                            {exp.achievements[language].map((achievement, idx) => (
+                              <li key={idx} className="text-sm text-foreground-secondary flex items-start gap-2">
+                                <span className="text-primary mt-1.5">•</span>
+                                <span>{achievement}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <span className="text-sm text-foreground-secondary bg-background-secondary px-3 py-1 rounded-full">
-                  {exp.time[language]}
-                </span>
               </div>
-
-              <p className="text-foreground-secondary mb-6">
-                {exp.description[language]}
-              </p>
-
-              <div className="grid-2 gap-6">
-                <div>
-                  <h4 className="text-accent font-medium mb-3">
-                    {t('experience.responsibilities')}
-                  </h4>
-                  <ul className="space-y-2">
-                    {exp.responsibilities[language].map((resp, idx) => (
-                      <li key={idx} className="text-sm text-foreground-secondary">
-                        • {resp}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div>
-                  <h4 className="text-accent font-medium mb-3">
-                    {t('experience.achievements')}
-                  </h4>
-                  <ul className="space-y-2">
-                    {exp.achievements[language].map((achievement, idx) => (
-                      <li key={idx} className="text-sm text-foreground-secondary">
-                        • {achievement}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
