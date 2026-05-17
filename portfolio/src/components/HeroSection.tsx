@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useTranslations } from "next-intl";
-import OptimizedImage from "./OptimizedImage";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, FileText } from "lucide-react";
@@ -31,7 +31,7 @@ export default function HeroSection() {
           <div className="relative animate-fade-in">
             <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-full p-1 ring-2 ring-border">
               <div className="w-full h-full rounded-full overflow-hidden relative">
-                <OptimizedImage
+                <Image
                   src="/images/avatar.jpg"
                   alt="Leo"
                   fill
