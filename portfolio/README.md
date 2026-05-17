@@ -1,3 +1,18 @@
+# Nguyen Huy — Portfolio
+
+## Rollback Reference
+
+| Commit | Description |
+|--------|-------------|
+| `21bd873e` | **Current** — Blog-only, no projects/research/certificates. Navbar: Home + Blog only. About page: HeroSection only. |
+| `7441ace6` | Warm academic theme + full project restored (HeroSection, AboutSection, SkillsSection, ExperienceSection, ProjectsSection, PublicationsSection, CertificatesSection, ContactSection) |
+| `6c7d85ed` | Cyberpunk→academic restyle (pre-restore, incomplete) |
+| `d539331b` | Original cyberpunk design |
+
+To rollback: `git checkout <commit-id> -- portfolio/`
+
+---
+
 # 🚀 Nguyen Quoc Huy - Portfolio Website
 
 <p align="center">
