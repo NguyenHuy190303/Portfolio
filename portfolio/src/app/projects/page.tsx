@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function ProjectsRedirect() {
-  redirect('/en/projects');
+  redirect('/en/blog');
 }

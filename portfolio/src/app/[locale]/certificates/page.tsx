@@ -1,9 +1,10 @@
-import CertificatesSection from '@/components/CertificatesSection';
+import { redirect } from 'next/navigation';
 
-export default function CertificatesPage() {
-  return (
-    <main>
-      <CertificatesSection />
-    </main>
-  );
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function CertificatesPage({ params }: Props) {
+  const { locale } = await params;
+  redirect(`/${locale}/blog`);
 }

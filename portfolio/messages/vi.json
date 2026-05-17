@@ -101,11 +101,12 @@
   "hero": {
     "title": "Nguyễn Huy",
     "alias": "alias: ",
-    "greeting": "Đang tìm kiếm cơ hội mới",
-    "role": "Kỹ sư Nghiên cứu AI & Nhà phát triển Full-stack",
-    "description": "Tôi là Kỹ sư Nghiên cứu AI và Nhà phát triển Full-stack. Tôi đam mê xây dựng các giải pháp công nghệ tiên tiến, từ nghiên cứu lý thuyết đến sản phẩm thực tế. Hiện tại, tôi đang tập trung phát triển Capybara - một nền tảng học tập thông minh.",
-    "cta": "Khám phá dự án",
-    "viewProjects": "Xem dự án",
+    "greeting": "Principal Engineer",
+    "role": "Viết về AI, hệ thống & ý tưởng.",
+    "description": "Tôi xây dựng và viết về những gì tôi học được.",
+    "cta": "Đọc Blog",
+    "viewProjects": "Đọc Blog",
+    "readBlog": "Đọc Blog",
     "contactMe": "Liên hệ",
     "typing": {
       "1": "Kỹ sư Nghiên cứu AI",

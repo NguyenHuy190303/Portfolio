@@ -1,9 +1,10 @@
-import PublicationsSection from '@/components/PublicationsSection';
+import { redirect } from 'next/navigation';
 
-export default function PublicationsPage() {
-  return (
-    <main>
-      <PublicationsSection />
-    </main>
-  );
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function PublicationsPage({ params }: Props) {
+  const { locale } = await params;
+  redirect(`/${locale}/blog`);
 }

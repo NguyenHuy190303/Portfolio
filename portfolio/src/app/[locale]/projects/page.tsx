@@ -1,11 +1,10 @@
-import ProjectsSection from '@/components/ProjectsSection';
-import CaseStudiesSection from '@/components/CaseStudiesSection';
+import { redirect } from 'next/navigation';
 
-export default function ProjectsPage() {
-  return (
-    <main>
-      <ProjectsSection />
-      <CaseStudiesSection />
-    </main>
-  );
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function ProjectsPage({ params }: Props) {
+  const { locale } = await params;
+  redirect(`/${locale}/blog`);
 }

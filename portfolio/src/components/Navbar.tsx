@@ -6,7 +6,7 @@ import { usePathname } from "@/i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useTranslations } from "next-intl";
-import { Menu, X, Home, FolderKanban, FileText, Award, Settings, BookOpen, Search } from "lucide-react";
+import { Menu, X, Home, Settings, BookOpen, Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { SearchModal } from "@/components/blog/SearchModal";
@@ -14,9 +14,6 @@ import { useLocale } from "next-intl";
 
 const linkKeys = [
   { href: "/about", labelKey: "home", icon: Home },
-  { href: "/projects", labelKey: "projects", icon: FolderKanban },
-  { href: "/publications", labelKey: "publications", icon: FileText },
-  { href: "/certificates", labelKey: "certificates", icon: Award },
   { href: "/blog", labelKey: "blog", icon: BookOpen },
 ];
 

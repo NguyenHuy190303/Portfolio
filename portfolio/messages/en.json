@@ -101,11 +101,12 @@
   "hero": {
     "title": "Huy Nguyen",
     "alias": "alias: ",
-    "greeting": "Available for new opportunities",
-    "role": "AI Research Engineer & Full-stack Developer",
-    "description": "I am an AI Research Engineer and Full-stack Developer. I bridge the gap between academic research and practical application, building intelligent systems that solve real-world problems. Currently building Capybara to redefine learning.",
-    "cta": "Explore Projects",
-    "viewProjects": "View Projects",
+    "greeting": "Principal Engineer",
+    "role": "Writing on AI, systems & ideas.",
+    "description": "I build things and write about what I learn.",
+    "cta": "Read Blog",
+    "viewProjects": "Read Blog",
+    "readBlog": "Read Blog",
     "contactMe": "Contact Me",
     "typing": {
       "1": "AI Research Engineer",

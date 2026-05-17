@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function PublicationsRedirect() {
-  redirect('/en/publications');
+  redirect('/en/blog');
 }

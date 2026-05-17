@@ -3,8 +3,9 @@
 import React from "react";
 import { useTranslations } from "next-intl";
 import OptimizedImage from "./OptimizedImage";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
-import { ArrowRight, FileText, Mail } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 
 const GithubIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" aria-hidden="true">
@@ -64,15 +65,9 @@ export default function HeroSection() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <Button size="lg" className="rounded-full px-8 text-base" asChild>
-              <a href="#projects">
-                {t('viewProjects')} <ArrowRight className="ml-2 w-4 h-4" />
-              </a>
-            </Button>
-
-            <Button variant="outline" size="lg" className="rounded-full px-8 text-base bg-background hover:bg-secondary" asChild>
-              <a href="#contact">
-                {t('contactMe')} <Mail className="ml-2 w-4 h-4" />
-              </a>
+              <Link href="/blog">
+                {t('readBlog')} <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
             </Button>
           </div>
 
