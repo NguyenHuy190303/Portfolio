@@ -1,4 +1,4 @@
-export type PostCategory = 'ML/AI' | 'DevOps' | 'Code Tutorial' | 'Personal';
+export type PostCategory = 'ML/AI' | 'DevOps' | 'Code Tutorial' | 'Personal' | 'Interesting Technology';
 
 export interface PostMetadata {
   id: string;

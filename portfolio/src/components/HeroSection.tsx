@@ -32,8 +32,8 @@ export default function HeroSection() {
             <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-full p-1 ring-2 ring-border">
               <div className="w-full h-full rounded-full overflow-hidden relative">
                 <OptimizedImage
-                  src="/Leo-avatar.jpg"
-                  alt="Nguyen Quoc Huy"
+                  src="/images/avatar.jpg"
+                  alt="Leo"
                   fill
                   className="object-cover"
                   priority
@@ -49,7 +49,7 @@ export default function HeroSection() {
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-foreground animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              Nguyen Huy
+              Leo
             </h1>
 
             <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>

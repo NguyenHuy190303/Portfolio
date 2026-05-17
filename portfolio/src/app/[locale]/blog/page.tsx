@@ -6,7 +6,7 @@ import type { PostCategory } from '@/types/notion';
 
 export const revalidate = 3600;
 
-const CATEGORIES: PostCategory[] = ['ML/AI', 'DevOps', 'Code Tutorial', 'Personal'];
+const CATEGORIES: PostCategory[] = ['ML/AI', 'DevOps', 'Code Tutorial', 'Personal', 'Interesting Technology'];
 
 interface BlogPageProps {
   params: Promise<{ locale: string }>;
