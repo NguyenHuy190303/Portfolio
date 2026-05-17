@@ -23,70 +23,60 @@ export default function HeroSection() {
   const t = useTranslations('hero');
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
-      <div className="max-w-[1800px] mx-auto px-12 relative z-10">
-        <div className="flex flex-col items-center text-center space-y-8">
+    <div className="flex flex-col items-start text-left space-y-8 animate-fade-in">
 
-          {/* Profile Image */}
-          <div className="relative animate-fade-in">
-            <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-full p-1 ring-2 ring-border">
-              <div className="w-full h-full rounded-full overflow-hidden relative">
-                <Image
-                  src="/images/avatar.jpg"
-                  alt="Leo"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Title & Role */}
-          <div className="space-y-4 max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium animate-fade-in-up">
-              {t('greeting')}
-            </div>
-
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-foreground animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              Leo
-            </h1>
-
-            <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              {t('role')}
-            </p>
-          </div>
-
-          {/* Description */}
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            {t('description')}
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <Button size="lg" className="rounded-full px-8 text-base" asChild>
-              <Link href="/blog">
-                {t('readBlog')} <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
-            </Button>
-          </div>
-
-          {/* Social Links */}
-          <div className="flex items-center gap-6 mt-8 animate-fade-in-up pt-8 border-t border-border" style={{ animationDelay: '0.5s' }}>
-            <a href="https://github.com/NguyenHuy190303" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors transform hover:scale-110">
-              <GithubIcon />
-            </a>
-            <a href="https://linkedin.com/in/nguyen-huy-1903" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors transform hover:scale-110">
-              <LinkedinIcon />
-            </a>
-            <a href="/Nguyen_Huy_CV.pdf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors transform hover:scale-110 flex items-center gap-2 group">
-              <FileText className="w-6 h-6" />
-              <span className="text-sm font-medium opacity-0 group-hover:opacity-100 -ml-2 group-hover:ml-0 transition-all duration-300">CV</span>
-            </a>
-          </div>
-
+      {/* Profile Image */}
+      <div className="relative w-36 h-36 md:w-48 md:h-48 rounded-full p-1 ring-2 ring-border">
+        <div className="w-full h-full rounded-full overflow-hidden relative">
+          <Image
+            src="/images/avatar.jpg"
+            alt="Leo"
+            fill
+            className="object-cover"
+            priority
+          />
         </div>
       </div>
-    </section>
+
+      {/* Badge + Name + Role */}
+      <div className="space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
+          {t('greeting')}
+        </div>
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground">
+          Leo
+        </h1>
+        <p className="text-xl md:text-2xl text-muted-foreground font-light">
+          {t('role')}
+        </p>
+      </div>
+
+      {/* Description */}
+      <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-sm">
+        {t('description')}
+      </p>
+
+      {/* CTA */}
+      <Button size="lg" className="rounded-full px-8 text-base" asChild>
+        <Link href="/blog">
+          {t('readBlog')} <ArrowRight className="ml-2 w-4 h-4" />
+        </Link>
+      </Button>
+
+      {/* Social Links */}
+      <div className="flex items-center gap-6 pt-6 border-t border-border">
+        <a href="https://github.com/NguyenHuy190303" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors transform hover:scale-110">
+          <GithubIcon />
+        </a>
+        <a href="https://linkedin.com/in/nguyen-huy-1903" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors transform hover:scale-110">
+          <LinkedinIcon />
+        </a>
+        <a href="/Nguyen_Huy_CV.pdf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 group hover:scale-110 transform">
+          <FileText className="w-6 h-6" />
+          <span className="text-sm font-medium opacity-0 group-hover:opacity-100 -ml-2 group-hover:ml-0 transition-all duration-300">CV</span>
+        </a>
+      </div>
+
+    </div>
   );
 }
