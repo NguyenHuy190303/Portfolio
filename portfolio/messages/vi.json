@@ -1,0 +1,184 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "about": "Triết lý",
+    "skills": "Kỹ năng",
+    "experience": "Kinh nghiệm",
+    "projects": "Dự án",
+    "publications": "Nghiên cứu",
+    "certificates": "Chứng chỉ",
+    "contact": "Liên hệ",
+    "blog": "Blog"
+  },
+  "about": {
+    "title": "Triết lý của tôi",
+    "careerGoals": {
+      "title": "Sứ mệnh",
+      "description": "Sứ mệnh của tôi là kết hợp nghiên cứu học thuật với ứng dụng thực tiễn. Tôi luôn tìm kiếm những phương pháp AI mới và áp dụng chúng để tạo ra các sản phẩm có giá trị, giải quyết các vấn đề thực tế của xã hội."
+    },
+    "passion": {
+      "title": "Động lực",
+      "description": "Tôi tin rằng công nghệ phải phục vụ con người. Động lực của tôi đến từ mong muốn đóng góp giá trị cho cộng đồng. Với Capybara, tôi hy vọng giúp mọi người học tập hiệu quả hơn trong thời đại số. Nghiên cứu khoa học là cách tôi phát triển bản thân và đóng góp vào tri thức chung."
+    },
+    "stats": {
+      "title": "Thống kê",
+      "experience": "Năm kinh nghiệm",
+      "projects": "Dự án",
+      "models": "Mô hình AI",
+      "accuracy": "Độ chính xác mô hình"
+    },
+    "education": {
+      "title": "Học vấn",
+      "masters": {
+        "degree": "Thạc sĩ Khoa học Máy tính",
+        "school": "Đại học Khoa học Tự nhiên, ĐHQG-HCM"
+      },
+      "bachelors": {
+        "degree": "Cử nhân Công nghệ Thông tin",
+        "school": "Đại học Khoa học Tự nhiên, ĐHQG-HCM"
+      }
+    },
+    "expertise": {
+      "title": "Chuyên môn AI & ML",
+      "llm": "Mô hình ngôn ngữ lớn (LLMs)",
+      "transformer": "Kiến trúc Transformer",
+      "generative": "Generative AI & GANs",
+      "mlops": "MLOps & Triển khai mô hình",
+      "vector": "Cơ sở dữ liệu Vector & RAG",
+      "agent": "Hệ thống tác tử AI"
+    }
+  },
+  "skills": {
+    "title": "Năng lực chuyên môn",
+    "subtitle": "Các công nghệ và phương pháp tôi sử dụng để kiến tạo các giải pháp thông minh.",
+    "programming": {
+      "title": "💻 Ngôn ngữ & Công cụ"
+    },
+    "aiFrameworks": {
+      "title": "🤖 Thư viện AI/ML"
+    },
+    "devTools": {
+      "title": "🔧 Hệ sinh thái & DevOps"
+    },
+    "expertise": {
+      "title": "🎯 Lĩnh vực chuyên môn"
+    },
+    "additionalTech": "Công nghệ khác"
+  },
+  "projects": {
+    "title": "Các dự án nổi bật",
+    "subtitle": "Một vài dự án tiêu biểu thể hiện chuyên môn kỹ thuật và tác động thực tế.",
+    "capybara": {
+      "name": "Capybara: The Lakehouse & Scraper",
+      "description": "Cốt lõi của nỗ lực kinh doanh và nghiên cứu của tôi. Một hệ sinh thái cho việc học sâu và tập trung, được cung cấp bởi một hệ thống AI đa tác nhân. Thành phần scraper thu thập dữ liệu chất lượng cao để cung cấp cho các mô hình học tập."
+    },
+    "mentalCare": {
+      "name": "Mental-Care-AI",
+      "description": "Một hệ thống hỗ trợ sức khỏe tâm thần do AI điều khiển sử dụng LlamaIndex để cung cấp lời khuyên tâm lý thời gian thực, chẩn đoán tình trạng và theo dõi tiến trình của người dùng."
+    },
+    "fdaMa": {
+      "name": "FDA-MA: Paper & Repository",
+      "description": "Kho lưu trữ chính thức cho một bài báo nghiên cứu, thể hiện khả năng chuyển đổi các khái niệm lý thuyết phức tạp thành mã thực tế, có thể tái tạo."
+    },
+    "dental": {
+      "name": "DENTAL: Image Segmentation",
+      "description": "Các mô hình AI tiên tiến để phân đoạn và phân tích hình ảnh nha khoa, thể hiện chuyên môn về thị giác máy tính cho các ứng dụng y tế chuyên biệt."
+    },
+    "fashion": {
+      "name": "AI Fashion Recommendations",
+      "description": "Một nền tảng đề xuất trang phục thời trang tận dụng AI để cá nhân hóa phong cách cho người dùng."
+    },
+    "creative": {
+      "name": "Creative Motion",
+      "description": "Một nền tảng sáng tạo được thiết kế để khơi dậy sự đổi mới và trí tưởng tượng, được xây dựng bằng các công nghệ hiện đại."
+    }
+  },
+  "caseStudies": {
+    "title": "Nghiên cứu điển hình",
+    "subtitle": "Các phân tích sâu về các dự án và thách thức kỹ thuật.",
+    "readMore": "Đọc thêm"
+  },
+  "hero": {
+    "title": "Nguyễn Huy",
+    "alias": "alias: ",
+    "greeting": "Đang tìm kiếm cơ hội mới",
+    "role": "Kỹ sư Nghiên cứu AI & Nhà phát triển Full-stack",
+    "description": "Tôi là Kỹ sư Nghiên cứu AI và Nhà phát triển Full-stack. Tôi đam mê xây dựng các giải pháp công nghệ tiên tiến, từ nghiên cứu lý thuyết đến sản phẩm thực tế. Hiện tại, tôi đang tập trung phát triển Capybara - một nền tảng học tập thông minh.",
+    "cta": "Khám phá dự án",
+    "viewProjects": "Xem dự án",
+    "contactMe": "Liên hệ",
+    "typing": {
+      "1": "Kỹ sư Nghiên cứu AI",
+      "2": "Doanh nhân công nghệ",
+      "3": "Xây dựng tương lai EdTech",
+      "4": "Đam mê giải quyết vấn đề",
+      "5": "Nhà phát triển Full-stack"
+    },
+    "cv": {
+      "button": "TẢI CV CỦA TÔI"
+    },
+    "schedule": {
+      "button": "LÊN LỊCH HẸN"
+    }
+  },
+  "contact": {
+    "title": "Liên hệ",
+    "info": "Thông tin liên hệ",
+    "email": "Email",
+    "phone": "Điện thoại",
+    "location": "Địa điểm",
+    "send": "Gửi tin nhắn",
+    "name": "Họ tên",
+    "subject": "Tiêu đề",
+    "message": "Nội dung",
+    "send_btn": "Gửi tin nhắn",
+    "direct": {
+      "title": "Liên hệ trực tiếp",
+      "description": "Chọn phương thức liên hệ phù hợp nhất với bạn",
+      "email": "Gửi Email",
+      "linkedin": "LinkedIn",
+      "schedule": "Lên lịch cuộc gọi"
+    }
+  },
+  "publications": {
+    "title": "Nghiên cứu & Công bố",
+    "subtitle": "Các công trình nghiên cứu của tôi, tập trung vào việc thúc đẩy giới hạn của Trí tuệ Nhân tạo.",
+    "status": {
+      "published": "Đã xuất bản",
+      "accepted": "Đã chấp nhận",
+      "under_review": "Đang bình duyệt"
+    },
+    "noPublications": "Chưa có công bố",
+    "comingSoon": "Các công bố mới sẽ sớm được cập nhật."
+  },
+  "experience": {
+    "title": "Kinh nghiệm & Vai trò Lãnh đạo",
+    "subtitle": "Hành trình của tôi trong việc dẫn dắt nghiên cứu và phát triển công nghệ.",
+    "present": "Hiện tại",
+    "responsibilities": "Trách nhiệm chính",
+    "achievements": "Thành tựu nổi bật"
+  },
+  "certificates": {
+    "title": "Chứng chỉ & Thành tựu",
+    "subtitle": "Các chứng chỉ chuyên môn và thành tựu thể hiện năng lực trong AI và công nghệ.",
+    "all": "Tất cả",
+    "viewCredential": "Xem chứng chỉ",
+    "completed": "Hoàn thành",
+    "skillsTech": "Kỹ năng & Công nghệ",
+    "noResults": "Không tìm thấy chứng chỉ",
+    "tryDifferent": "Vui lòng thử một danh mục khác."
+  },
+  "language": {
+    "english": "English",
+    "vietnamese": "Tiếng Việt"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Chia sẻ kiến thức về ML, AI và kỹ thuật.",
+    "allCategories": "Tất cả",
+    "search": "Tìm kiếm",
+    "readMore": "Đọc thêm",
+    "noResults": "Không tìm thấy bài viết.",
+    "onThisPage": "Mục lục"
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "Philosophy",
+    "skills": "Skills",
+    "experience": "Experience",
+    "projects": "Projects",
+    "publications": "Research",
+    "certificates": "Certificates",
+    "contact": "Contact",
+    "blog": "Blog"
+  },
+  "about": {
+    "title": "My Philosophy",
+    "careerGoals": {
+      "title": "Mission",
+      "description": "My mission is to combine academic research with practical application. I strive to discover new AI methodologies and apply them to create impactful products that solve real-world problems."
+    },
+    "passion": {
+      "title": "Motivation",
+      "description": "I believe technology should serve humanity. My motivation comes from a desire to contribute value to the community. With Capybara, I aim to help people learn more effectively in the digital age. Research is my path to personal growth and contributing to collective knowledge."
+    },
+    "stats": {
+      "title": "Statistics",
+      "experience": "Years Experience",
+      "projects": "Projects",
+      "models": "AI Models",
+      "accuracy": "Model Accuracy"
+    },
+    "education": {
+      "title": "Education",
+      "masters": {
+        "degree": "Professional training",
+        "school": "AI Viet Nam, AIO 2024"
+      },
+      "bachelors": {
+        "degree": "Bachelor of Information Technology",
+        "school": "Vaasa University of Applied Sciences, VAMK"
+      }
+    },
+    "expertise": {
+      "title": "AI & ML Expertise",
+      "llm": "Large Language Models (LLMs)",
+      "transformer": "Transformer Architecture",
+      "generative": "Generative AI & GANs",
+      "mlops": "MLOps & Model Deployment",
+      "vector": "Vector Databases & RAG",
+      "agent": "AI Agent Systems"
+    }
+  },
+  "skills": {
+    "title": "Technical Expertise",
+    "subtitle": "The technologies and methodologies I use to architect intelligent solutions.",
+    "programming": {
+      "title": "💻 Languages & Tools"
+    },
+    "aiFrameworks": {
+      "title": "🤖 AI/ML Libraries"
+    },
+    "devTools": {
+      "title": "🔧 Ecosystem & DevOps"
+    },
+    "expertise": {
+      "title": "🎯 Core Expertise"
+    },
+    "additionalTech": "Additional Tech Stack"
+  },
+  "projects": {
+    "title": "Featured Projects",
+    "subtitle": "A small selection of recent projects that showcase technical expertise and real-world impact.",
+    "capybara": {
+      "name": "Capybara: The Lakehouse & Scraper",
+      "description": "The core of my entrepreneurial and research efforts. An ecosystem for deep, focused learning, powered by a multi-agent AI system. The scraper component gathers high-quality data to feed the learning models."
+    },
+    "mentalCare": {
+      "name": "Mental-Care-AI",
+      "description": "An AI-driven mental health support system using the LlamaIndex framework to provide real-time psychological advice, diagnose conditions, and track user progress."
+    },
+    "fdaMa": {
+      "name": "FDA-MA: Paper & Repository",
+      "description": "The official repository for a research paper, demonstrating the ability to translate complex theoretical concepts into practical, reproducible code."
+    },
+    "dental": {
+      "name": "DENTAL: Image Segmentation",
+      "description": "Advanced AI models for dental image segmentation and analysis, showcasing expertise in computer vision for specialized medical applications."
+    },
+    "fashion": {
+      "name": "AI Fashion Recommendations",
+      "description": "A fashion-forward outfit recommendation platform leveraging AI to personalize style for users."
+    },
+    "creative": {
+      "name": "Creative Motion",
+      "description": "A creative platform designed to spark innovation and imagination, built with modern technologies."
+    }
+  },
+  "caseStudies": {
+    "title": "Case Studies",
+    "subtitle": "Deep dives into projects and technical challenges.",
+    "readMore": "Read More"
+  },
+  "hero": {
+    "title": "Huy Nguyen",
+    "alias": "alias: ",
+    "greeting": "Available for new opportunities",
+    "role": "AI Research Engineer & Full-stack Developer",
+    "description": "I am an AI Research Engineer and Full-stack Developer. I bridge the gap between academic research and practical application, building intelligent systems that solve real-world problems. Currently building Capybara to redefine learning.",
+    "cta": "Explore Projects",
+    "viewProjects": "View Projects",
+    "contactMe": "Contact Me",
+    "typing": {
+      "1": "AI Research Engineer",
+      "2": "Tech Entrepreneur",
+      "3": "Building the future of EdTech",
+      "4": "Problem Solver",
+      "5": "Full-stack Developer"
+    },
+    "cv": {
+      "button": "DOWNLOAD CV"
+    },
+    "schedule": {
+      "button": "SCHEDULE A CALL"
+    }
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "info": "Contact Info",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "send": "Send a Message",
+    "name": "Full Name",
+    "subject": "Subject",
+    "message": "Message",
+    "send_btn": "Send Message",
+    "direct": {
+      "title": "Direct Contact",
+      "description": "Choose the most convenient way to reach out.",
+      "email": "Email Me",
+      "linkedin": "LinkedIn",
+      "schedule": "Schedule Call"
+    }
+  },
+  "publications": {
+    "title": "Research & Publications",
+    "subtitle": "My research, focused on pushing the boundaries of Artificial Intelligence.",
+    "status": {
+      "published": "Published",
+      "accepted": "Accepted",
+      "under_review": "Under Review"
+    },
+    "noPublications": "No publications yet.",
+    "comingSoon": "New publications will be updated soon."
+  },
+  "experience": {
+    "title": "Experience & Leadership",
+    "subtitle": "My journey in leading research and developing technology.",
+    "present": "Present",
+    "responsibilities": "Key Responsibilities",
+    "achievements": "Key Achievements"
+  },
+  "certificates": {
+    "title": "Certifications & Achievements",
+    "subtitle": "My professional certifications and achievements demonstrating expertise in AI and technology.",
+    "all": "All",
+    "viewCredential": "View Credential",
+    "completed": "Completed",
+    "skillsTech": "Skills & Technologies",
+    "noResults": "No certificates found.",
+    "tryDifferent": "Please try a different category."
+  },
+  "language": {
+    "english": "English",
+    "vietnamese": "Tiếng Việt"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Thoughts on ML, AI, and engineering.",
+    "allCategories": "All",
+    "search": "Search",
+    "readMore": "Read more",
+    "noResults": "No posts found.",
+    "onThisPage": "On this page"
+  }
+}
