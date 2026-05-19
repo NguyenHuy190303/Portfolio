@@ -1,5 +1,6 @@
 import { Client } from '@notionhq/client';
 import { NotionToMarkdown } from 'notion-to-md';
+import { unstable_cache } from 'next/cache';
 import type { PostMetadata, PostCategory } from '@/types/notion';
 
 function getClient() {
@@ -14,7 +15,7 @@ function getN2M(client: Client) {
 
 const DATABASE_ID = process.env.NOTION_DATABASE_ID ?? '';
 
-export async function getPublishedPosts(locale: 'en' | 'vi'): Promise<PostMetadata[]> {
+async function _getPublishedPosts(locale: 'en' | 'vi'): Promise<PostMetadata[]> {
   const notion = getClient();
   if (!notion || !DATABASE_ID) return [];
 
@@ -38,7 +39,7 @@ export async function getPublishedPosts(locale: 'en' | 'vi'): Promise<PostMetada
   }
 }
 
-export async function getPostBySlug(slug: string): Promise<PostMetadata | null> {
+async function _getPostBySlug(slug: string): Promise<PostMetadata | null> {
   const notion = getClient();
   if (!notion || !DATABASE_ID) return null;
 
@@ -57,7 +58,7 @@ export async function getPostBySlug(slug: string): Promise<PostMetadata | null> 
   }
 }
 
-export async function getPostContent(pageId: string): Promise<string> {
+async function _getPostContent(pageId: string): Promise<string> {
   const notion = getClient();
   if (!notion) return '';
 
@@ -70,7 +71,7 @@ export async function getPostContent(pageId: string): Promise<string> {
   }
 }
 
-export async function getAllTags(): Promise<string[]> {
+async function _getAllTags(): Promise<string[]> {
   const notion = getClient();
   if (!notion || !DATABASE_ID) return [];
 
@@ -93,6 +94,27 @@ export async function getAllTags(): Promise<string[]> {
     return [];
   }
 }
+
+// Cached exports — Notion responses are memoized for 3600s across all requests
+export const getPublishedPosts = unstable_cache(_getPublishedPosts, ['published-posts'], {
+  revalidate: 3600,
+  tags: ['posts'],
+});
+
+export const getPostBySlug = unstable_cache(_getPostBySlug, ['post-by-slug'], {
+  revalidate: 3600,
+  tags: ['posts'],
+});
+
+export const getPostContent = unstable_cache(_getPostContent, ['post-content'], {
+  revalidate: 3600,
+  tags: ['posts'],
+});
+
+export const getAllTags = unstable_cache(_getAllTags, ['all-tags'], {
+  revalidate: 3600,
+  tags: ['posts'],
+});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractMetadata(page: any): PostMetadata {
