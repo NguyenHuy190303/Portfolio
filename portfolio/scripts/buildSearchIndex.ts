@@ -26,7 +26,7 @@ async function buildIndex() {
 
   const response = await notion.databases.query({
     database_id: databaseId,
-    filter: { property: 'Status', status: { equals: 'Published' } },
+    filter: { property: 'Status', select: { equals: 'Published' } },
   });
 
   const entries: SearchEntry[] = response.results

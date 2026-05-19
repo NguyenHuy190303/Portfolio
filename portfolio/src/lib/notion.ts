@@ -23,7 +23,7 @@ export async function getPublishedPosts(locale: 'en' | 'vi'): Promise<PostMetada
       database_id: DATABASE_ID,
       filter: {
         and: [
-          { property: 'Status', status: { equals: 'Published' } },
+          { property: 'Status', select: { equals: 'Published' } },
           { property: 'Language', select: { equals: locale } },
         ],
       },
@@ -77,7 +77,7 @@ export async function getAllTags(): Promise<string[]> {
   try {
     const response = await notion.databases.query({
       database_id: DATABASE_ID,
-      filter: { property: 'Status', status: { equals: 'Published' } },
+      filter: { property: 'Status', select: { equals: 'Published' } },
     });
 
     const tagSet = new Set<string>();

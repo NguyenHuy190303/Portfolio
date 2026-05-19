@@ -1,6 +1,6 @@
 import { getPublishedPosts } from '@/lib/notion';
 
-const BASE_URL = 'https://nguyenhuy190303.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://portfolio-nguyenhuy190303s-projects.vercel.app';
 
 export async function GET() {
   const posts = await getPublishedPosts('en');
