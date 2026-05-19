@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { usePathname } from "@/i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -56,7 +57,13 @@ export default function Navbar() {
               href="/"
               className="font-bold text-xl tracking-tight flex items-center gap-1 group relative z-50"
             >
-              <span className="bg-primary text-primary-foreground w-8 h-8 rounded-lg flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform duration-300 shadow-md shadow-primary/25">H</span>
+              <Image
+                src="/lion-logo.jpg"
+                alt="Leo logo"
+                width={32}
+                height={32}
+                className="rounded-lg group-hover:scale-110 transition-transform duration-300 shadow-md shadow-primary/25 object-cover"
+              />
               <span className="hidden sm:inline-block font-semibold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent ml-2">Leo</span>
             </Link>
 
