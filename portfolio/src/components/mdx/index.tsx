@@ -46,7 +46,10 @@ export const mdxComponents: MDXComponents = {
   a: ({ children, href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a href={href} className="text-primary underline underline-offset-3 hover:text-primary/80 transition-colors" {...props}>{children}</a>
   ),
-  code: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <code className="rounded bg-secondary px-1.5 py-0.5 font-mono text-sm" {...props}>{children}</code>
-  ),
+  code: ({ children, className, ...props }: React.HTMLAttributes<HTMLElement>) => {
+    // Inside a shiki-processed pre block — pass through without inline styles
+    if (className) return <code className={className} {...props}>{children}</code>;
+    // Inline code
+    return <code className="rounded bg-secondary px-1.5 py-0.5 font-mono text-sm text-[0.875em]" {...props}>{children}</code>;
+  },
 };

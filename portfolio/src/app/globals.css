@@ -151,6 +151,21 @@
 }
 
 /* ============================
+   Shiki dual-theme (light/dark class-based)
+   ============================ */
+.shiki,
+.shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* ============================
    Blog layout utilities
    ============================ */
 @layer utilities {
