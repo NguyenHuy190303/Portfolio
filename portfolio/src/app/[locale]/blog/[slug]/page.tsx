@@ -8,6 +8,7 @@ import { GiscusComments } from '@/components/blog/GiscusComments';
 import type { Metadata } from 'next';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
+import { remarkMermaid } from '@/lib/remarkMermaid';
 import rehypeKatex from 'rehype-katex';
 import rehypeShiki from '@shikijs/rehype';
 import 'katex/dist/katex.min.css';
@@ -102,7 +103,7 @@ export default async function BlogPostPage({ params }: Props) {
               components={mdxComponents}
               options={{
                 mdxOptions: {
-                  remarkPlugins: [remarkMath, remarkGfm],
+                  remarkPlugins: [remarkMermaid, remarkMath, remarkGfm],
                   rehypePlugins: [
                     rehypeKatex,
                     [rehypeShiki, {

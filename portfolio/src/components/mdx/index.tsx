@@ -1,9 +1,11 @@
 import { Callout } from './Callout';
 import { CodeBlock } from './CodeBlock';
+import { MermaidDiagram } from './MermaidDiagram';
 import type { MDXComponents } from 'mdx/types';
 
 export const mdxComponents: MDXComponents = {
   Callout,
+  MermaidDiagram,
   pre: ({ children, className, ...props }: React.HTMLAttributes<HTMLPreElement>) => (
     <CodeBlock className={className} {...props}>{children}</CodeBlock>
   ),
