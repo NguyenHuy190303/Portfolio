@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>04 Profiling — DEEP DIVE PYTHON</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "framer-motion": "https://esm.sh/framer-motion@11.18.2?external=react,react-dom",
+    "lucide-react": "https://esm.sh/lucide-react@0.468.0?external=react"
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-type="module" data-presets="react">
+import React, { useState } from "react";
+import { createRoot } from "react-dom/client";
+import { motion, AnimatePresence } from "framer-motion";
+import { Brain, Cpu, HelpCircle, Lightbulb, Sparkles, Timer, Zap } from "lucide-react";
+
+const CURRENT_PAGE = "04-profiling";
+
+const NAV_LINKS = [
+  { href: "index.html", label: "Trang chủ", id: "index" },
+  { href: "01-basics.html", label: "01 Cơ bản", id: "01-basics" },
+  { href: "02-concurrency.html", label: "02 Đồng thời", id: "02-concurrency" },
+  { href: "03-resource-control.html", label: "03 Tài nguyên", id: "03-resource-control" },
+  { href: "04-profiling.html", label: "04 Đở hiệu năng", id: "04-profiling" },
+  { href: "05-fastapi-architecture.html", label: "05 FastAPI", id: "05-fastapi" },
+];
+
+function Nav() {
+  return (
+    <nav className="sticky top-0 z-50 bg-slate-950 border-b border-white/10 shadow-xl">
+      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-3">
+        <a href="index.html" className="font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 text-lg tracking-tight">
+          DEEP DIVE PYTHON
+        </a>
+        <div className="flex gap-1">
+          {NAV_LINKS.slice(1).map(link => (
+            <a key={link.id} href={link.href}
+              className={`px-3 py-1.5 rounded-xl text-sm font-bold transition ${
+                CURRENT_PAGE === link.id
+                  ? "bg-indigo-600 text-white"
+                  : "text-slate-400 hover:text-white hover:bg-white/10"
+              }`}
+            >{link.label}</a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function PageFooterNav({ prev, prevLabel, next, nextLabel }) {
+  return (
+    <div className="border-t border-slate-200 bg-white px-6 py-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-between">
+        {prev ? (
+          <a href={prev} className="flex items-center gap-2 rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 hover:bg-slate-50">
+            <span>{"<-"}</span> {prevLabel}
+          </a>
+        ) : <div />}
+        <a href="index.html" className="text-sm font-bold text-slate-500 hover:text-slate-900">Trang chủ</a>
+        {next ? (
+          <a href={next} className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 font-bold text-white hover:bg-indigo-500">
+            {nextLabel} <span>{"->"}</span>
+          </a>
+        ) : <div />}
+      </div>
+    </div>
+  );
+}
+
+function SectionTitle({ eyebrow, title, children, icon: Icon = Sparkles }) {
+  return (
+    <div className="mx-auto mb-8 max-w-3xl text-center">
+      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm">
+        <Icon size={16} />
+        {eyebrow}
+      </div>
+      <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{title}</h2>
+      {children && <p className="mt-4 text-lg leading-8 text-slate-600">{children}</p>}
+    </div>
+  );
+}
+
+function CodeBlock({ children }) {
+  return (
+    <pre className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-6 text-slate-100 shadow-xl">
+      <code>{children}</code>
+    </pre>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-violet-950 via-slate-950 to-purple-950 px-6 py-20 text-white">
+      <div className="absolute left-10 top-10 h-40 w-40 rounded-full bg-violet-500/20 blur-3xl" />
+      <div className="absolute bottom-10 right-10 h-48 w-48 rounded-full bg-purple-500/20 blur-3xl" />
+      <div className="relative mx-auto max-w-4xl text-center">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold">
+          <span className="text-violet-300">04</span>
+          <span className="text-white/70">·</span>
+          <span>PROFILING</span>
+        </div>
+        <h1 className="text-5xl font-black tracking-tight md:text-7xl">
+          Debug và Profile
+          <span className="block bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+            Async Python
+          </span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-xl leading-9 text-slate-300">
+          Code chậm mà không biết tại sao = chua profiling. App bi hang mà không biết task nàở stuck = chua dùng debug tools. Đây là bộ công cụ.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {["asyncio debug mode", "yappi", "aiomonitor", "task inspection", "blocking detector"].map(tag => (
+            <span key={tag} className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white/80">{tag}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DebugModeSection() {
+  const [tab, setTab] = useState("enable");
+  const tabs = [
+    { id: "enable", label: "Bật debug mode" },
+    { id: "output", label: "Output ví dụ" },
+    { id: "config", label: "Câu hinh" },
+  ];
+  const content = {
+    enable: `import asyncio, logging
+
+# Cach 1: truyền debug=True vàở asyncio.run()
+logging.basicConfig(level=logging.DEBUG)
+asyncio.run(main(), debug=True)
+
+# Cach 2: biến môi trường (không cần sửa code)
+# PYTHONASYNCIODEBUG=1 python app.py
+
+# Cach 3: set trên loop đang chạy
+loop = asyncio.get_event_loop()
+loop.set_debug(True)`,
+    output: `# Khi có blocking call qua lâu:
+DEBUG:asyncio:Executing <Task pending coro=<handler()>>
+  took 0.215 seconds   # <-- CANH BAO: > 0.1s mặc định
+
+# Khi coroutine không được await:
+RuntimeWarning: coroutine 'fetch' was never awaited
+
+# Khi thuc hien lệnh trên loop từ thread khác:
+DEBUG:asyncio:Future <Future pending> exception was never retrieved`,
+    config: `import asyncio
+
+loop = asyncio.get_event_loop()
+loop.set_debug(True)
+
+# Nguong canh bao slow callback (mặc định: 0.1s)
+loop.slow_callback_duration = 0.05  # canh bao nếu > 50ms
+
+# Tat sau khi debug xong (trảnh overhead production)
+loop.set_debug(False)
+
+# Kiểm tra debug mode đang bật không
+print(loop.get_debug())  # True/False`,
+  };
+  return (
+    <section className="px-6 py-16 bg-white">
+      <SectionTitle eyebrow="Tool 1" title="asyncio Debug Mode" icon={Zap}>
+        Bật debug mode để phát hiện: slow callbacks, coroutine không được await, và blocking call chen vàở event loop.
+      </SectionTitle>
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-6 rounded-2xl border border-violet-200 bg-violet-50 p-5">
+          <div className="flex items-start gap-3">
+            <Lightbulb className="mt-0.5 shrink-0 text-violet-600" size={20} />
+            <div>
+              <p className="font-black text-violet-900">Khi nàở dùng</p>
+              <p className="mt-1 leading-7 text-violet-800">Development và staging. KHONG bật trong production tru khi đang debug event cụ thể -- overhead ~10-20% và log rất nhiều.</p>
+            </div>
+          </div>
+        </div>
+        <div className="mb-5 flex gap-2 rounded-2xl border bg-slate-50 p-2">
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className={`rounded-xl px-4 py-2 text-sm font-bold transition ${tab === t.id ? "bg-indigo-600 text-white shadow-sm" : "text-slate-600 hover:bg-white"}`}
+            >{t.label}</button>
+          ))}
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
+            <CodeBlock>{content[tab]}</CodeBlock>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+function YappiSection() {
+  const [tab, setTab] = useState("why");
+  const tabs = [
+    { id: "why", label: "Tại sao không dùng cProfile" },
+    { id: "usage", label: "Dùng yappi" },
+    { id: "output", label: "Đọc output" },
+  ];
+  const content = {
+    why: `# cProfile: đó CPU time trên main thread
+# Với asyncio, nhiều coroutine chạy xen kẽ trên 1 thread
+# -> cProfile không phân biệt được coroutine nàở toc ky gioi gian
+
+import cProfile, asyncio
+
+# SAI: cProfile thấy toan bo là 1 "function" async main
+cProfile.run("asyncio.run(main())")
+# Output: chỉ thấy asyncio internals, không thấy coroutine cụ thể
+
+# DUNG: yappi hieu cooperative multitasking
+# pip install yappi`,
+    usage: `import yappi, asyncio
+
+# wall time = thời gian thuc (bao gom ca thời gian await)
+# cpu time = chỉ tinh lúc đang chạy thật sự
+yappi.set_clock_type("wall")
+yappi.start()
+
+await asyncio.gather(
+    call_llm("case-1"),
+    call_llm("case-2"),
+    fetch_db("query-1"),
+)
+
+yappi.stop()
+
+# Lay stats và sort theo tổng thời gian
+func_stats = yappi.get_func_stats()
+func_stats.sort("ttot")
+func_stats.print_all()
+
+# Luu để xem trên kcachegrind / qcachegrind
+func_stats.save("callgrind.out", type="callgrind")
+
+# Reset giua các lần đó
+yappi.clear_stats()`,
+    output: `# Output ví dụ sau khi sort theo ttot (total time):
+#
+# name                          ncall  ttot   tsub
+# call_llm                      200    45.23  0.12   <- bottleneck!
+# fetch_db                      200    8.34   0.08
+# asyncio.sleep                 400    53.57  0.00
+# httpx._client.AsyncClient.send 200   44.98  0.23
+#
+# Gìải thích:
+# ttot = tổng thời gian wall clock (bao gom await)
+# tsub = thời gian chạy thuc su (tru gọi hàm con)
+# -> call_llm mất 45s wall time nhưng chỉ 0.12s chạy thật
+# -> phan con lại là chờ network (dùng async là hợp lý)`,
+  };
+  return (
+    <section className="bg-slate-50 px-6 py-16">
+      <SectionTitle eyebrow="Tool 2" title="yappi — Async-Aware Profiler" icon={Cpu}>
+        cProfile không hieu cooperative multitasking. yappi đó wall time per coroutine -- thấy chính xác cái gì mất nhiều thời gian nhất.
+      </SectionTitle>
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-5 flex gap-2 rounded-2xl border bg-white p-2">
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className={`rounded-xl px-4 py-2 text-sm font-bold transition ${tab === t.id ? "bg-indigo-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"}`}
+            >{t.label}</button>
+          ))}
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
+            <CodeBlock>{content[tab]}</CodeBlock>
+          </motion.div>
+        </AnimatePresence>
+        <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900">
+          <b>pip install yappi</b> -- yappi là extension C, rất nhẹ. Overhead &lt; 5% trong hầu hết trường hợp.
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AiomonitorSection() {
+  return (
+    <section className="px-6 py-16 bg-white">
+      <SectionTitle eyebrow="Tool 3" title="aiomonitor — Live Task Inspector" icon={Brain}>
+        App bi hang, không biết task nàở đang stuck. Telnet vàở process đang chạy, xem stack trace tung task, cancel nếu cần.
+      </SectionTitle>
+      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+            <h3 className="mb-4 font-black text-slate-950">Setup trong app</h3>
+            <CodeBlock>{`import asyncio
+import aiomonitor  # pip install aiomonitor
+
+async def main():
+    loop = asyncio.get_running_loop()
+    # Monitor listen trên localhost:50101
+    with aiomonitor.start_monitor(loop):
+        await your_application()
+
+asyncio.run(main())`}</CodeBlock>
+          </div>
+          <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+            <h3 className="mb-4 font-black text-slate-950">Ket noi và kiểm tra</h3>
+            <CodeBlock>{`# Trong terminal riêng khi app đang chạy:
+telnet localhost 50101
+
+# Lenh có ban:
+> ps          # list tất cả tasks đang chạy
+> where       # stack trace của mỗi task
+> cancel <id> # cancel 1 task cụ thể
+> signal SIGINT  # gửi signal
+
+# Output ví dụ của "where":
+# Task-1: coro=<fetch_llm() running at api.py:42>
+#   File "api.py", line 42, in fetch_llm
+#     response = await client.post(url)
+# -> task này đang doi network response`}</CodeBlock>
+          </div>
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="rounded-[2rem] border border-violet-200 bg-violet-50 p-5">
+            <h3 className="mb-3 font-black text-violet-900">Use cases thực tế</h3>
+            <div className="space-y-3">
+              {[
+                { title: "App bi deadlock", desc: "Dùng 'where' để thấy task nàở đang chờ task nàở -- phát hiện circular wait" },
+                { title: "Memory leak", desc: "Dùng 'ps' để dem so task -- nếu tang theo thời gian là có task leak" },
+                { title: "Slow request", desc: "Dùng 'where' khi request chậm bất thường để biết đang await gì" },
+                { title: "Debug production", desc: "Overhead rất thap -- có thể bật trong production để debug khi cần" },
+              ].map(item => (
+                <div key={item.title} className="rounded-2xl bg-white p-3 shadow-sm">
+                  <p className="font-bold text-violet-900">{item.title}</p>
+                  <p className="mt-1 text-sm leading-6 text-violet-800">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-[2rem] border bg-slate-950 p-5 text-white">
+            <p className="text-sm font-bold uppercase tracking-widest text-cyan-300">Thấy the đơn gìản hơn</p>
+            <CodeBlock>{`# Không cần install gì thêm:
+import asyncio
+
+async def dump_all_tasks():
+    for task in asyncio.all_tasks():
+        print(f"Task: {task.get_name()}")
+        if not task.done():
+            task.print_stack()
+
+# Gọi khi cần debug:
+asyncio.create_task(dump_all_tasks())`}</CodeBlock>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BlockingDetectorSection() {
+  return (
+    <section className="bg-slate-50 px-6 py-16">
+      <SectionTitle eyebrow="Tool 4" title="Tự động phát hiện blocking calls" icon={Timer}>
+        Decorator này canh bao khi một async function chỉem event loop qua lâu -- không cần profiler, chỉ cần thêm 1 dòng.
+      </SectionTitle>
+      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+        <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+          <h3 className="mb-4 font-black text-slate-950">Decorator detect_blocking</h3>
+          <CodeBlock>{`import asyncio, functools, logging
+
+logger = logging.getLogger(__name__)
+
+def detect_blocking(threshold_ms: float = 50):
+    """Warn nếu async function chỉem event loop > threshold_ms."""
+    def decorator(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            loop = asyncio.get_running_loop()
+            t0 = loop.time()
+            result = await func(*args, **kwargs)
+            elapsed = (loop.time() - t0) * 1000
+            if elapsed > threshold_ms:
+                logger.warning(
+                    f"[BLOCKING] {func.__name__} "
+                    f"took {elapsed:.1f}ms "
+                    f"(threshold: {threshold_ms}ms)"
+                )
+            return result
+        return wrapper
+    return decorator`}</CodeBlock>
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+            <h3 className="mb-4 font-black text-slate-950">Ví dụ su dùng</h3>
+            <CodeBlock>{`# Danh dau hàm nghi ngo:
+@detect_blocking(threshold_ms=100)
+async def handler(request):
+    # Bug: requests.get là blocking!
+    data = requests.get(url).json()
+    return data
+# -> WARNING: handler took 234.5ms (threshold: 100ms)
+
+# Dùng chờ toan bo endpoint trong FastAPI:
+from fastapi import FastAPI
+app = FastAPI()
+
+@app.middleware("http")
+async def detect_slow_handlers(request, call_next):
+    import time
+    start = time.monotonic()
+    response = await call_next(request)
+    elapsed = (time.monotonic() - start) * 1000
+    if elapsed > 200:
+        logger.warning(f"Slow: {request.url} {elapsed:.0f}ms")
+    return response`}</CodeBlock>
+          </div>
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900">
+            <b>Luu y:</b> elapsed time đó ở đây là wall time ke từ lúc hàm bắt đầu den lúc return. Nếu có nhiều await bên trong, phan lớn là thời gian chờ I/Ở -- không phải blocking. Chỉ canh bao khi có <b>sync blocking call</b> thật sự như requests.get, time.sleep, open() với file lớn.
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SigUsr1Section() {
+  return (
+    <section className="px-6 py-16 bg-white">
+      <SectionTitle eyebrow="Tool 5" title="SIGUSR1 Task Dump — Debug On-Demand" icon={HelpCircle}>
+        Dump trạng thái task bất cứ lúc nàở bang kill -USR1, không cần restart app, không ảnh hưởng request đang chạy.
+      </SectionTitle>
+      <div className="mx-auto max-w-4xl">
+        <CodeBlock>{`import asyncio, signal, logging, sys, os
+
+logger = logging.getLogger(__name__)
+
+async def dump_tasks():
+    """In stack trace của tất cả tasks đang chạy."""
+    tasks = asyncio.all_tasks()
+    logger.info(f"=== Task Dump: {len(tasks)} tasks ===")
+    for i, task in enumerate(tasks):
+        logger.info(f"\\nTask {i+1}: {task.get_name()}")
+        logger.info(f"  Done: {task.done()}")
+        if not task.done():
+            # In stack trace của task
+            frames = []
+            coro = task.get_coro()
+            while coro is not None and hasattr(coro, 'cr_frame') and coro.cr_frame is not None:
+                frame = coro.cr_frame
+                frames.append(
+                    f"  {frame.f_code.co_filename}:{frame.f_lineno} "
+                    f"in {frame.f_code.co_name}"
+                )
+                coro = coro.cr_await if hasattr(coro, 'cr_await') else None
+            logger.info("\\n".join(frames))
+
+def setup_debug_signal():
+    """Đang ky SIGUSR1 handler để dump tasks theo yeu câu."""
+    def handler(signum, frame):
+        asyncio.create_task(dump_tasks())
+
+    # Chỉ hoạt động trên Unix/macOS
+    if sys.platform != "win32":
+        signal.signal(signal.SIGUSR1, handler)
+        logger.info(f"Debug handler ready. Run: kill -USR1 {os.getpid()}")
+
+# Gọi khi khởi động app:
+setup_debug_signal()
+
+# Khi cần debug:
+# kill -USR1 <pid>   <- Unix/macOS
+# -> log ra stack trace của mỗi task ngay lập tức`}</CodeBlock>
+        <div className="mt-4 rounded-2xl border border-violet-200 bg-violet-50 p-4 text-violet-900">
+          <b>Pattern này rất hữu ích trong production:</b> Khi app có request bi hang (timeout nhưng process vẫn chạy), kill -USR1 để thấy đang task nàở đang await gì mà không cần restart hay attach debugger.
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ToolComparisonSection() {
+  const tools = [
+    {
+      name: "asyncio debug mode",
+      install: "Built-in",
+      when: "Dev/staging: phát hiện blocking call, coroutine không await",
+      overhead: "~10-20%",
+      output: "Log warnings",
+      production: false,
+    },
+    {
+      name: "cProfile",
+      install: "Built-in",
+      when: "CPU profiling sync code — KHONG dùng chờ async",
+      overhead: "~20%",
+      output: "Call stats",
+      production: false,
+    },
+    {
+      name: "yappi",
+      install: "pip install yappi",
+      when: "CPU/wall profiling async — thấy rõ coroutine nàở chậm",
+      overhead: "<5%",
+      output: "Per-coroutine stats, callgrind",
+      production: false,
+    },
+    {
+      name: "tracemalloc",
+      install: "Built-in",
+      when: "Hunting memory leak — xem ai allocate nhiều nhất",
+      overhead: "~30%",
+      output: "Allocation snapshots",
+      production: false,
+    },
+    {
+      name: "aiomonitor",
+      install: "pip install aiomonitor",
+      when: "Live inspection app đang chạy — xem task, stack, cancel",
+      overhead: "~0%",
+      output: "Interactive telnet CLI",
+      production: true,
+    },
+    {
+      name: "asyncio.all_tasks()",
+      install: "Built-in",
+      when: "Manual task inspection, dem task leak, debug ad-hoc",
+      overhead: "~0%",
+      output: "Task list + stack",
+      production: true,
+    },
+    {
+      name: "SIGUSR1 dump",
+      install: "Built-in (Unix)",
+      when: "Production: dump tasks on-demand, không restart",
+      overhead: "~0%",
+      output: "Log file",
+      production: true,
+    },
+  ];
+
+  return (
+    <section className="bg-slate-950 px-6 py-16 text-white">
+      <SectionTitle eyebrow="So sanh" title="Chờn tool nàở?" icon={Sparkles}>
+        <span className="text-slate-300">Mỗi tool gìải quyết một vẫn để cụ thể. Dùng nhầm tool = mất thời gian.</span>
+      </SectionTitle>
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[900px] border-collapse text-left text-sm">
+            <thead className="bg-white/10 text-slate-200">
+              <tr>
+                <th className="p-4 font-black">Tool</th>
+                <th className="p-4 font-black">Install</th>
+                <th className="p-4 font-black">Dùng khi nàở</th>
+                <th className="p-4 font-black">Overhead</th>
+                <th className="p-4 font-black">Output</th>
+                <th className="p-4 font-black">Production?</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tools.map((t, i) => (
+                <tr key={t.name} className={i % 2 ? "bg-white/5" : "bg-white/0"}>
+                  <td className="p-4 font-black text-white">{t.name}</td>
+                  <td className="p-4 font-mono text-slate-400 text-xs">{t.install}</td>
+                  <td className="p-4 text-slate-300">{t.when}</td>
+                  <td className="p-4 text-slate-400">{t.overhead}</td>
+                  <td className="p-4 text-slate-400">{t.output}</td>
+                  <td className="p-4">
+                    <span className={`rounded-xl px-2 py-1 text-xs font-bold ${t.production ? "bg-emerald-500/20 text-emerald-300" : "bg-slate-500/20 text-slate-400"}`}>
+                      {t.production ? "OK" : "Dev only"}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PageRoot() {
+  return (
+    <main className="min-h-screen bg-white font-sans text-slate-900">
+      <Nav />
+      <Hero />
+      <DebugModeSection />
+      <YappiSection />
+      <AiomonitorSection />
+      <BlockingDetectorSection />
+      <SigUsr1Section />
+      <ToolComparisonSection />
+      <PageFooterNav
+        prev="03-resource-control.html"
+        prevLabel="03 Resources"
+        next="05-fastapi-architecture.html"
+        nextLabel="05 FastAPI"
+      />
+    </main>
+  );
+}
+
+createRoot(document.getElementById("root")).render(<PageRoot />);
+</script>
+</body>
+</html>

@@ -10,12 +10,13 @@ export const sourceSerif = Source_Serif_4({
   subsets: ['latin', 'vietnamese'],
   variable: '--font-source-serif',
   display: 'swap',
-  style: ['normal', 'italic'],
-  weight: ['300', '400', '600', '700'],
+  weight: ['400', '700'],
+  preload: false,
 });
 
 export const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-jetbrains-mono',
   display: 'swap',
+  preload: false,
 });

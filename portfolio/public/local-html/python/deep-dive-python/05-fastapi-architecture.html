@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>05 FastAPI — DEEP DIVE PYTHON</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "framer-motion": "https://esm.sh/framer-motion@11.18.2?external=react,react-dom",
+    "lucide-react": "https://esm.sh/lucide-react@0.468.0?external=react"
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-type="module" data-presets="react">
+import React, { useState } from "react";
+import { createRoot } from "react-dom/client";
+import { motion, AnimatePresence } from "framer-motion";
+import { Cpu, Database, GitBranch, HelpCircle, Layers, Lightbulb, Server, Sparkles, Timer, Zap } from "lucide-react";
+
+const CURRENT_PAGE = "05-fastapi";
+
+const NAV_LINKS = [
+  { href: "index.html", label: "Trang chủ", id: "index" },
+  { href: "01-basics.html", label: "01 Cơ bản", id: "01-basics" },
+  { href: "02-concurrency.html", label: "02 Đồng thời", id: "02-concurrency" },
+  { href: "03-resource-control.html", label: "03 Tài nguyên", id: "03-resource-control" },
+  { href: "04-profiling.html", label: "04 Đở hiệu năng", id: "04-profiling" },
+  { href: "05-fastapi-architecture.html", label: "05 FastAPI", id: "05-fastapi" },
+];
+
+function Nav() {
+  return (
+    <nav className="sticky top-0 z-50 bg-slate-950 border-b border-white/10 shadow-xl">
+      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-3">
+        <a href="index.html" className="font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 text-lg tracking-tight">
+          DEEP DIVE PYTHON
+        </a>
+        <div className="flex gap-1">
+          {NAV_LINKS.slice(1).map(link => (
+            <a key={link.id} href={link.href}
+              className={`px-3 py-1.5 rounded-xl text-sm font-bold transition ${
+                CURRENT_PAGE === link.id
+                  ? "bg-indigo-600 text-white"
+                  : "text-slate-400 hover:text-white hover:bg-white/10"
+              }`}
+            >{link.label}</a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function PageFooterNav({ prev, prevLabel, next, nextLabel }) {
+  return (
+    <div className="border-t border-slate-200 bg-white px-6 py-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-between">
+        {prev ? (
+          <a href={prev} className="flex items-center gap-2 rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 hover:bg-slate-50">
+            <span>←</span> {prevLabel}
+          </a>
+        ) : <div />}
+        <a href="index.html" className="text-sm font-bold text-slate-500 hover:text-slate-900">Trang chủ</a>
+        {next ? (
+          <a href={next} className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 font-bold text-white hover:bg-indigo-500">
+            {nextLabel} <span>→</span>
+          </a>
+        ) : <div />}
+      </div>
+    </div>
+  );
+}
+
+function SectionTitle({ eyebrow, title, children, icon: Icon = Sparkles }) {
+  return (
+    <div className="mx-auto mb-8 max-w-3xl text-center">
+      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm">
+        <Icon size={16} />
+        {eyebrow}
+      </div>
+      <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{title}</h2>
+      {children && <p className="mt-4 text-lg leading-8 text-slate-600">{children}</p>}
+    </div>
+  );
+}
+
+function CodeBlock({ children }) {
+  return (
+    <pre className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-6 text-slate-100 shadow-xl">
+      <code>{children}</code>
+    </pre>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-slate-950 to-teal-950 px-6 py-20 text-white">
+      <div className="absolute left-10 top-10 h-40 w-40 rounded-full bg-emerald-500/20 blur-3xl" />
+      <div className="absolute bottom-10 right-10 h-48 w-48 rounded-full bg-teal-500/20 blur-3xl" />
+      <div className="relative mx-auto max-w-4xl text-center">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold">
+          <span className="text-emerald-300">05</span>
+          <span className="text-white/70">·</span>
+          <span>FASTAPI ARCHITECTURE</span>
+        </div>
+        <h1 className="text-5xl font-black tracking-tight md:text-7xl">
+          Real-World FastAPI
+          <span className="block bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+            Production Patterns
+          </span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-xl leading-9 text-slate-300">
+          Không phải tutorial CRUD. Đây là patterns khi app bắt đầu xử lý queue, background jobs, rate limiting, worker pool — và cach trảnh 5 lỗi async phổ biến nhất trong FastAPI.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {["lifespan", "BackgroundTasks", "WorkerPool", "Dependency Injection", "graceful shutdown", "top 5 lỗi"].map(tag => (
+            <span key={tag} className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white/80">{tag}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LifespanSection() {
+  const [tab, setTab] = useState("code");
+  const tabs = [
+    { id: "code", label: "Code" },
+    { id: "why", label: "Tại sao dùng lifespan" },
+  ];
+  const code = `from contextlib import asynccontextmanager
+from fastapi import FastAPI
+import httpx, asyncio
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # === STARTUP: khoi tạở resources một lần ===
+    app.state.http_client = httpx.AsyncClient(
+        limits=httpx.Limits(
+            max_connections=100,
+            max_keepalive_connections=20,
+            keepalive_expiry=30,
+        ),
+        timeout=httpx.Timeout(connect=5, read=30, write=10),
+    )
+    app.state.llm_sem = asyncio.Semaphore(20)   # max 20 concurrent LLM calls
+    app.state.db_pool = await create_db_pool()
+    print("App started, resources ready")
+
+    yield  # <-- app đang chạy
+
+    # === SHUTDOWN: cleanup gracefully ===
+    await app.state.http_client.aclose()
+    await app.state.db_pool.close()
+    print("App shutdown, resources released")
+
+app = FastAPI(lifespan=lifespan)
+
+# Dùng trong endpoint:
+@app.post("/eval")
+async def evaluate(request: Request, case: EvalCase):
+    async with request.app.state.llm_sem:
+        return await call_llm(
+            request.app.state.http_client,
+            case
+        )`;
+  const why = `# Truoc đây (deprecated): @app.on_event("startup")
+@app.on_event("startup")
+async def startup():
+    app.state.client = httpx.AsyncClient()  # Vẫn hoạt động, nhưng deprecated
+
+# Tại sao lifespan tốt hơn:
+# 1. Startup và shutdown logic trong cung một chờ -> để đọc hơn
+# 2. Được test với TestClient chính xác hơn
+# 3. Được FastAPI recommend từ version 0.93+
+
+# Tại sao dùng app.state thấy vi global variable:
+# 1. Global var: kho test (mock state), race condition khi test parallel
+# 2. app.state: mỗi TestClient instance có state riêng -> test isolation
+# 3. app.state: rõ ràng ai so huu resource này`;
+  const content = { code, why };
+  return (
+    <section className="px-6 py-16 bg-white">
+      <SectionTitle eyebrow="Pattern 1" title="Lifespan — Quan lý Resources Dùng Cach" icon={Zap}>
+        Khoi tạở httpx.AsyncClient, Semaphore, db pool một lần khi startup. Không tạở mới mỗi request — đó là bug phổ biến nhất.
+      </SectionTitle>
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-5 flex gap-2 rounded-2xl border bg-slate-50 p-2">
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className={`rounded-xl px-4 py-2 text-sm font-bold transition ${tab === t.id ? "bg-indigo-600 text-white shadow-sm" : "text-slate-600 hover:bg-white"}`}
+            >{t.label}</button>
+          ))}
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
+            <CodeBlock>{content[tab]}</CodeBlock>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+function BackgroundTasksSection() {
+  const decisions = [
+    {
+      option: "BackgroundTasks (built-in)",
+      when: "Job nhanh < 30s, không cần retry, không scale worker",
+      pro: "Don gian, không cần setup thêm, chạy sau khi response được gửi",
+      con: "Không retry khi fail, mất job nếu process crash, không scale qua worker",
+      color: "border-blue-200 bg-blue-50",
+      tag: "bg-blue-600",
+    },
+    {
+      option: "asyncio.create_task()",
+      when: "Job phu trong cung async context, muon concurrent với request",
+      pro: "Nhanh, không overhead, có thể await để biết kết quả",
+      con: "Mất khi process crash, kho monitor, không retry",
+      color: "border-indigo-200 bg-indigo-50",
+      tag: "bg-indigo-600",
+    },
+    {
+      option: "Celery + Redis/RabbitMQ",
+      when: "Job dài > 30s, cần retry, scale worker, monitor dashboard",
+      pro: "Retry tự động, distribute nhiều máy, Flower dashboard",
+      con: "Setup phức tạp, cần broker (Redis/RabbitMQ), latency cao hơn",
+      color: "border-emerald-200 bg-emerald-50",
+      tag: "bg-emerald-600",
+    },
+  ];
+  return (
+    <section className="bg-slate-50 px-6 py-16">
+      <SectionTitle eyebrow="Pattern 2" title="BackgroundTasks vs Celery — Chờn Cái Nàở" icon={Layers}>
+        Ba lua chọn chỉnh chờ background job. Chờn sai = mất job, không retry được, hoặc over-engineer.
+      </SectionTitle>
+      <div className="mx-auto max-w-5xl">
+        <div className="grid gap-4 mb-8">
+          {decisions.map(d => (
+            <div key={d.option} className={`rounded-[2rem] border p-5 ${d.color}`}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className={`rounded-xl px-3 py-1 text-xs font-black text-white ${d.tag}`}>{d.option}</span>
+                  </div>
+                  <p className="font-bold text-slate-800 mb-1">Dùng khi: {d.when}</p>
+                  <p className="text-sm text-slate-700"><b>Pro:</b> {d.pro}</p>
+                  <p className="text-sm text-slate-700"><b>Con:</b> {d.con}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <CodeBlock>{`from fastapi import FastAPI, BackgroundTasks
+import asyncio
+
+app = FastAPI()
+
+# PATTERN 1: BackgroundTasks — fire-and-forget
+@app.post("/eval/fire-forget")
+async def eval_fire_forget(case: EvalCase, bg: BackgroundTasks):
+    job_id = generate_id()
+    bg.add_task(run_eval_and_save, job_id, case)
+    return {"job_id": job_id}  # response tra ve NGAY, bg chạy sau
+
+# PATTERN 2: Celery chờ production
+from celery import Celery
+celery = Celery(broker="redis://localhost")
+
+@celery.task(bind=True, max_retries=3)
+def eval_task(self, case_dict):
+    try:
+        return run_eval(case_dict)
+    except Exception as exc:
+        raise self.retry(exc=exc, countdown=2**self.request.retries)
+
+@app.post("/eval/queue")
+async def eval_queue(case: EvalCase):
+    job_id = generate_id()
+    # to_thread vi celery.delay() là sync
+    await asyncio.to_thread(eval_task.delay, job_id, case.dict())
+    return {"job_id": job_id, "status": "queued"}`}</CodeBlock>
+      </div>
+    </section>
+  );
+}
+
+function WorkerPoolSection() {
+  return (
+    <section className="px-6 py-16 bg-white">
+      <SectionTitle eyebrow="Pattern 3" title="WorkerPool — asyncio.Queue Với Backpressure" icon={Database}>
+        Khi cần process queue lien tuc, kiểm soát concurrency, và graceful shutdown — không muốn overhead Celery.
+      </SectionTitle>
+      <div className="mx-auto max-w-4xl">
+        <CodeBlock>{`import asyncio
+from typing import Any, Callable, Awaitable
+import logging
+
+logger = logging.getLogger(__name__)
+
+class AsyncWorkerPool:
+    """
+    Worker pool dua trên asyncio.Queue.
+    - Backpressure: producer bi block khi queue đây
+    - Graceful shutdown: chờ het queue rồi mới stop
+    - Stats: theo dõi processed/errors
+    """
+    def __init__(self, n_workers: int = 10, queue_size: int = 1000):
+        self.queue: asyncio.Queue = asyncio.Queue(maxsize=queue_size)
+        self.n_workers = n_workers
+        self._workers: list[asyncio.Task] = []
+        self._processed = 0
+        self._errors = 0
+        self._running = False
+
+    async def start(self) -> None:
+        self._running = True
+        self._workers = [
+            asyncio.create_task(
+                self._worker(i),
+                name=f"worker-{i}"
+            )
+            for i in range(self.n_workers)
+        ]
+        logger.info(f"WorkerPool started: {self.n_workers} workers")
+
+    async def submit(self, coro_fn: Callable, *args, **kwargs) -> None:
+        """Submit job. Block nếu queue đây (backpressure)."""
+        await self.queue.put((coro_fn, args, kwargs))
+
+    async def _worker(self, worker_id: int) -> None:
+        while self._running or not self.queue.empty():
+            try:
+                item = await asyncio.wait_for(
+                    self.queue.get(),
+                    timeout=1.0
+                )
+            except asyncio.TimeoutError:
+                continue
+            coro_fn, args, kwargs = item
+            try:
+                await coro_fn(*args, **kwargs)
+                self._processed += 1
+            except Exception as e:
+                self._errors += 1
+                logger.error(f"worker-{worker_id} error: {e}")
+            finally:
+                self.queue.task_done()
+
+    async def shutdown(self, timeout: float = 30.0) -> None:
+        """Doi het queue rồi dùng. Timeout sau 'timeout' giay."""
+        self._running = False
+        try:
+            await asyncio.wait_for(self.queue.join(), timeout=timeout)
+        except asyncio.TimeoutError:
+            logger.warning(f"Shutdown timeout after {timeout}s")
+        for w in self._workers:
+            w.cancel()
+        await asyncio.gather(*self._workers, return_exceptions=True)
+        logger.info(f"WorkerPool stopped. Processed: {self._processed}, Errors: {self._errors}")
+
+    def stats(self) -> dict:
+        return {
+            "queue_size": self.queue.qsize(),
+            "processed": self._processed,
+            "errors": self._errors,
+            "workers": self.n_workers,
+        }
+
+# Dùng với FastAPI:
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.pool = AsyncWorkerPool(n_workers=10, queue_size=500)
+    await app.state.pool.start()
+    yield
+    await app.state.pool.shutdown()
+
+@app.post("/eval/pool")
+async def eval_via_pool(request: Request, case: EvalCase):
+    await request.app.state.pool.submit(run_eval, case)
+    return {"status": "queued"}
+
+@app.get("/pool/stats")
+async def pool_stats(request: Request):
+    return request.app.state.pool.stats()`}</CodeBlock>
+      </div>
+    </section>
+  );
+}
+
+function DependencySection() {
+  return (
+    <section className="bg-slate-50 px-6 py-16">
+      <SectionTitle eyebrow="Pattern 4" title="Async Dependency Injection" icon={GitBranch}>
+        FastAPI Depends() ho tro async generator — khoi tạở và cleanup resource tới mỗi request một cach sạch sẽ.
+      </SectionTitle>
+      <div className="mx-auto max-w-4xl">
+        <CodeBlock>{`from fastapi import FastAPI, Depends, Request
+from typing import Annotated, AsyncGenerator
+import asyncpg, httpx
+
+app = FastAPI()
+
+# === DEPENDENCY: DB connection từ pool ===
+async def get_db(request: Request) -> AsyncGenerator[asyncpg.Connection, None]:
+    """Lay connection từ pool, tra lại sau khi xong."""
+    conn = await request.app.state.db_pool.acquire()
+    try:
+        yield conn
+    finally:
+        await request.app.state.db_pool.release(conn)
+
+# === DEPENDENCY: HTTP client từ app.state ===
+async def get_http_client(request: Request) -> httpx.AsyncClient:
+    return request.app.state.http_client
+
+# === DEPENDENCY: Kiểm tra auth ===
+async def require_api_key(x_api_key: str = Header(None)) -> str:
+    if x_api_key != settings.API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    return x_api_key
+
+# === Type aliases chờ sạch hơn ===
+DbConn = Annotated[asyncpg.Connection, Depends(get_db)]
+HttpClient = Annotated[httpx.AsyncClient, Depends(get_http_client)]
+AuthKey = Annotated[str, Depends(require_api_key)]
+
+# === Endpoint dùng dependency ===
+@app.post("/eval")
+async def evaluate(
+    case: EvalCase,
+    db: DbConn,          # tự động acquire + release
+    client: HttpClient,  # tự động lay từ app.state
+    _: AuthKey,          # tự động check auth
+):
+    # Gọi LLM
+    llm_result = await call_llm(client, case)
+    # Luu vàở DB
+    await db.execute(
+        "INSERT INTO results(case_id, result) VALUES($1, $2)",
+        case.id, llm_result
+    )
+    return llm_result`}</CodeBlock>
+        <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
+          <b>Lỗi ich của Depends():</b> Mỗi dependency được inject và cleanup tự động. Nếu endpoint raise exception, FastAPI vẫn chạy finally block để trả connection về pool. Cũng dễ mock trong test: ghi đè dependency.
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function GracefulShutdownSection() {
+  return (
+    <section className="px-6 py-16 bg-white">
+      <SectionTitle eyebrow="Pattern 5" title="Graceful Shutdown và Health Check" icon={Server}>
+        Load balầncer cần biết app còn sống không. SIGTERM từ Kubernetes/Docker cần được xử lý để không cắt request đang xử lý.
+      </SectionTitle>
+      <div className="mx-auto max-w-4xl">
+        <CodeBlock>{`import asyncio, signal, time
+from fastapi import FastAPI, Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class ShutdownMiddleware(BaseHTTPMiddleware):
+    """Track active requests, từ chời request mới khi đang shutdown."""
+    def __init__(self, app):
+        super().__init__(app)
+        self._active = 0
+        self._shutting_down = False
+
+    async def dispatch(self, request: Request, call_next):
+        if self._shutting_down:
+            return Response(
+                status_code=503,
+                content="Server shutting down"
+            )
+        self._active += 1
+        try:
+            return await call_next(request)
+        finally:
+            self._active -= 1
+
+    async def shutdown(self, timeout: float = 30.0):
+        self._shutting_down = True
+        deadline = asyncio.get_event_loop().time() + timeout
+        while self._active > 0:
+            if asyncio.get_event_loop().time() > deadline:
+                break
+            await asyncio.sleep(0.1)
+
+shutdown_middleware = ShutdownMiddleware(None)  # init sau
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    # SIGTERM handler: drain requests trước khi đóng
+    await shutdown_middleware.shutdown(timeout=30)
+
+app = FastAPI(lifespan=lifespan)
+app.add_middleware(ShutdownMiddleware)
+
+# Health check chờ load balầncer / Kubernetes
+@app.get("/health")
+async def health(request: Request):
+    pool_stats = request.app.state.pool.stats()
+    return {
+        "status": "ok",
+        "timestamp": time.time(),
+        "active_requests": shutdown_middleware._active,
+        "worker_queue": pool_stats["queue_size"],
+        "workers_processed": pool_stats["processed"],
+    }
+
+# Readiness check: sẵn sàng nhận traffic chua?
+@app.get("/ready")
+async def ready(request: Request):
+    if not hasattr(request.app.state, "db_pool"):
+        return Response(status_code=503, content="DB not ready")
+    return {"ready": True}`}</CodeBlock>
+      </div>
+    </section>
+  );
+}
+
+function CommonMistakesSection() {
+  const [open, setOpen] = useState(0);
+  const mistakes = [
+    {
+      title: "Dùng requests thấy httpx trong async handler",
+      bad: `@app.get("/data")
+async def get_data():
+    # BUG: requests.get là blocking call
+    # -> block toan bo event loop trong lúc chờ network
+    data = requests.get("https://api.example.com/data")
+    return data.json()`,
+      good: `@app.get("/data")
+async def get_data(client: HttpClient):
+    # DUNG: httpx là async, không block event loop
+    r = await client.get("https://api.example.com/data")
+    return r.json()`,
+      note: "requests là sync library. Gọi nó trong async handler = block event loop. Dùng httpx.AsyncClient (da setup trong lifespan).",
+    },
+    {
+      title: "Tạở AsyncClient mới mỗi request",
+      bad: `@app.get("/data")
+async def get_data():
+    # BUG: tạở client mới mỗi request
+    # -> TCP handshake + TLS handshake mỗi lần
+    # -> 50-200ms overhead mỗi request
+    async with httpx.AsyncClient() as client:
+        r = await client.get(url)
+    return r.json()`,
+      good: `# DUNG: tạở 1 lần trong lifespan, dùng lại qua app.state
+@asynccontextmanager
+async def lifespan(app):
+    app.state.client = httpx.AsyncClient(...)
+    yield
+    await app.state.client.aclose()
+
+@app.get("/data")
+async def get_data(client: HttpClient):
+    r = await client.get(url)
+    return r.json()`,
+      note: "Connection pool = tai su dùng TCP connection. Tạở client mới mỗi request = không có pooling = chấp nhận overhead handshake.",
+    },
+    {
+      title: "Dùng blocking database driver",
+      bad: `import psycopg2  # sync driver!
+
+@app.get("/users")
+async def get_users():
+    conn = psycopg2.connect(DATABASE_URL)  # blocking!
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users")     # blocking!
+    return cur.fetchall()`,
+      good: `import asyncpg  # async driver
+
+@app.get("/users")
+async def get_users(db: DbConn):
+    rows = await db.fetch("SELECT * FROM users")
+    return [dict(r) for r in rows]
+
+# Hoac dùng asyncio.to_thread nếu phải dùng sync driver:
+@app.get("/users")
+async def get_users_compat():
+    def sync_query():
+        with psycopg2.connect(DATABASE_URL) as conn:
+            return conn.execute("SELECT * FROM users").fetchall()
+    return await asyncio.to_thread(sync_query)`,
+      note: "asyncpg, databases, SQLAlchemy async mode, tortoise-orm là các lua chọn async. Nếu phải dùng sync driver: asyncio.to_thread().",
+    },
+    {
+      title: "asyncio.run() bên trong endpoint",
+      bad: `@app.get("/data")
+async def get_data():
+    # BUG: asyncio.run() tạở event loop mới
+    # -> Crash vi đã có loop đang chạy (FastAPI's loop)
+    result = asyncio.run(fetch_something())
+    return result
+# Lỗi: RuntimeError: Thìs event loop is already running`,
+      good: `@app.get("/data")
+async def get_data():
+    # DUNG: await trực tiếp - dùng loop đang chạy
+    result = await fetch_something()
+    return result
+
+# Hoac nếu fetch_something là sync:
+@app.get("/data")
+async def get_data():
+    result = await asyncio.to_thread(sync_fetch_something)
+    return result`,
+      note: "asyncio.run() tạở loop mới. Trong FastAPI (đã có loop), dùng nó sẽ crash. Luôn dùng await trực tiếp hoặc asyncio.to_thread chờ sync code.",
+    },
+    {
+      title: "BackgroundTasks chờ job dài hoặc cần retry",
+      bad: `@app.post("/train")
+async def start_training(job: TrainingJob, bg: BackgroundTasks):
+    # BUG: training có thể mất 2 gio
+    # -> Process crash = mất job, không retry
+    # -> Không monitor được progress
+    bg.add_task(run_training, job)
+    return {"status": "started"}`,
+      good: `from celery import Celery
+celery = Celery(broker="redis://localhost")
+
+@celery.task(bind=True, max_retries=3)
+def training_task(self, job_dict):
+    try:
+        return run_training(TrainingJob(**job_dict))
+    except Exception as exc:
+        raise self.retry(exc=exc, countdown=60)
+
+@app.post("/train")
+async def start_training(job: TrainingJob):
+    task = await asyncio.to_thread(
+        training_task.delay, job.dict()
+    )
+    return {"task_id": task.id, "status": "queued"}
+
+@app.get("/train/{task_id}")
+async def training_status(task_id: str):
+    result = celery.AsyncResult(task_id)
+    return {"status": result.status}`,
+      note: "BackgroundTasks chạy trong cung process, cung thread pool, cung lifecycle. Job dài/quan trọng = Celery để có retry, monitor, và scale worker riêng.",
+    },
+  ];
+
+  return (
+    <section className="bg-slate-950 px-6 py-16 text-white">
+      <SectionTitle eyebrow="Top 5 Lỗi" title="FastAPI Async Mistakes" icon={HelpCircle}>
+        <span className="text-slate-300">5 lỗi này xuat hien trong code review thường xuyen. Mỗi cái deu có ve hợp lý nhưng thuc ra là bug.</span>
+      </SectionTitle>
+      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.7fr_1.3fr]">
+        <div className="space-y-3">
+          {mistakes.map((m, i) => (
+            <button key={i} onClick={() => setOpen(i)}
+              className={`w-full rounded-2xl border p-4 text-left transition ${open === i ? "border-red-400 bg-red-500/20 shadow-md" : "border-white/10 bg-white/5 hover:bg-white/10"}`}
+            >
+              <div className="flex items-start gap-3">
+                <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl text-sm font-black ${open === i ? "bg-red-500 text-white" : "bg-white/10 text-slate-400"}`}>{i + 1}</div>
+                <span className={`text-sm font-bold leading-6 ${open === i ? "text-white" : "text-slate-300"}`}>{m.title}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.div key={open} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.2 }}
+            className="flex flex-col gap-4"
+          >
+            <div className="rounded-[2rem] border border-red-500/30 bg-white/5 p-5">
+              <p className="mb-3 text-sm font-bold uppercase tracking-widest text-red-400">Sai</p>
+              <CodeBlock>{mistakes[open].bad}</CodeBlock>
+            </div>
+            <div className="rounded-[2rem] border border-emerald-500/30 bg-white/5 p-5">
+              <p className="mb-3 text-sm font-bold uppercase tracking-widest text-emerald-400">Dùng</p>
+              <CodeBlock>{mistakes[open].good}</CodeBlock>
+            </div>
+            <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-200 text-sm leading-7">
+              {mistakes[open].note}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+function PageRoot() {
+  return (
+    <main className="min-h-screen bg-white font-sans text-slate-900">
+      <Nav />
+      <Hero />
+      <LifespanSection />
+      <BackgroundTasksSection />
+      <WorkerPoolSection />
+      <DependencySection />
+      <GracefulShutdownSection />
+      <CommonMistakesSection />
+      <PageFooterNav
+        prev="04-profiling.html"
+        prevLabel="04 Profiling"
+      />
+    </main>
+  );
+}
+
+createRoot(document.getElementById("root")).render(<PageRoot />);
+</script>
+</body>
+</html>

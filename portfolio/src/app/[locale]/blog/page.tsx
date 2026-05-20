@@ -1,8 +1,9 @@
 import { getPublishedPosts } from '@/lib/notion';
+import { getAllLocalPosts } from '@/lib/localPosts';
 import { CategoryFilter } from '@/components/blog/CategoryFilter';
 import { PostGrid } from '@/components/blog/PostGrid';
 import { Suspense } from 'react';
-import type { PostCategory } from '@/types/notion';
+import type { PostCategory, PostMetadata } from '@/types/notion';
 
 export const revalidate = 3600;
 
@@ -14,7 +15,18 @@ interface BlogPageProps {
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const { locale } = await params;
-  const posts = await getPublishedPosts(locale as 'en' | 'vi');
+
+  const [notionPosts, localPosts] = await Promise.all([
+    getPublishedPosts(locale as 'en' | 'vi').catch(() => [] as PostMetadata[]),
+    Promise.resolve(getAllLocalPosts()),
+  ]);
+
+  // Local posts take priority; deduplicate Notion posts by slug
+  const localSlugs = new Set(localPosts.map(p => p.slug));
+  const merged = [
+    ...localPosts,
+    ...notionPosts.filter(p => !localSlugs.has(p.slug)),
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <div className="max-w-[1800px] mx-auto px-12 py-12">
@@ -35,7 +47,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
       {/* Grid — client component reads searchParams and filters instantly */}
       <Suspense fallback={null}>
-        <PostGrid posts={posts} />
+        <PostGrid posts={merged} />
       </Suspense>
     </div>
   );

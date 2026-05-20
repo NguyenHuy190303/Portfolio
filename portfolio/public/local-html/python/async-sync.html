@@ -1,0 +1,2346 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Async và Sync trong Python</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "framer-motion": "https://esm.sh/framer-motion@11.18.2?external=react,react-dom",
+    "lucide-react": "https://esm.sh/lucide-react@0.468.0?external=react"
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-type="module" data-presets="react">
+import React, { useEffect, useMemo, useState } from "react";
+import { createRoot } from "react-dom/client";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+Baby,
+Brain,
+Clock,
+Cpu,
+Database,
+GitBranch,
+HelpCircle,
+Layers,
+Lightbulb,
+Play,
+RotateCcw,
+Server,
+Sparkles,
+Timer,
+Zap,
+} from "lucide-react";
+
+const cards = [
+{
+id: "sync",
+title: "Sync",
+subtitle: "Làm từng việc, xong cái này mới tới cái kia",
+icon: Clock,
+color: "from-slate-100 to-slate-50",
+border: "border-slate-200",
+example: "Bạn đứng trước quầy trà sữa. Gọi 1 ly, đứng chờ pha xong, rồi mới gọi ly tiếp theo.",
+code: `def call_api():\n response = requests.post(url)\n return response.json()\n\nresult = call_api()\nprint(result)`,
+},
+{
+id: "async",
+title: "Async",
+subtitle: "Bắt đầu việc chậm, trong lúc chờ thì làm việc khác",
+icon: Zap,
+color: "from-indigo-100 to-violet-50",
+border: "border-indigo-200",
+example: "Bạn gọi 3 ly trà sữa cùng lúc. Quán đưa số thứ tự. Trong lúc chờ, bạn ngồi chơi; ly nào xong thì ra lấy.",
+code: `async def call_api(case):\n response = await client.post(url, json=case)\n return response.json()\n\nresults =
+await asyncio.gather(\n call_api(case_1),\n call_api(case_2),\n call_api(case_3),\n)`,
+},
+];
+
+const mechanisms = [
+{
+name: "Sync",
+kid: "Một bạn làm bài tập từng câu một.",
+best: "Flow đơn giản, ít việc chờ, script nhỏ, 1–5 I/O call.",
+cpu: "Không",
+risk: "Chậm nếu phải chờ nhiều HTTP/DB/LLM calls tuần tự.",
+med: "Chạy 1 eval case.",
+code: `import requests
+
+def eval_case(case: dict) -> dict:
+    resp = requests.post(LLM_URL, json=case, timeout=30)
+    resp.raise_for_status()
+    return score(resp.json())
+
+# Đơn giản, dễ debug, stack trace rõ ràng
+results = [eval_case(c) for c in cases]
+
+# 10 cases × 2s/case = 20s tổng
+# Không sao nếu chỉ chạy 1 lần!`,
+gotcha: "Sync không phải kẻ thù. Script chạy 1 lần, 5 cases? Sync hoàn hảo — code ngắn, trace lỗi dễ hơn async 5 lần. Đừng refactor async khi chưa thật sự cần.",
+notFor: "100+ cases mỗi cái chờ 2–5s network. Tổng thời gian = N × latency, không thể giảm được.",
+},
+{
+name: "asyncio",
+kid: "Một bạn có sổ ghi nhớ: bài nào đang chờ cô chấm thì chuyển qua bài khác.",
+best: "Nhiều I/O cùng lúc: HTTP, DB, WebSocket, LLM API.",
+cpu: "Không — vẫn 1 thread Python",
+risk: "1 lệnh blocking (time.sleep, requests.get) đứng cả event loop.",
+med: "Gọi 300 HTTP eval cases với semaphore.",
+code: `import asyncio, httpx
+
+# QUAN TRỌNG: semaphore kiểm soát concurrent requests
+sem = asyncio.Semaphore(20)  # max 20 đồng thời
+
+async def eval_case(client: httpx.AsyncClient, case: dict):
+    async with sem:  # block nếu đang có 20 task
+        r = await client.post(LLM_URL, json=case, timeout=30)
+        r.raise_for_status()
+        return score(r.json())
+
+async def main(cases):
+    # 1 client, tái dùng connection pool
+    async with httpx.AsyncClient() as client:
+        return await asyncio.gather(
+            *[eval_case(client, c) for c in cases]
+        )
+
+results = asyncio.run(main(cases))
+# 300 cases × 2s latency → ~2–3s tổng (không phải 600s)`,
+gotcha: "Semaphore là bắt buộc. gather(1000 tasks) mà không có semaphore = spam 1000 requests cùng lúc → rate limit 429 hoặc crash server. Luôn tạo 1 AsyncClient dùng lại, không tạo mới mỗi request.",
+notFor: "CPU-bound Python thuần (loop nặng, NLP parsing, regex phức tạp) — async không giúp gì, thậm chí chậm hơn sync vì overhead event loop.",
+},
+{
+name: "Threading",
+kid: "Nhiều bạn cùng ngồi trong một phòng, chia nhau việc chờ.",
+best: "Library sync/blocking không có async version: requests, boto3, psycopg2, SDK cũ.",
+cpu: "Yếu với Python bytecode thuần do GIL",
+risk: "Race condition nếu chia sẻ mutable state, debug khó hơn sync, GIL giới hạn CPU.",
+med: "Dùng SDK sync để gọi LLM song song.",
+code: `from concurrent.futures import ThreadPoolExecutor
+import requests, os
+
+def eval_case(case: dict) -> dict:
+    # Hàm sync bình thường — không cần đổi gì
+    resp = requests.post(LLM_URL, json=case, timeout=30)
+    return score(resp.json())
+
+# Python 3.8+ default: min(32, cpu_count + 4)
+# Với I/O-bound có thể đặt cao hơn số core
+with ThreadPoolExecutor(max_workers=16) as pool:
+    results = list(pool.map(eval_case, cases))
+
+# Wrap trong async nếu cần mix với event loop:
+async def eval_async(case):
+    return await asyncio.to_thread(eval_case, case)`,
+gotcha: "ThreadPoolExecutor là cách nhanh nhất chạy song song sync library mà không đổi stack. Dùng khi bạn không thể/không muốn chuyển sang async. asyncio.to_thread() (Python 3.9+) giúp mix với async context.",
+notFor: "CPU-heavy Python loop — 8 thread không chạy nhanh gấp 8 lần vì GIL. Dùng ProcessPoolExecutor thay thế.",
+},
+{
+name: "Multiprocessing",
+kid: "Nhiều phòng riêng, mỗi phòng có một bạn và một bộ đồ dùng riêng.",
+best: "CPU-bound: scoring nặng, NLP/regex parsing lớn, local inference CPU.",
+cpu: "Có — parallel CPU thật, mỗi process có GIL riêng",
+risk: "Tốn RAM (copy process), phải pickle data qua IPC, startup overhead ~100–200ms/process.",
+med: "Chấm metric CPU-heavy.",
+code: `from concurrent.futures import ProcessPoolExecutor
+import os
+
+def heavy_score(case: dict) -> float:
+    # CPU-heavy: BLEU, ROUGE, regex, local NLP model
+    return compute_bleu(case) + compute_rouge(case)
+
+n_workers = os.cpu_count()  # đừng tạo nhiều hơn core vật lý
+
+with ProcessPoolExecutor(max_workers=n_workers) as pool:
+    # chunksize: gom nhiều item/lần gửi → giảm IPC overhead
+    # Rule: len(data) // (4 * cpu_count)
+    chunksize = max(1, len(cases) // (4 * n_workers))
+    scores = list(pool.map(heavy_score, cases, chunksize=chunksize))
+
+# Lưu ý: function và args phải picklable
+# → lambda, closure, local function KHÔNG dùng được`,
+gotcha: "chunksize rất quan trọng. Nếu task nhỏ + chunksize=1 → overhead IPC (serialize/deserialize) ăn hết lợi ích. Với 10000 task nhỏ, chunksize=100 thường nhanh hơn chunksize=1 rõ rệt.",
+notFor: "I/O-bound hoặc task < 50ms — process startup overhead 100–200ms không xứng. Cũng không dùng được với lambda hoặc local function vì không pickle được.",
+},
+{
+name: "Queue workers",
+kid: "Một hộp thư giao bài: ai rảnh thì lấy một bài ra làm.",
+best: "Job production lớn, retry tự động, scale nhiều máy, GPU batch, job chạy lâu.",
+cpu: "Có, tùy cấu hình worker",
+risk: "Phức tạp hơn, eventual consistency, trace context phải truyền thủ công qua metadata.",
+med: "Batch eval 100k cases với retry và monitoring.",
+code: `# Producer: gửi job vào queue (không block)
+from celery import Celery
+app = Celery(broker="redis://localhost")
+
+@app.task(bind=True, max_retries=3, default_retry_delay=5)
+def eval_case_task(self, case: dict, trace_id: str):
+    try:
+        return run_eval(case, trace_id=trace_id)
+    except RateLimitError as exc:
+        # Exponential backoff: 5s, 10s, 20s
+        raise self.retry(exc=exc, countdown=5 * (2 ** self.request.retries))
+
+# Gửi 100k jobs không block caller
+for case in cases:
+    eval_case_task.delay(case, trace_id=new_trace_id())
+
+# Chạy worker riêng:
+# celery -A app worker --concurrency=8 -Q eval_queue
+# Có thể scale nhiều máy, GPU worker riêng, retry dashboard`,
+gotcha: "Luôn set max_retries + countdown tăng dần (exponential backoff). Truyền trace_id qua argument — không dùng contextvars vì không đi qua process/queue boundary. Dùng task routing nếu cần worker GPU riêng.",
+notFor: "Script nhỏ, chạy một lần, không cần retry — overhead setup broker/worker không xứng. Cũng không hợp khi cần kết quả ngay (latency cao hơn direct call).",
+},
+];
+
+const languageCompare = [
+{
+lang: "JavaScript / Node.js",
+win: "Event loop là tư duy mặc định; ecosystem async rất tự nhiên.",
+pythonPain: "Python có 2 thế giới: sync library và async library. Gọi nhầm requests trong async handler là nghẽn.",
+},
+{
+lang: "Go",
+win: "Goroutine nhẹ, code nhìn như sync nhưng runtime schedule concurrency tốt; không có GIL kiểu CPython.",
+pythonPain: "Python async/await lan xuyên call stack; CPU-bound vẫn cần process/native/GPU.",
+},
+{
+lang: "Java / Kotlin",
+win: "Threading, executors, futures, reactive stack và virtual threads rất mature.",
+pythonPain: "Python threads bị GIL giới hạn với CPU-bound Python code; multiprocessing overhead cao hơn.",
+},
+{
+lang: "Rust",
+win: "Không GIL, memory safety, async runtime như Tokio rất mạnh về performance.",
+pythonPain: "Python dễ viết AI/glue code hơn, nhưng kém ở performance-critical infra.",
+},
+{
+lang: "C",
+win: "Không có GIL hay runtime async bắt buộc; muốn parallel CPU thật thì dùng OS threads/processes, native code chạy rất sát phần cứng.",
+pythonPain: "Python chậm hơn nhiều với CPU-bound thuần, nhưng C bắt bạn tự quản memory, thread safety, I/O multiplexing và debug lỗi concurrency khó hơn.",
+},
+];
+
+const quiz = [
+{
+question: "Gọi 300 HTTP API, mỗi API chủ yếu chờ network. Nên chọn gì?",
+options: ["asyncio + httpx + semaphore", "Thread cho CPU-bound", "Chỉ dùng sync for-loop"],
+answer: 0,
+why: "Đây là I/O-bound. Async giúp nhiều request cùng tiến triển trong lúc chờ network.",
+},
+{
+question: "Đoạn nào làm event loop bị đứng?",
+options: ["await asyncio.sleep(5)", "time.sleep(5) trong async def", "await client.post(...)"],
+answer: 1,
+why: "time.sleep là blocking sync call. Nó chặn cả thread đang chạy event loop.",
+},
+{
+question: "Tính metric CPU-heavy bằng Python thuần thì nên dùng gì?",
+options: ["ProcessPoolExecutor", "asyncio.gather", "asyncio.sleep"],
+answer: 0,
+why: "CPU-bound cần parallel CPU thật. ProcessPoolExecutor tránh giới hạn GIL giữa các process.",
+},
+{
+question: "Dùng thư viện chỉ có API sync như requests để gọi nhiều endpoint cùng lúc. Cách nào thực tế nhất?",
+options: ["ThreadPoolExecutor", "asyncio.sleep", "Viết thêm await trước requests.get"],
+answer: 0,
+why: "requests là blocking sync library. Thread pool giúp nhiều request chờ I/O cùng lúc mà không cần đổi toàn bộ stack sang async.",
+},
+{
+question: "Async trong Python mạnh nhất khi bài toán thuộc loại nào?",
+options: ["I/O-bound", "CPU-bound Python thuần", "Tính toán số học trong vòng lặp lớn"],
+answer: 0,
+why: "Async hợp nhất với việc chờ network, database, file, websocket hoặc LLM API. Nó không tự làm CPU chạy song song.",
+},
+{
+question: "GIL ảnh hưởng rõ nhất tới trường hợp nào?",
+options: ["Nhiều thread cùng chạy Python bytecode CPU-heavy", "Nhiều coroutine đang await network", "Một request HTTP đang chờ server trả lời"],
+answer: 0,
+why: "GIL làm nhiều Python thread không chạy Python bytecode CPU-bound song song thật sự trong cùng một process CPython.",
+},
+{
+question: "Batch eval 100k cases, cần retry, chạy lâu, có thể scale nhiều máy. Nên nghĩ tới gì?",
+options: ["Queue workers", "Một file script sync duy nhất", "Chỉ thêm await vào mọi hàm"],
+answer: 0,
+why: "Queue workers hợp với job production lớn: chia việc, retry, scale worker, theo dõi trạng thái và xử lý lỗi tốt hơn.",
+},
+{
+question: "Trong async task, trace_id không bị lẫn giữa các task thường nhờ cơ chế nào?",
+options: ["contextvars", "global variable thường", "time.sleep"],
+answer: 0,
+why: "contextvars giữ context riêng theo task. Khi coroutine await rồi resume, context vẫn đi theo task đó.",
+},
+{
+question: "Khi truyền việc qua process, queue hoặc service khác, trace context nên làm gì?",
+options: ["Truyền thủ công qua metadata/header", "Tin là contextvars tự đi qua mọi boundary", "Xóa trace_id để tránh rối"],
+answer: 0,
+why: "contextvars hữu ích trong cùng async context, nhưng qua thread/process/queue/service boundary thì nên truyền trace_id, parent_span_id hoặc traceparent rõ ràng.",
+},
+{
+question: "So với Python, C mạnh hơn rõ nhất ở điểm nào trong bài concurrency/performance?",
+options: ["Không có GIL và chạy sát phần cứng hơn", "Tự động quản memory an toàn hơn Python", "Có await mặc định dễ dùng hơn asyncio"],
+answer: 0,
+why: "C không bị GIL kiểu CPython và native code rất nhanh, nhưng đổi lại phải tự quản memory, thread safety và nhiều chi tiết concurrency.",
+},
+];
+
+function Badge({ children }) {
+return (
+<span
+    className="inline-flex items-center rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+    {children}
+</span>
+);
+}
+
+function SectionTitle({ eyebrow, title, children, icon: Icon = Sparkles }) {
+return (
+<div className="mx-auto mb-8 max-w-3xl text-center">
+    <div
+        className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm">
+        <Icon size={16} />
+        {eyebrow}
+    </div>
+    <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{title}</h2>
+    {children && <p className="mt-4 text-lg leading-8 text-slate-600">{children}</p>}
+</div>
+);
+}
+
+function CodeBlock({ children }) {
+return (
+<pre
+    className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-6 text-slate-100 shadow-xl">
+      <code>{children}</code>
+    </pre>
+);
+}
+
+function Hero() {
+return (
+<section className="relative overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-cyan-50 px-6 py-16 md:py-24">
+    <div className="absolute left-10 top-10 h-40 w-40 rounded-full bg-indigo-200/40 blur-3xl" />
+    <div className="absolute bottom-10 right-10 h-48 w-48 rounded-full bg-cyan-200/40 blur-3xl" />
+    <div className="relative mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div className="mb-5 flex flex-wrap gap-2">
+                <Badge>Sync / Async</Badge>
+                <Badge>Python asyncio</Badge>
+                <Badge>Thread / Process / Queue</Badge>
+                <Badge>Giải thích như cho con nít</Badge>
+            </div>
+            <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-7xl">
+                Async và Sync là gì?
+                <span className="block bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
+                    Học bằng quầy trà sữa.
+                </span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-xl leading-9 text-slate-600">
+                Hãy tưởng tượng chương trình là một bạn nhỏ đi mua trà sữa. Sync là đứng chờ từng ly. Async là đặt nhiều
+                ly, rồi trong lúc quán pha thì làm việc khác.
+            </p>
+            <div className="mt-8 grid gap-3 text-sm text-slate-700 sm:grid-cols-3">
+                <div className="rounded-2xl border bg-white/80 p-4 shadow-sm">
+                    <Clock className="mb-2 text-slate-700" />
+                    <b>Sync</b>
+                    <p className="mt-1">Dễ hiểu, tuần tự, nhưng chờ nhiều thì lâu.</p>
+                </div>
+                <div className="rounded-2xl border bg-white/80 p-4 shadow-sm">
+                    <Zap className="mb-2 text-indigo-700" />
+                    <b>Async</b>
+                    <p className="mt-1">Rất hợp khi nhiều việc đang chờ I/O.</p>
+                </div>
+                <div className="rounded-2xl border bg-white/80 p-4 shadow-sm">
+                    <Cpu className="mb-2 text-cyan-700" />
+                    <b>CPU-bound</b>
+                    <p className="mt-1">Async không tự biến code thành chạy song song CPU.</p>
+                </div>
+            </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration:
+            0.6, delay: 0.1 }}
+            className="rounded-[2rem] border border-white/70 bg-white/80 p-5 shadow-2xl backdrop-blur">
+            <div className="rounded-[1.5rem] bg-slate-950 p-5 text-white">
+                <div className="mb-4 flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-red-400" />
+                    <div className="h-3 w-3 rounded-full bg-yellow-400" />
+                    <div className="h-3 w-3 rounded-full bg-green-400" />
+                    <span className="ml-3 text-sm text-slate-400">event_loop.py</span>
+                </div>
+                <pre className="text-sm leading-7 text-slate-100">
+{`async def buy_milk_tea(name):
+    print("đặt ly", name)
+    await shop.make_drink(name)
+    print("lấy ly", name)
+
+await asyncio.gather(
+    buy_milk_tea("trân châu"),
+    buy_milk_tea("matcha"),
+    buy_milk_tea("oolong"),
+)`}
+            </pre>
+            </div>
+            <div className="mt-4 rounded-3xl bg-gradient-to-r from-indigo-600 to-cyan-600 p-5 text-white">
+                <p className="text-sm font-semibold opacity-90">Một câu nhớ luôn</p>
+                <p className="mt-2 text-2xl font-black">Async không phải chạy nhanh hơn mọi thứ. Async chỉ giúp không
+                    ngồi chờ ngu khi việc đang chờ I/O.</p>
+            </div>
+        </motion.div>
+    </div>
+</section>
+);
+}
+
+function AnalogyCards() {
+const [selected, setSelected] = useState("sync");
+const item = cards.find((card) => card.id === selected);
+const Icon = item.icon;
+
+return (
+<section className="px-6 py-16">
+    <SectionTitle eyebrow="Tầng 1" title="Giải thích bằng chuyện đời thường" icon={Baby}>
+        Trước khi deep dive, cần nắm một ý: sync/async nói về cách chương trình chờ việc chậm.
+    </SectionTitle>
+    <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-[0.8fr_1.2fr]">
+        <div className="space-y-4">
+            {cards.map((card) => {
+            const CardIcon = card.icon;
+            const active = selected === card.id;
+            return (
+            <button key={card.id} onClick={()=> setSelected(card.id)}
+                className={`w-full rounded-3xl border p-5 text-left transition ${active ? "border-indigo-300 bg-indigo-50 shadow-lg" : "border-slate-200 bg-white hover:bg-slate-50"}`}
+                >
+                <div className="flex items-start gap-4">
+                    <div className="rounded-2xl bg-white p-3 shadow-sm">
+                        <CardIcon className={active ? "text-indigo-700" : "text-slate-600" } />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-black text-slate-950">{card.title}</h3>
+                        <p className="mt-1 text-slate-600">{card.subtitle}</p>
+                    </div>
+                </div>
+            </button>
+            );
+            })}
+        </div>
+
+        <AnimatePresence mode="wait">
+            <motion.div key={item.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0,
+                y: -16 }} className={`rounded-[2rem] border ${item.border} bg-gradient-to-br ${item.color} p-6
+                shadow-xl`}>
+                <div className="mb-6 flex items-center gap-4">
+                    <div className="rounded-3xl bg-white p-4 shadow-sm">
+                        <Icon size={34} className="text-indigo-700" />
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold uppercase tracking-widest text-indigo-700">{item.title}</p>
+                        <h3 className="text-3xl font-black text-slate-950">{item.subtitle}</h3>
+                    </div>
+                </div>
+                <div className="rounded-3xl bg-white/85 p-5 text-lg leading-8 text-slate-700 shadow-sm">
+                    <b>Ví dụ:</b> {item.example}
+                </div>
+                <div className="mt-5">
+                    <CodeBlock>{item.code}</CodeBlock>
+                </div>
+            </motion.div>
+        </AnimatePresence>
+    </div>
+</section>
+);
+}
+
+function Simulator() {
+const [mode, setMode] = useState("sync");
+const [running, setRunning] = useState(false);
+const [tick, setTick] = useState(0);
+
+useEffect(() => {
+if (!running) return;
+const id = setInterval(() => setTick((t) => (t >= 8 ? 8 : t + 1)), 650);
+return () => clearInterval(id);
+}, [running]);
+
+useEffect(() => {
+if (tick >= 8) setRunning(false);
+}, [tick]);
+
+const reset = () => {
+setRunning(false);
+setTick(0);
+};
+
+const syncSteps = [
+{ name: "Case 1", start: 0, end: 2 },
+{ name: "Case 2", start: 2, end: 4 },
+{ name: "Case 3", start: 4, end: 6 },
+];
+const asyncSteps = [
+{ name: "Case 1", start: 0, end: 4 },
+{ name: "Case 2", start: 0, end: 3 },
+{ name: "Case 3", start: 0, end: 5 },
+];
+const steps = mode === "sync" ? syncSteps : asyncSteps;
+
+return (
+<section className="bg-slate-950 px-6 py-16 text-white">
+    <SectionTitle eyebrow="Tầng 2" title="Bấm chạy để thấy khác biệt" icon={Play}>
+        <span className="text-slate-300">Cùng 3 việc chậm. Sync xếp hàng. Async cho tất cả bắt đầu, rồi xử lý cái nào
+            xong trước.</span>
+    </SectionTitle>
+
+    <div className="mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex rounded-2xl bg-slate-900 p-1">
+                <button onClick={()=> { setMode("sync"); reset(); }}
+                    className={`rounded-xl px-4 py-2 font-bold transition ${mode === "sync" ? "bg-white text-slate-950"
+                    : "text-slate-300"}`}
+                    >Sync</button>
+                <button onClick={()=> { setMode("async"); reset(); }}
+                    className={`rounded-xl px-4 py-2 font-bold transition ${mode === "async" ? "bg-white text-slate-950"
+                    : "text-slate-300"}`}
+                    >Async</button>
+            </div>
+            <div className="flex gap-3">
+                <button onClick={()=> setRunning(true)} className="inline-flex items-center gap-2 rounded-2xl bg-indigo-500 px-5 py-3 font-bold shadow-lg hover:bg-indigo-400">
+                    <Play size={18} /> Chạy mô phỏng
+                </button>
+                <button onClick={reset}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-white/15 px-5 py-3 font-bold text-slate-200 hover:bg-white/10">
+                    <RotateCcw size={18} /> Reset
+                </button>
+            </div>
+        </div>
+
+        <div className="grid gap-4">
+            {steps.map((step) => {
+            const active = tick >= step.start && tick < step.end; const done=tick>= step.end;
+                const width = Math.max(0, Math.min(100, ((tick - step.start) / (step.end - step.start)) * 100));
+                return (
+                <div key={step.name} className="rounded-3xl bg-slate-900 p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className={`h-3 w-3 rounded-full ${done ? "bg-green-400" : active ? "bg-indigo-400"
+                                : "bg-slate-600" }`} />
+                            <b>{step.name}</b>
+                        </div>
+                        <span className="text-sm text-slate-400">{done ? "xong" : active ? "đang chờ I/O" : "chưa bắt đầu"}</span>
+                    </div>
+                    <div className="h-5 overflow-hidden rounded-full bg-slate-800">
+                        <motion.div className="h-full rounded-full bg-gradient-to-r from-indigo-400 to-cyan-400"
+                            animate={{ width: done ? "100%" : active ? `${width}%` : "0%" }} transition={{ duration:
+                            0.25 }} />
+                    </div>
+                </div>
+                );
+                })}
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <h3 className="mb-2 text-xl font-black">Điều đang xảy ra</h3>
+                <p className="leading-8 text-slate-300">
+                    {mode === "sync"
+                    ? "Sync: Case 2 phải đợi Case 1 xong. Case 3 phải đợi Case 2 xong. Dễ hiểu nhưng chậm nếu mỗi case chỉ đang chờ network."
+                    : "Async: cả 3 case được bắt đầu gần như cùng lúc. Khi task nào await I/O, event loop chuyển sang task khác."}
+                </p>
+            </div>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <h3 className="mb-2 text-xl font-black">Câu thần chú</h3>
+                <p className="leading-8 text-slate-300">
+                    Async trong Python là <b>cooperative multitasking</b>: task phải tự nhường quyền bằng <code
+                        className="rounded bg-slate-800 px-2 py-1">await</code>. Không await thì event loop bị chiếm.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+);
+}
+
+function AwaitDeepDive() {
+const [activeTab, setActiveTab] = useState("mechanic");
+const [step, setStep] = useState(0);
+
+const steps = [
+{
+  label: "async def tạo coroutine function",
+  code: `async def fetch(name, delay):
+    print(f"[{name}] bắt đầu")
+    await asyncio.sleep(delay)
+    print(f"[{name}] xong")
+    return f"data-{name}"
+
+# Gọi fetch() KHÔNG chạy gì cả!
+# Nó chỉ tạo ra một coroutine object.
+coro = fetch("A", 2)
+print(type(coro))  # <class 'coroutine'>`,
+  explain: "async def không chạy code ngay. Khi gọi fetch(), Python trả về một coroutine object — giống như tờ giấy ghi tên việc cần làm, chưa ai làm.",
+  highlight: "0-1",
+},
+{
+  label: "asyncio.run() khởi động event loop",
+  code: `import asyncio
+
+async def main():
+    result = await fetch("A", 2)
+    print(result)
+
+asyncio.run(main())
+# asyncio.run() làm 3 việc:
+#   1. Tạo event loop mới
+#   2. Chạy coroutine main()
+#   3. Đóng loop khi xong`,
+  explain: "Event loop là \"quản lý công việc\". Nó quyết định task nào chạy lúc nào. asyncio.run() tạo loop và bắt đầu chạy.",
+},
+{
+  label: "Gặp await → coroutine tự pause",
+  code: `async def fetch(name, delay):
+    print(f"[{name}] bắt đầu")
+    # ↓ Đây là điểm pivot
+    await asyncio.sleep(delay)
+    # ↑ Python làm 3 điều:
+    #   1. Lưu toàn bộ state (biến, vị trí dòng)
+    #   2. Đăng ký callback: "khi sleep xong, resume đây"
+    #   3. Trả quyền về cho event loop
+    print(f"[{name}] xong")`,
+  explain: "await là nút \"tôi cần chờ, nhường cho người khác\". Python đóng băng coroutine tại chỗ, lưu mọi biến local, và event loop chạy task khác.",
+},
+{
+  label: "Event loop chạy task khác khi đang chờ",
+  code: `async def main():
+    # asyncio.gather chạy cả 3 gần như cùng lúc
+    await asyncio.gather(
+        fetch("API-1", 3),   # chờ 3s
+        fetch("API-2", 1),   # chờ 1s  ← xong trước
+        fetch("API-3", 2),   # chờ 2s
+    )
+
+# Timeline thực tế:
+# t=0s  → cả 3 bắt đầu, rồi cùng await sleep()
+# t=1s  → event loop resume API-2 (xong trước)
+# t=2s  → event loop resume API-3
+# t=3s  → event loop resume API-1
+# Tổng: 3s, không phải 1+2+3=6s`,
+  explain: "Khi API-1 đang await (chờ 3s), event loop không ngồi chơi. Nó chuyển sang API-2, API-3. Cái nào callback về trước thì được resume trước.",
+},
+{
+  label: "Resume: tiếp tục ngay sau dòng await",
+  code: `async def fetch(name, delay):
+    print(f"[{name}] bắt đầu")   # ← chạy lần 1
+    await asyncio.sleep(delay)    # ← pause tại đây
+    # Python restore state: name, delay vẫn còn nguyên
+    print(f"[{name}] xong")       # ← chạy khi resume
+    return f"data-{name}"
+
+# Output với gather(fetch("A",3), fetch("B",1)):
+# [A] bắt đầu
+# [B] bắt đầu
+# [B] xong      ← resume B trước vì chờ ít hơn
+# [A] xong`,
+  explain: "Khi I/O xong, event loop resume coroutine đúng vào dòng ngay sau await. Mọi biến local (name, delay) vẫn còn nguyên — Python đã lưu chúng lại.",
+},
+];
+
+const realCodeExample = `import asyncio
+import time
+
+async def call_api(name: str, delay: float) -> str:
+    print(f"  → [{name}] gửi request (t={time.time()-start:.1f}s)")
+    await asyncio.sleep(delay)   # giả lập network latency
+    print(f"  ← [{name}] nhận response (t={time.time()-start:.1f}s)")
+    return f"kết quả từ {name}"
+
+async def main():
+    global start
+    start = time.time()
+
+    print("=== Chạy async (gather) ===")
+    results = await asyncio.gather(
+        call_api("LLM-eval-1", 3.0),
+        call_api("LLM-eval-2", 1.0),
+        call_api("LLM-eval-3", 2.0),
+    )
+
+    elapsed = time.time() - start
+    print(f"\\nXong! Tổng: {elapsed:.1f}s")
+    print(f"(sync tuần tự sẽ mất: {3+1+2}s)")
+    for r in results:
+        print(f"  • {r}")
+
+asyncio.run(main())`;
+
+const realCodeOutput = `=== Chạy async (gather) ===
+  → [LLM-eval-1] gửi request (t=0.0s)
+  → [LLM-eval-2] gửi request (t=0.0s)
+  → [LLM-eval-3] gửi request (t=0.0s)
+  ← [LLM-eval-2] nhận response (t=1.0s)   ← về trước
+  ← [LLM-eval-3] nhận response (t=2.0s)
+  ← [LLM-eval-1] nhận response (t=3.0s)   ← về sau cùng
+
+Xong! Tổng: 3.0s
+(sync tuần tự sẽ mất: 6s)
+  • kết quả từ LLM-eval-1
+  • kết quả từ LLM-eval-2
+  • kết quả từ LLM-eval-3`;
+
+const coroutineModel = [
+{
+  term: "coroutine function",
+  code: "async def fetch():",
+  desc: "Hàm đặc biệt, khi gọi không chạy ngay. Trả về coroutine object.",
+  color: "bg-indigo-50 border-indigo-200 text-indigo-950",
+  tag: "bg-indigo-600",
+},
+{
+  term: "coroutine object",
+  code: "coro = fetch()  # object, chưa chạy",
+  desc: "Đại diện cho một \"việc chưa làm\". Có thể await hoặc schedule vào event loop.",
+  color: "bg-violet-50 border-violet-200 text-violet-950",
+  tag: "bg-violet-600",
+},
+{
+  term: "Task",
+  code: "asyncio.create_task(fetch())",
+  desc: "Coroutine được đóng gói, đã được event loop nhận. Có thể chạy xen kẽ với task khác.",
+  color: "bg-cyan-50 border-cyan-200 text-cyan-950",
+  tag: "bg-cyan-600",
+},
+{
+  term: "event loop",
+  code: "asyncio.run(main())",
+  desc: "Vòng lặp trung tâm: nhận callback từ OS, quyết định task nào resume, đảm bảo chỉ 1 task chạy Python tại một thời điểm.",
+  color: "bg-emerald-50 border-emerald-200 text-emerald-950",
+  tag: "bg-emerald-600",
+},
+];
+
+const tabs = [
+{ id: "mechanic", label: "Cơ chế từng bước" },
+{ id: "realcode", label: "Code thật + Output" },
+{ id: "model", label: "Coroutine là gì?" },
+];
+
+return (
+<section className="px-6 py-16 bg-white">
+  <SectionTitle eyebrow="Tầng 3" title="Deep dive: await thật sự làm gì?" icon={Brain}>
+    <code className="rounded bg-slate-100 px-2 py-1 text-base">await</code> không phải "đợi ngu" — nó là nút{" "}
+    <b>nhường sân + lưu trạng thái</b>. Hiểu đúng thì mọi bug async sẽ tự sáng ra.
+  </SectionTitle>
+
+  <div className="mx-auto max-w-6xl">
+    {/* Tabs */}
+    <div className="mb-6 flex flex-wrap gap-2 rounded-2xl border bg-slate-50 p-2">
+      {tabs.map((t) => (
+        <button
+          key={t.id}
+          onClick={() => setActiveTab(t.id)}
+          className={`rounded-xl px-5 py-2.5 font-bold transition ${
+            activeTab === t.id
+              ? "bg-indigo-600 text-white shadow-md"
+              : "text-slate-600 hover:bg-white hover:text-slate-950"
+          }`}
+        >
+          {t.label}
+        </button>
+      ))}
+    </div>
+
+    {/* Tab: Cơ chế từng bước */}
+    {activeTab === "mechanic" && (
+      <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+        {/* Stepper */}
+        <div className="space-y-3">
+          {steps.map((s, i) => (
+            <button
+              key={i}
+              onClick={() => setStep(i)}
+              className={`w-full rounded-2xl border p-4 text-left transition ${
+                step === i
+                  ? "border-indigo-300 bg-indigo-50 shadow-md"
+                  : "border-slate-200 bg-white hover:bg-slate-50"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                    step === i ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {i + 1}
+                </div>
+                <span className={`mt-0.5 font-bold ${step === i ? "text-indigo-900" : "text-slate-700"}`}>
+                  {s.label}
+                </span>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Detail panel */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col gap-4"
+          >
+            <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+              <div className="mb-3 flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-indigo-600 text-sm font-black text-white">
+                  {step + 1}
+                </div>
+                <span className="font-black text-slate-950">{steps[step].label}</span>
+              </div>
+              <CodeBlock>{steps[step].code}</CodeBlock>
+            </div>
+            <div className="rounded-[2rem] border border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50 p-5">
+              <div className="flex items-start gap-3">
+                <Lightbulb className="mt-0.5 shrink-0 text-indigo-600" size={20} />
+                <p className="leading-8 text-indigo-950">{steps[step].explain}</p>
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <button
+                onClick={() => setStep((s) => Math.max(0, s - 1))}
+                disabled={step === 0}
+                className="rounded-2xl border px-5 py-2.5 font-bold text-slate-700 disabled:opacity-30 hover:bg-slate-50"
+              >
+                ← Trước
+              </button>
+              <span className="self-center text-sm text-slate-500">
+                {step + 1} / {steps.length}
+              </span>
+              <button
+                onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}
+                disabled={step === steps.length - 1}
+                className="rounded-2xl bg-indigo-600 px-5 py-2.5 font-bold text-white disabled:opacity-30 hover:bg-indigo-500"
+              >
+                Tiếp →
+              </button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    )}
+
+    {/* Tab: Code thật */}
+    {activeTab === "realcode" && (
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-red-400" />
+              <div className="h-3 w-3 rounded-full bg-yellow-400" />
+              <div className="h-3 w-3 rounded-full bg-green-400" />
+              <span className="ml-2 text-sm font-mono text-slate-500">demo_await.py</span>
+            </div>
+            <CodeBlock>{realCodeExample}</CodeBlock>
+          </div>
+          <div className="rounded-[2rem] border border-amber-200 bg-amber-50 p-5">
+            <div className="flex items-center gap-2 font-black text-amber-900">
+              <Lightbulb size={18} /> Chạy thử ngay
+            </div>
+            <p className="mt-2 leading-7 text-amber-900">
+              Copy code trên, paste vào terminal. Quan sát thứ tự output và tổng thời gian. Đây là bằng chứng rõ nhất rằng 3 coroutine chạy xen kẽ chứ không tuần tự.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <div className="rounded-[2rem] border bg-slate-950 p-6 shadow-xl">
+            <div className="mb-4 flex items-center gap-2 text-sm text-slate-400">
+              <Play size={14} className="text-green-400" />
+              <span className="font-mono">Output thực tế</span>
+            </div>
+            <pre className="text-sm leading-7 text-slate-100 whitespace-pre-wrap">{realCodeOutput}</pre>
+          </div>
+
+          <div className="rounded-[2rem] border bg-white p-5 shadow-xl">
+            <h3 className="mb-4 font-black text-slate-950">Tại sao chỉ mất 3s thay vì 6s?</h3>
+            <div className="space-y-3">
+              {[
+                { time: "t = 0.0s", text: "asyncio.gather khởi động cả 3 coroutine. Cả 3 cùng gửi request, rồi cùng await.", color: "bg-slate-100" },
+                { time: "t = 1.0s", text: "LLM-eval-2 callback về (chờ 1s). Event loop resume nó, in 'nhận response'.", color: "bg-cyan-50" },
+                { time: "t = 2.0s", text: "LLM-eval-3 callback về. Event loop resume.", color: "bg-indigo-50" },
+                { time: "t = 3.0s", text: "LLM-eval-1 callback về. Tất cả xong. gather trả kết quả.", color: "bg-violet-50" },
+              ].map((row) => (
+                <div key={row.time} className={`flex items-start gap-3 rounded-2xl p-3 ${row.color}`}>
+                  <span className="shrink-0 rounded-xl bg-white px-2 py-0.5 text-xs font-mono font-bold text-slate-700 shadow-sm">
+                    {row.time}
+                  </span>
+                  <span className="text-sm leading-6 text-slate-700">{row.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Tab: Coroutine model */}
+    {activeTab === "model" && (
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-4">
+          <h3 className="text-xl font-black text-slate-950">Các khái niệm bạn cần biết</h3>
+          {coroutineModel.map((item) => (
+            <motion.div
+              key={item.term}
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className={`rounded-3xl border p-5 ${item.color}`}
+            >
+              <div className="mb-2 flex items-center gap-3">
+                <span className={`rounded-xl px-3 py-1 text-xs font-black text-white ${item.tag}`}>
+                  {item.term}
+                </span>
+                <code className="rounded bg-white/70 px-2 py-0.5 text-xs font-mono">{item.code}</code>
+              </div>
+              <p className="leading-7 text-sm">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-5">
+          <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+            <h3 className="mb-4 font-black text-slate-950">Quan hệ giữa chúng</h3>
+            <CodeBlock>{`# 1. Định nghĩa coroutine function
+async def fetch(url):
+    ...
+
+# 2. Gọi → tạo coroutine object (chưa chạy!)
+coro = fetch("http://api.example.com")
+# >>> <coroutine object fetch at 0x...>
+
+# 3. await trong async context → chạy + có thể pause
+result = await coro
+
+# -- hoặc --
+
+# 3b. create_task → wrap thành Task, chạy "background"
+task = asyncio.create_task(fetch("http://..."))
+result = await task  # chờ task xong
+
+# 4. asyncio.gather → tạo nhiều task song song
+results = await asyncio.gather(
+    fetch("http://api-1.com"),  # ngầm tạo Task
+    fetch("http://api-2.com"),
+)`}</CodeBlock>
+          </div>
+
+          <div className="rounded-[2rem] border border-rose-200 bg-rose-50 p-5">
+            <div className="mb-3 font-black text-rose-900 flex items-center gap-2">
+              <Zap size={18} /> Tại sao cần hiểu điều này?
+            </div>
+            <div className="space-y-2 text-sm leading-7 text-rose-900">
+              <p>• <b>Bug phổ biến #1:</b> quên <code className="rounded bg-white/70 px-1">await</code> trước coroutine → coroutine không chạy, không báo lỗi, chỉ return object.</p>
+              <p>• <b>Bug phổ biến #2:</b> <code className="rounded bg-white/70 px-1">asyncio.run()</code> trong loop đang chạy → lỗi "cannot run nested event loop".</p>
+              <p>• <b>Bug phổ biến #3:</b> <code className="rounded bg-white/70 px-1">time.sleep()</code> thay vì <code className="rounded bg-white/70 px-1">await asyncio.sleep()</code> → chặn toàn bộ event loop.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+);
+}
+
+function BlockingWarning() {
+return (
+<section className="bg-gradient-to-br from-rose-50 to-orange-50 px-6 py-16">
+    <SectionTitle eyebrow="Bẫy lớn" title="Async mà vẫn bị đứng là vì sao?" icon={Timer}>
+        Vì có lệnh blocking chen vào. Nó giống một bạn đứng giữa cửa lớp, không ai đi qua được.
+    </SectionTitle>
+    <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
+        <div className="rounded-[2rem] border border-rose-200 bg-white p-6 shadow-xl">
+            <h3 className="mb-4 text-2xl font-black text-rose-700">Sai: chặn event loop</h3>
+            <CodeBlock>{`import time
+
+                async def bad_task():
+                print("start")
+                time.sleep(5) # blocking
+                print("end")`}</CodeBlock>
+            <p className="mt-4 leading-8 text-slate-700">
+                <code>time.sleep(5)</code> chặn cả thread. Trong 5 giây đó, event loop không chạy task khác được.
+            </p>
+        </div>
+        <div className="rounded-[2rem] border border-emerald-200 bg-white p-6 shadow-xl">
+            <h3 className="mb-4 text-2xl font-black text-emerald-700">Đúng: nhường event loop</h3>
+            <CodeBlock>{`import asyncio
+
+                async def good_task():
+                print("start")
+                await asyncio.sleep(5)
+                print("end")`}</CodeBlock>
+            <p className="mt-4 leading-8 text-slate-700">
+                <code>await asyncio.sleep(5)</code> nói với event loop: "Mình đang chờ, bạn chạy task khác đi".
+            </p>
+        </div>
+    </div>
+</section>
+);
+}
+
+function PythonMechanisms() {
+const [open, setOpen] = useState("asyncio");
+const [tab, setTab] = useState("explain");
+const selected = mechanisms.find((m) => m.name === open);
+
+const tabs = [
+  { id: "explain", label: "Giải thích" },
+  { id: "code", label: "Code thật" },
+  { id: "gotcha", label: "Tips & Cạm bẫy" },
+];
+
+return (
+<section className="px-6 py-16">
+  <SectionTitle eyebrow="Tầng 4" title="Python có nhiều cách làm nhiều việc" icon={Layers}>
+    Sync/async là cách chờ. Thread/process/coroutine/queue là cơ chế tổ chức nhiều việc. Mỗi cái có code pattern riêng và cạm bẫy riêng.
+  </SectionTitle>
+  <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.75fr_1.25fr]">
+    {/* Mechanism list */}
+    <div className="grid gap-3 content-start">
+      {mechanisms.map((m) => (
+        <button key={m.name}
+          onClick={() => { setOpen(m.name); setTab("explain"); }}
+          className={`rounded-3xl border p-4 text-left transition ${open === m.name ? "border-indigo-300 bg-indigo-50 shadow-lg" : "border-slate-200 bg-white hover:bg-slate-50"}`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="text-lg font-black text-slate-950">{m.name}</div>
+            <div className={`rounded-xl px-2 py-0.5 text-xs font-bold ${m.cpu === "Có" || m.cpu.startsWith("Có") ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+              CPU: {m.cpu.split(" ")[0]}
+            </div>
+          </div>
+          <div className="mt-1 text-sm text-slate-600">{m.kid}</div>
+        </button>
+      ))}
+    </div>
+
+    {/* Detail panel */}
+    <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+      <div className="mb-5 flex items-center gap-3">
+        <div className="rounded-2xl bg-indigo-100 p-3 text-indigo-700"><GitBranch /></div>
+        <div>
+          <p className="text-sm font-bold uppercase tracking-widest text-indigo-700">Cơ chế</p>
+          <h3 className="text-3xl font-black text-slate-950">{selected.name}</h3>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="mb-5 flex gap-2 border-b border-slate-100 pb-4">
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            className={`rounded-xl px-4 py-2 text-sm font-bold transition ${tab === t.id ? "bg-indigo-600 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+          >{t.label}</button>
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div key={`${open}-${tab}`}
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.18 }}
+        >
+          {tab === "explain" && (
+            <div className="flex flex-col gap-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <InfoBox title="Giải thích như con nít" text={selected.kid} />
+                <InfoBox title="Hợp nhất cho" text={selected.best} />
+                <InfoBox title="Parallel CPU thật?" text={selected.cpu} />
+                <InfoBox title="Điểm đau" text={selected.risk} />
+              </div>
+              <div className="rounded-3xl bg-slate-950 p-5 text-white">
+                <p className="text-sm font-bold uppercase tracking-widest text-cyan-300">Ví dụ AI eval</p>
+                <p className="mt-2 text-xl font-black">{selected.med}</p>
+              </div>
+            </div>
+          )}
+          {tab === "code" && (
+            <CodeBlock>{selected.code}</CodeBlock>
+          )}
+          {tab === "gotcha" && (
+            <div className="flex flex-col gap-4">
+              <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-950">
+                <div className="mb-2 flex items-center gap-2 font-black">
+                  <Lightbulb size={18} /> Pro tip
+                </div>
+                <p className="leading-8">{selected.gotcha}</p>
+              </div>
+              <div className="rounded-3xl border border-rose-200 bg-rose-50 p-5 text-rose-950">
+                <div className="mb-2 flex items-center gap-2 font-black">
+                  <Timer size={18} /> Đừng dùng khi nào
+                </div>
+                <p className="leading-8">{selected.notFor}</p>
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  </div>
+</section>
+);
+}
+
+function InfoBox({ title, text }) {
+return (
+<div className="rounded-3xl border border-slate-100 bg-slate-50 p-5">
+    <p className="text-sm font-bold uppercase tracking-widest text-slate-500">{title}</p>
+    <p className="mt-2 leading-7 text-slate-800">{text}</p>
+</div>
+);
+}
+
+function ComparisonTable() {
+return (
+<section className="bg-slate-50 px-6 py-16">
+    <SectionTitle eyebrow="Bảng chọn nhanh" title="Khi nào dùng cái nào?" icon={Database}>
+        Nhìn bài toán trước, rồi chọn cơ chế. Đừng thấy async ngầu rồi dùng cho mọi thứ.
+    </SectionTitle>
+    <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border bg-white shadow-xl">
+        <div className="overflow-x-auto">
+            <table className="w-full min-w-[900px] border-collapse text-left">
+                <thead className="bg-slate-950 text-white">
+                    <tr>
+                        <th className="p-5">Cơ chế</th>
+                        <th className="p-5">Hợp nhất cho</th>
+                        <th className="p-5">Có parallel CPU thật?</th>
+                        <th className="p-5">Điểm cần coi chừng</th>
+                        <th className="p-5">Ví dụ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {mechanisms.map((m, index) => (
+                    <tr key={m.name} className={index % 2 ? "bg-slate-50" : "bg-white" }>
+                        <td className="p-5 font-black text-slate-950">{m.name}</td>
+                        <td className="p-5 text-slate-700">{m.best}</td>
+                        <td className="p-5 text-slate-700">{m.cpu}</td>
+                        <td className="p-5 text-slate-700">{m.risk}</td>
+                        <td className="p-5 text-slate-700">{m.med}</td>
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+);
+}
+
+function GILSection() {
+return (
+<section className="px-6 py-16">
+    <SectionTitle eyebrow="Tầng 5" title="GIL: cái khóa làm Python thread không mạnh với CPU" icon={Cpu}>
+        GIL giống một cây bút duy nhất trong lớp: nhiều bạn ngồi đó, nhưng chỉ một bạn được viết Python bytecode tại một
+        thời điểm.
+    </SectionTitle>
+    <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+        <div className="rounded-[2rem] border bg-white p-6 shadow-xl md:col-span-2">
+            <h3 className="text-2xl font-black text-slate-950">Ý nghĩa thực tế</h3>
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <div className="rounded-3xl bg-emerald-50 p-5 text-emerald-950">
+                    <h4 className="font-black">Thread vẫn tốt cho I/O-bound</h4>
+                    <p className="mt-2 leading-7">HTTP request, DB query, đọc file, gọi SDK sync. Vì phần lớn thời gian
+                        là chờ bên ngoài.</p>
+                </div>
+                <div className="rounded-3xl bg-rose-50 p-5 text-rose-950">
+                    <h4 className="font-black">Thread kém cho CPU-bound Python thuần</h4>
+                    <p className="mt-2 leading-7">Loop tính toán nặng bằng Python bytecode không scale tốt qua nhiều
+                        thread.</p>
+                </div>
+            </div>
+            <div className="mt-5 rounded-3xl bg-slate-950 p-5 text-white">
+                <p className="leading-8 text-slate-300">
+                    Ngoại lệ: NumPy, PyTorch hoặc native extension có thể release GIL khi chạy C/CUDA code. Vì vậy
+                    "Python thread không bao giờ parallel" là nói quá.
+                </p>
+            </div>
+        </div>
+        <div className="rounded-[2rem] border bg-gradient-to-br from-indigo-600 to-cyan-600 p-6 text-white shadow-xl">
+            <h3 className="text-2xl font-black">Công thức nhớ</h3>
+            <div className="mt-5 space-y-4">
+                <p className="rounded-2xl bg-white/15 p-4"><b>I/O-bound:</b> async hoặc thread.</p>
+                <p className="rounded-2xl bg-white/15 p-4"><b>CPU-bound:</b> process, native extension, GPU, worker.</p>
+                <p className="rounded-2xl bg-white/15 p-4"><b>Production lớn:</b> queue + worker + tracing context.</p>
+            </div>
+        </div>
+    </div>
+</section>
+);
+}
+
+function WeaknessSection() {
+return (
+<section className="bg-slate-950 px-6 py-16 text-white">
+    <SectionTitle eyebrow="So với ngôn ngữ khác" title="Python async yếu ở đâu?" icon={Server}>
+        <span className="text-slate-300">Python rất mạnh để viết nhanh AI app, nhưng async/concurrency có vài điểm
+            đau.</span>
+    </SectionTitle>
+    <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-2">
+        {languageCompare.map((item) => (
+        <motion.div key={item.lang} whileHover={{ y: -4 }}
+            className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-xl">
+            <h3 className="text-2xl font-black text-white">{item.lang}</h3>
+            <div className="mt-4 rounded-3xl bg-emerald-400/10 p-5 text-emerald-100">
+                <p className="text-sm font-bold uppercase tracking-widest text-emerald-300">Họ mạnh ở</p>
+                <p className="mt-2 leading-8">{item.win}</p>
+            </div>
+            <div className="mt-4 rounded-3xl bg-rose-400/10 p-5 text-rose-100">
+                <p className="text-sm font-bold uppercase tracking-widest text-rose-300">Python đau ở</p>
+                <p className="mt-2 leading-8">{item.pythonPain}</p>
+            </div>
+        </motion.div>
+        ))}
+    </div>
+</section>
+);
+}
+
+function TracingSection() {
+return (
+<section className="px-6 py-16">
+    <SectionTitle eyebrow="Bonus production" title="Async + tracing: vì sao trace không bị lẫn?" icon={HelpCircle}>
+        Khi nhiều async task chạy xen kẽ, Python dùng context-local state như <code
+            className="rounded bg-slate-100 px-2 py-1">contextvars</code> để giữ trace/span riêng cho từng task.
+    </SectionTitle>
+    <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+        <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+            <CodeBlock>{`from contextvars import ContextVar
+
+                current_trace_id = ContextVar("current_trace_id")
+
+                async def run_case(case):
+                current_trace_id.set(case["trace_id"])
+                await retrieve_docs()
+                await call_llm()`}</CodeBlock>
+            <p className="mt-5 leading-8 text-slate-700">
+                Dù các task chạy trên cùng một thread, mỗi task có "balo context" riêng. Khi <code>await</code>, balo đó
+                vẫn đi theo task.
+            </p>
+        </div>
+        <div className="rounded-[2rem] border bg-gradient-to-br from-slate-900 to-indigo-950 p-6 text-white shadow-xl">
+            <h3 className="text-2xl font-black">Nhưng qua boundary thì coi chừng</h3>
+            <p className="mt-3 leading-8 text-slate-300">Context có thể mất khi đi qua thread, process, queue hoặc
+                service khác. Lúc đó nên truyền thủ công:</p>
+            <div className="mt-5 grid gap-3">
+                {["trace_id", "parent_span_id", "eval_run_id", "case_id", "traceparent header"].map((x) => (
+                <div key={x} className="rounded-2xl bg-white/10 px-4 py-3 font-mono text-sm">{x}</div>
+                ))}
+            </div>
+        </div>
+    </div>
+</section>
+);
+}
+
+function Quiz() {
+const [answers, setAnswers] = useState({});
+const score = useMemo(() => quiz.reduce((sum, q, i) => sum + (answers[i] === q.answer ? 1 : 0), 0), [answers]);
+
+return (
+<section className="bg-gradient-to-br from-indigo-50 to-cyan-50 px-6 py-16">
+    <SectionTitle eyebrow="Kiểm tra hiểu bài" title="Quiz nhỏ 3 câu" icon={Sparkles}>
+        Chọn đáp án. Sai cũng không sao, máy tính không mắng bạn.
+    </SectionTitle>
+    <div className="mx-auto max-w-5xl">
+        <div className="mb-6 rounded-[2rem] border bg-white p-5 text-center shadow-xl">
+            <p className="text-sm font-bold uppercase tracking-widest text-indigo-700">Điểm hiện tại</p>
+            <p className="mt-1 text-4xl font-black text-slate-950">{score} / {quiz.length}</p>
+        </div>
+        <div className="grid gap-5">
+            {quiz.map((q, i) => (
+            <div key={q.question} className="rounded-[2rem] border bg-white p-6 shadow-xl">
+                <h3 className="text-xl font-black text-slate-950">{i + 1}. {q.question}</h3>
+                <div className="mt-4 grid gap-3 md:grid-cols-3">
+                    {q.options.map((option, idx) => {
+                    const chosen = answers[i] === idx;
+                    const correct = q.answer === idx;
+                    const revealed = answers[i] !== undefined;
+                    return (
+                    <button key={option} onClick={()=> setAnswers((a) => ({ ...a, [i]: idx }))}
+                        className={`rounded-2xl border p-4 text-left font-semibold transition ${
+                        revealed && correct
+                        ? "border-emerald-300 bg-emerald-50 text-emerald-950"
+                        : chosen
+                        ? "border-rose-300 bg-rose-50 text-rose-950"
+                        : "border-slate-200 bg-slate-50 hover:bg-slate-100"
+                        }`}
+                        >
+                        {option}
+                    </button>
+                    );
+                    })}
+                </div>
+                {answers[i] !== undefined && (
+                <div className="mt-4 rounded-3xl bg-slate-950 p-4 text-slate-100">
+                    <b>Vì sao?</b> {q.why}
+                </div>
+                )}
+            </div>
+            ))}
+        </div>
+    </div>
+</section>
+);
+}
+
+function QASection() {
+const items = [
+{
+question: "Async có phải tận dụng thời gian làm việc của RAM/ROM không?",
+answer: "Không hẳn. Nói chính xác hơn: async tận dụng thời gian CPU đang phải chờ I/O như network, database, disk hoặc API response. RAM chỉ giữ state của task trong lúc chờ; ROM không phải khái niệm phù hợp ở đây.",
+},
+{
+question: "Có case nào sync ngon hơn async không?",
+answer: "Có. Sync hợp với flow đơn giản, ít I/O chờ, script nhỏ, logic tuần tự, cần dễ đọc/dễ debug, hoặc CPU-bound Python thuần. Nếu chỉ gọi một API rồi xử lý tiếp, async thường làm code phức tạp hơn lợi ích nhận được.",
+},
+{
+question: "Nếu dùng parallel và GPU thì nên dùng async đúng không?",
+answer: "Không tự động đúng. GPU và parallel giải quyết tính toán nặng; async giải quyết thời gian chờ I/O. Với GPU-heavy, ưu tiên batching, data pipeline, multiprocessing/data loader hoặc queue worker. Async chỉ đáng thêm khi bạn cần nhận nhiều request, chờ network, gom batch hoặc điều phối nhiều I/O quanh GPU.",
+},
+{
+question: "Một câu phân biệt async, parallel và GPU?",
+answer: "Async giúp không phí thời gian chờ. Parallel giúp làm nhiều việc thật cùng lúc. GPU giúp tính toán vector/matrix cực nhanh. Ba cái này khác tầng và có thể kết hợp, nhưng không thay thế nhau.",
+},
+];
+
+return (
+<section className="px-6 py-16">
+    <SectionTitle eyebrow="Q/A hay nhầm" title="Mấy câu nên chốt lại" icon={HelpCircle}>
+        Những hiểu lầm thường gặp sau khi học sync, async, parallel và GPU.
+    </SectionTitle>
+    <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">
+        {items.map((item) => (
+        <div key={item.question} className="rounded-[2rem] border bg-white p-6 shadow-xl">
+            <h3 className="text-xl font-black text-slate-950">{item.question}</h3>
+            <p className="mt-3 leading-8 text-slate-700">{item.answer}</p>
+        </div>
+        ))}
+    </div>
+</section>
+);
+}
+
+function FinalCheatSheet() {
+return (
+<section className="px-6 py-16">
+    <div className="mx-auto max-w-5xl rounded-[2rem] bg-slate-950 p-8 text-white shadow-2xl">
+        <div
+            className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-cyan-200">
+            <Sparkles size={16} /> Tóm gọn bỏ túi
+        </div>
+        <h2 className="text-4xl font-black">Nhớ 5 dòng này là đủ đi phỏng vấn</h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <p className="rounded-3xl bg-white/10 p-5 leading-8"><b>Sync:</b> dễ hiểu, tuần tự, chờ từng việc.</p>
+            <p className="rounded-3xl bg-white/10 p-5 leading-8"><b>Async:</b> một thread xử lý nhiều I/O bằng event
+                loop.</p>
+            <p className="rounded-3xl bg-white/10 p-5 leading-8"><b>Thread:</b> hợp với blocking I/O, nhưng CPU Python
+                bị GIL giới hạn.</p>
+            <p className="rounded-3xl bg-white/10 p-5 leading-8"><b>Process:</b> dùng nhiều CPU core thật, nhưng
+                overhead cao.</p>
+            <p className="rounded-3xl bg-white/10 p-5 leading-8 md:col-span-2"><b>Queue workers:</b> hợp production job
+                lớn, retry, distributed/GPU, nhưng phức tạp và cần truyền trace context.</p>
+        </div>
+        <div className="mt-6 rounded-3xl bg-gradient-to-r from-indigo-500 to-cyan-500 p-6">
+            <p className="text-2xl font-black">Công thức AI eval thực tế:</p>
+            <p className="mt-2 text-lg leading-8">HTTP endpoint nhiều case → async. SDK sync legacy → thread pool.
+                Scoring/inference CPU/GPU nặng → process/worker/queue. Tracing context → contextvars trong async,
+                headers qua boundary.</p>
+        </div>
+    </div>
+</section>
+);
+}
+
+function MythsSection() {
+const myths = [
+{
+  myth: "Async = code chạy nhanh hơn",
+  reality: "Async chỉ tránh lãng phí thời gian ngồi chờ I/O. CPU của bạn không chạy nhanh hơn một chút nào.",
+  example: `# MYTH: await magic làm mọi thứ nhanh
+async def bad():
+    for x in data:
+        result = heavy_cpu_calc(x)  # vẫn tốn CPU như thường
+    # await không giúp ích gì ở đây
+
+# REALITY: async win khi chờ network/DB
+async def good():
+    results = await asyncio.gather(
+        *[client.get(url) for url in urls]
+    )  # 100 requests, chờ network → async win rõ`,
+},
+{
+  myth: "Thêm thread = tăng tốc Python thuần",
+  reality: "GIL chỉ cho 1 thread chạy Python bytecode cùng lúc. 8 thread tính toán Python = gần bằng 1 thread, đôi khi còn chậm hơn vì lock contention.",
+  example: `# MYTH: 8 thread = 8x nhanh
+with ThreadPoolExecutor(8) as p:
+    p.map(heavy_python_loop, data)
+# Kết quả: ~1x so với single thread 😢
+
+# REALITY: dùng process cho CPU-bound
+with ProcessPoolExecutor(8) as p:
+    p.map(heavy_python_loop, data)
+# Kết quả: ~7-8x nhanh hơn ✓
+
+# Ngoại lệ: NumPy/PyTorch release GIL → thread OK`,
+},
+{
+  myth: "asyncio là multi-threaded",
+  reality: "Asyncio chạy trên 1 thread duy nhất. Các coroutine xen kẽ nhau theo cooperative scheduling — không phải parallel thật.",
+  example: `import asyncio, threading
+
+async def check():
+    print(threading.current_thread().name)
+    await asyncio.sleep(0)  # nhường event loop
+    print(threading.current_thread().name)  # vẫn cùng 1 thread!
+
+asyncio.run(check())
+# Output:
+# MainThread
+# MainThread  ← vẫn 1 thread!
+
+# → Không cần lock cho shared state trong async
+#   NHƯNG cẩn thận khi có await giữa read và write`,
+},
+{
+  myth: "await làm code dừng, không làm gì",
+  reality: "await suspend coroutine HIỆN TẠI và event loop chạy task khác. Chương trình không idle.",
+  example: `# MYTH: trong 3s này CPU ngủ
+await asyncio.sleep(3)
+
+# REALITY: trong 3s đó:
+async def main():
+    await asyncio.gather(
+        task_sleep_3s(),    # đang "ngủ" → nhường
+        task_http_call(),   # ← đang gửi request
+        task_db_query(),    # ← đang query DB
+        task_process_1(),   # ← đang process data
+    )
+# Tất cả 4 task tiến triển "cùng lúc" trên 1 thread`,
+},
+{
+  myth: "requests.get() dùng được trong async def",
+  reality: "requests.get() block cả thread — toàn bộ event loop đứng. Không có coroutine khác chạy được trong lúc đó.",
+  example: `# BUG KINH ĐIỂN: không báo lỗi, chỉ đứng nguyên
+async def handler():
+    data = requests.get(url).json()  # ← BLOCK EVENT LOOP!
+    return data
+
+# FIX: dùng async HTTP client
+import httpx
+async def handler_fixed():
+    async with httpx.AsyncClient() as c:
+        data = (await c.get(url)).json()  # ✓ non-blocking
+
+# Hoặc wrap sync library:
+async def handler_wrapped():
+    data = await asyncio.to_thread(requests.get, url)
+    return data.json()`,
+},
+{
+  myth: "Multiprocessing luôn tốt hơn threading",
+  reality: "Process startup tốn 100–200ms + pickle overhead. Với task nhỏ hoặc I/O-bound, threading + GIL thường nhanh hơn.",
+  example: `import time
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+
+def tiny_task(x):
+    return x * 2  # task cực nhỏ
+
+data = list(range(1000))
+
+# ProcessPoolExecutor: chậm vì overhead
+t = time.time()
+with ProcessPoolExecutor(8) as p:
+    list(p.map(tiny_task, data))
+print(f"Process: {time.time()-t:.2f}s")  # ~0.8s
+
+# ThreadPoolExecutor: nhanh hơn
+t = time.time()
+with ThreadPoolExecutor(8) as p:
+    list(p.map(tiny_task, data))
+print(f"Thread: {time.time()-t:.2f}s")   # ~0.05s
+
+# Rule: process khi task > 50ms CPU-heavy`,
+},
+];
+
+const [open, setOpen] = useState(0);
+
+return (
+<section className="bg-gradient-to-br from-rose-50 via-white to-orange-50 px-6 py-16">
+  <SectionTitle eyebrow="Lầm tưởng phổ biến" title="6 điều dev hay hiểu sai về async" icon={HelpCircle}>
+    Những misconception này gây ra bug âm thầm, code chậm không rõ lý do, hoặc refactor sai hướng.
+  </SectionTitle>
+  <div className="mx-auto max-w-6xl grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+    {/* List */}
+    <div className="space-y-3">
+      {myths.map((m, i) => (
+        <button key={i} onClick={() => setOpen(i)}
+          className={`w-full rounded-2xl border p-4 text-left transition ${open === i ? "border-rose-300 bg-rose-50 shadow-md" : "border-slate-200 bg-white hover:bg-slate-50"}`}
+        >
+          <div className="flex items-start gap-3">
+            <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black ${open === i ? "bg-rose-500 text-white" : "bg-slate-100 text-slate-500"}`}>
+              {i + 1}
+            </div>
+            <span className={`mt-0.5 font-bold leading-6 ${open === i ? "text-rose-900" : "text-slate-700"}`}>
+              "{m.myth}"
+            </span>
+          </div>
+        </button>
+      ))}
+    </div>
+
+    {/* Detail */}
+    <AnimatePresence mode="wait">
+      <motion.div key={open}
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
+        className="flex flex-col gap-4"
+      >
+        <div className="rounded-[2rem] border border-rose-200 bg-white p-5 shadow-xl">
+          <div className="mb-3 flex items-center gap-2">
+            <Timer className="text-rose-500" size={20} />
+            <span className="font-black text-rose-700">Lầm tưởng</span>
+          </div>
+          <p className="text-lg font-bold text-slate-800">"{myths[open].myth}"</p>
+        </div>
+
+        <div className="rounded-[2rem] border border-emerald-200 bg-white p-5 shadow-xl">
+          <div className="mb-3 flex items-center gap-2">
+            <Sparkles className="text-emerald-500" size={20} />
+            <span className="font-black text-emerald-700">Thực tế</span>
+          </div>
+          <p className="leading-8 text-slate-700">{myths[open].reality}</p>
+        </div>
+
+        <div className="rounded-[2rem] border bg-white p-5 shadow-xl">
+          <p className="mb-3 text-sm font-bold uppercase tracking-widest text-slate-500">Code minh họa</p>
+          <CodeBlock>{myths[open].example}</CodeBlock>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  </div>
+</section>
+);
+}
+
+function TipsProSection() {
+const tips = [
+{
+  title: "Semaphore: kiểm soát concurrent requests",
+  tag: "asyncio",
+  why: "gather(1000 tasks) mà không có semaphore = spam 1000 requests cùng lúc → 429 rate limit hoặc crash target server.",
+  code: `import asyncio, httpx
+
+sem = asyncio.Semaphore(20)  # max 20 đồng thời
+
+async def safe_fetch(client: httpx.AsyncClient, url: str):
+    async with sem:  # chờ nếu đang có 20 task active
+        async with asyncio.timeout(10):  # Python 3.11+
+            r = await client.get(url)
+            r.raise_for_status()
+            return r.json()
+
+async def main(urls: list[str]):
+    limits = httpx.Limits(max_connections=20, max_keepalive_connections=10)
+    async with httpx.AsyncClient(limits=limits) as client:
+        return await asyncio.gather(
+            *[safe_fetch(client, u) for u in urls],
+            return_exceptions=True  # không fail all nếu 1 cái lỗi
+        )`,
+},
+{
+  title: "asyncio.to_thread: wrap sync library",
+  tag: "asyncio 3.9+",
+  why: "Nhiều library quan trọng không có async version (boto3, PIL, psycopg2 cũ...). to_thread() chạy chúng trong thread pool mà không block event loop.",
+  code: `import asyncio, requests, boto3
+
+s3 = boto3.client("s3")
+
+# to_thread() = run_in_executor() với ThreadPoolExecutor mặc định
+async def read_s3(bucket: str, key: str) -> bytes:
+    obj = await asyncio.to_thread(
+        s3.get_object, Bucket=bucket, Key=key
+    )
+    return obj["Body"].read()
+
+# Mix I/O: S3 (sync wrapped) + HTTP (native async)
+async def process(case: dict):
+    s3_data, api_data = await asyncio.gather(
+        asyncio.to_thread(requests.get, case["s3_url"]),
+        httpx_client.get(case["api_url"]),
+    )
+    return merge(s3_data.json(), api_data.json())`,
+},
+{
+  title: "TaskGroup: error handling tốt hơn gather",
+  tag: "Python 3.11+",
+  why: "asyncio.gather không tự cancel các task còn lại khi 1 cái lỗi. TaskGroup cancel tất cả — không có task zombie leak.",
+  code: `# CŨ: gather — task còn lại vẫn chạy dù 1 cái lỗi
+results = await asyncio.gather(*tasks, return_exceptions=True)
+# Phải tự loop check từng result
+
+# MỚI: TaskGroup (Python 3.11+)
+try:
+    async with asyncio.TaskGroup() as tg:
+        t1 = tg.create_task(fetch_llm("case-1"))
+        t2 = tg.create_task(fetch_llm("case-2"))
+        t3 = tg.create_task(fetch_llm("case-3"))
+    # Tất cả task đã xong khi ra khỏi with block
+    results = [t1.result(), t2.result(), t3.result()]
+except* ValueError as eg:
+    # except* xử lý ExceptionGroup
+    for exc in eg.exceptions:
+        logger.error(f"task failed: {exc}")`,
+},
+{
+  title: "Proper cancellation: luôn re-raise CancelledError",
+  tag: "Quan trọng",
+  why: "Bắt CancelledError mà không re-raise = task không thực sự bị cancel, gây resource leak và deadlock âm thầm.",
+  code: `# SAI: nuốt CancelledError
+async def bad_task():
+    try:
+        await long_operation()
+    except asyncio.CancelledError:
+        pass  # ← task vẫn "chạy" từ góc nhìn event loop, gây leak
+
+# ĐÚNG: luôn re-raise
+async def good_task():
+    try:
+        return await long_operation()
+    except asyncio.CancelledError:
+        await cleanup_resources()  # cleanup nếu cần
+        raise  # ← BẮT BUỘC
+
+# ĐÚNG + gọn hơn: dùng finally
+async def better_task():
+    try:
+        return await long_operation()
+    finally:
+        await cleanup_resources()  # chạy dù cancel hay exception`,
+},
+{
+  title: "asyncio.Queue: backpressure producer-consumer",
+  tag: "Pattern",
+  why: "Khi producer nhanh hơn consumer (đọc file nhanh, gọi API chậm), cần buffer có giới hạn để không OOM.",
+  code: `import asyncio
+
+async def producer(queue: asyncio.Queue, items):
+    for item in items:
+        await queue.put(item)        # block nếu queue đầy
+    await queue.put(None)            # sentinel báo hết
+
+async def consumer(queue: asyncio.Queue, worker_id: int):
+    while True:
+        item = await queue.get()
+        if item is None:
+            await queue.put(None)    # pass sentinel cho worker khác
+            queue.task_done()
+            break
+        await process(item)
+        queue.task_done()
+
+async def main(data):
+    q = asyncio.Queue(maxsize=100)  # backpressure: block producer khi > 100 item
+    await asyncio.gather(
+        producer(q, data),
+        consumer(q, 1),
+        consumer(q, 2),
+        consumer(q, 3),
+    )`,
+},
+{
+  title: "Rate limiter theo token bucket",
+  tag: "Production",
+  why: "Semaphore giới hạn concurrent connections, token bucket giới hạn req/second — hai thứ khác nhau. Nhiều API có cả hai limit.",
+  code: `import asyncio, time
+
+class TokenBucketLimiter:
+    """Giới hạn requests/giây, không phải concurrent requests."""
+    def __init__(self, rate: float):  # requests per second
+        self._rate = rate
+        self._tokens = rate
+        self._updated_at = time.monotonic()
+        self._lock = asyncio.Lock()
+
+    async def acquire(self):
+        async with self._lock:
+            now = time.monotonic()
+            # Cộng token theo thời gian đã qua
+            self._tokens = min(
+                self._rate,
+                self._tokens + (now - self._updated_at) * self._rate
+            )
+            self._updated_at = now
+            if self._tokens < 1:
+                wait = (1 - self._tokens) / self._rate
+                await asyncio.sleep(wait)
+                self._tokens = 0
+            else:
+                self._tokens -= 1
+
+llm_limiter = TokenBucketLimiter(rate=10)  # 10 req/s
+
+async def call_llm(prompt: str):
+    await llm_limiter.acquire()
+    return await client.complete(prompt)`,
+},
+];
+
+const [active, setActive] = useState(0);
+
+return (
+<section className="px-6 py-16 bg-white">
+  <SectionTitle eyebrow="Tips & Tricks" title="Pattern pro mà dev hay bỏ qua" icon={GitBranch}>
+    Không có cái nào trong số này được dạy trong tutorial async cơ bản — nhưng tất cả đều xuất hiện trong code production.
+  </SectionTitle>
+  <div className="mx-auto max-w-6xl grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
+    {/* List */}
+    <div className="space-y-3 content-start grid">
+      {tips.map((t, i) => (
+        <button key={i} onClick={() => setActive(i)}
+          className={`rounded-2xl border p-4 text-left transition ${active === i ? "border-indigo-300 bg-indigo-50 shadow-md" : "border-slate-200 bg-white hover:bg-slate-50"}`}
+        >
+          <div className="flex items-start justify-between gap-2">
+            <span className={`font-bold leading-6 ${active === i ? "text-indigo-900" : "text-slate-800"}`}>{t.title}</span>
+            <span className={`shrink-0 rounded-xl px-2 py-0.5 text-xs font-bold ${active === i ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-500"}`}>{t.tag}</span>
+          </div>
+        </button>
+      ))}
+    </div>
+
+    {/* Detail */}
+    <AnimatePresence mode="wait">
+      <motion.div key={active}
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
+        className="flex flex-col gap-4"
+      >
+        <div className="rounded-[2rem] border border-indigo-100 bg-gradient-to-br from-indigo-50 to-white p-5">
+          <div className="flex items-start gap-2">
+            <Lightbulb className="mt-0.5 shrink-0 text-indigo-600" size={18} />
+            <div>
+              <p className="font-black text-indigo-900">Tại sao quan trọng</p>
+              <p className="mt-1 leading-7 text-indigo-800">{tips[active].why}</p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-[2rem] border bg-white p-5 shadow-xl">
+          <CodeBlock>{tips[active].code}</CodeBlock>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  </div>
+</section>
+);
+}
+
+function ResourceControlSection() {
+const [activeRes, setActiveRes] = useState("network");
+const [activeTip, setActiveTip] = useState(0);
+
+useEffect(() => { setActiveTip(0); }, [activeRes]);
+
+const resources = [
+{
+  id: "network",
+  icon: "🌐",
+  label: "Network",
+  grad: "from-blue-600 to-cyan-500",
+  border: "border-blue-200",
+  noteBg: "bg-blue-50 text-blue-900",
+  tips: [
+    {
+      title: "Connection pool + keep-alive tái dùng TCP",
+      code: `import httpx, asyncio
+
+# SAI: tạo client mới mỗi request → TCP handshake mỗi lần
+async def bad():
+    async with httpx.AsyncClient() as c:  # mở TCP, xong đóng luôn
+        return await c.get(url)
+
+# ĐÚNG: 1 client dùng lại → connection pool
+limits = httpx.Limits(
+    max_connections=100,
+    max_keepalive_connections=20,
+    keepalive_expiry=30,
+)
+client = httpx.AsyncClient(limits=limits, timeout=10)
+
+async def good():
+    return await client.get(url)  # tái dùng connection sẵn
+
+# Tốt nhất: dùng lifespan event trong FastAPI
+# app.on_startup → khởi tạo client
+# app.on_shutdown → await client.aclose()`,
+      note: "Mỗi lần tạo AsyncClient mới = TCP handshake + TLS handshake lại từ đầu. Với 100 req/s, tái dùng connection tiết kiệm ~50ms/request.",
+    },
+    {
+      title: "Retry với exponential backoff + jitter",
+      code: `import asyncio, httpx, random
+
+async def fetch_with_retry(
+    client: httpx.AsyncClient,
+    url: str,
+    max_retries: int = 3,
+) -> dict:
+    for attempt in range(max_retries):
+        try:
+            async with asyncio.timeout(10):
+                r = await client.get(url)
+                r.raise_for_status()
+                return r.json()
+        except (httpx.HTTPStatusError, TimeoutError) as e:
+            if attempt == max_retries - 1:
+                raise
+            # Jitter: tránh thundering herd khi nhiều client cùng retry
+            wait = (2 ** attempt) + random.uniform(0, 1)
+            await asyncio.sleep(wait)
+            # Lần 1: ~1s, Lần 2: ~2s, Lần 3: ~4s
+
+# Với httpx có thể dùng tenacity:
+from tenacity import retry, stop_after_attempt, wait_exponential
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
+async def fetch_tenacity(url): ...`,
+      note: "Jitter (+ random) quan trọng khi nhiều client cùng retry cùng lúc — tránh mọi người cùng bắn lại server cùng một lúc (thundering herd).",
+    },
+    {
+      title: "Bandwidth throttle & timeout per operation",
+      code: `import asyncio, httpx
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def timed_request(label: str, warn_ms: float = 500):
+    """Log khi request chậm hơn ngưỡng."""
+    import time
+    start = time.monotonic()
+    try:
+        yield
+    finally:
+        elapsed_ms = (time.monotonic() - start) * 1000
+        if elapsed_ms > warn_ms:
+            print(f"[SLOW] {label}: {elapsed_ms:.0f}ms")
+
+async def monitored_call(client, url):
+    async with timed_request(url, warn_ms=200):
+        async with asyncio.timeout(5):
+            return (await client.get(url)).json()
+
+# Kiểm soát bandwidth với semaphore + delay
+sem = asyncio.Semaphore(5)
+async def throttled_fetch(client, url):
+    async with sem:
+        result = await client.get(url)
+        await asyncio.sleep(0.1)  # 5 req/s max
+        return result`,
+      note: "asyncio.timeout() (3.11+) chuẩn hơn asyncio.wait_for() vì có thể nest nhiều timeout scope lại với nhau.",
+    },
+  ],
+},
+{
+  id: "cpu",
+  icon: "⚙️",
+  label: "CPU",
+  grad: "from-orange-600 to-red-500",
+  border: "border-orange-200",
+  noteBg: "bg-orange-50 text-orange-900",
+  tips: [
+    {
+      title: "Calibrate worker count theo CPU thực",
+      code: `import os
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+
+# Số CPU logic (hyperthreading tính)
+logical = os.cpu_count()
+# Số CPU vật lý (cần psutil)
+import psutil
+physical = psutil.cpu_count(logical=False)
+
+# CPU-bound: dùng physical core, không tạo nhiều hơn
+cpu_pool = ProcessPoolExecutor(max_workers=physical)
+
+# I/O-bound thread: có thể cao hơn core count
+# ThreadPoolExecutor Python 3.8+ default = min(32, cpu_count+4)
+io_pool = ThreadPoolExecutor(max_workers=min(32, logical + 4))
+
+# Đo CPU usage để điều chỉnh
+import psutil
+print(f"CPU usage: {psutil.cpu_percent(interval=1, percpu=True)}")
+# [12.5, 89.3, 11.2, 87.9, ...]  ← thấy core nào đang bão`,
+      note: "os.cpu_count() trả về logical CPU (hyperthreading). Với CPU-bound thuần dùng physical core sẽ ổn định hơn.",
+    },
+    {
+      title: "Profile CPU trước khi optimize",
+      code: `import cProfile, pstats, io
+
+# Quick profile
+pr = cProfile.Profile()
+pr.enable()
+result = [expensive_fn(x) for x in data]
+pr.disable()
+
+s = io.StringIO()
+pstats.Stats(pr, stream=s).sort_stats("cumulative").print_stats(15)
+print(s.getvalue())
+
+# Output:
+#    ncalls  tottime  cumtime  filename:lineno(function)
+#     10000    4.523    4.523  score.py:42(compute_bleu)  ← hotspot!
+#     10000    0.234    0.234  score.py:67(tokenize)
+
+# Line profiler (chi tiết hơn):
+# pip install line_profiler
+# @profile
+# def compute_bleu(text): ...
+# kernprof -l -v script.py`,
+      note: "80% thời gian thường nằm trong 3–5 function. Đừng optimize mù — profile trước, optimize sau.",
+    },
+    {
+      title: "asyncio + CPU: mix I/O và CPU trong cùng app",
+      code: `import asyncio, os
+from concurrent.futures import ProcessPoolExecutor
+
+_cpu_pool = ProcessPoolExecutor(max_workers=os.cpu_count())
+_cpu_sem = asyncio.Semaphore(os.cpu_count())
+
+async def cpu_task_async(data: dict) -> float:
+    """Chạy CPU-heavy function mà không block event loop."""
+    async with _cpu_sem:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(
+            _cpu_pool,
+            compute_heavy_metric,  # phải picklable
+            data,
+        )
+
+# Bây giờ có thể mix với I/O tasks
+async def full_pipeline(case: dict):
+    # HTTP và CPU chạy concurrently
+    llm_result, cpu_score = await asyncio.gather(
+        fetch_llm_response(case),   # I/O async
+        cpu_task_async(case),       # CPU qua process pool
+    )
+    return combine(llm_result, cpu_score)`,
+      note: "run_in_executor với ProcessPoolExecutor giúp app vừa async I/O vừa parallel CPU — không block event loop.",
+    },
+  ],
+},
+{
+  id: "ram",
+  icon: "🧠",
+  label: "RAM",
+  grad: "from-violet-600 to-purple-500",
+  border: "border-violet-200",
+  noteBg: "bg-violet-50 text-violet-900",
+  tips: [
+    {
+      title: "Generator pipeline: không load hết vào RAM",
+      code: `import itertools, json
+
+# SAI: 1M records vào RAM → OOM
+cases = [json.loads(l) for l in open("1M_cases.jsonl")]
+
+# ĐÚNG: generator pipeline — mỗi lúc chỉ giữ 1 item
+def stream_jsonl(path: str):
+    with open(path) as f:
+        for line in f:
+            if line.strip():
+                yield json.loads(line)
+
+def filter_valid(cases):
+    for c in cases:
+        if c.get("input"):
+            yield c
+
+def enrich(cases):
+    for c in cases:
+        c["tokens"] = len(c["input"].split())
+        yield c
+
+# Pipeline: xử lý 1 case mỗi bước, RAM ~ O(1)
+pipeline = enrich(filter_valid(stream_jsonl("1M_cases.jsonl")))
+for batch in itertools.batched(pipeline, 500):  # Python 3.12+
+    results = process_batch(batch)
+    save_results(results)`,
+      note: "itertools.batched (3.12+) hoặc: (list(itertools.islice(it, n)) for it in iter(lambda: list(islice(gen, n)), [])). Generator pipeline xử lý dataset bất kỳ to với RAM cố định.",
+    },
+    {
+      title: "tracemalloc: hunt memory leak",
+      code: `import tracemalloc
+
+# Bật từ đầu app
+tracemalloc.start(25)  # 25 = depth stack trace
+
+# Chụp snapshot lúc đầu
+snap1 = tracemalloc.take_snapshot()
+
+# Chạy pipeline
+run_eval_batch(cases)
+
+# Chụp snapshot sau
+snap2 = tracemalloc.take_snapshot()
+
+# So sánh: cái gì TĂNG?
+top_diffs = snap2.compare_to(snap1, "lineno")
+print("=== Memory tăng nhiều nhất ===")
+for stat in top_diffs[:10]:
+    print(stat)
+
+# Output:
+# /app/embedder.py:89: +45.2 MiB, +22000 allocs  ← leak ở đây
+# /app/cache.py:34: +12.1 MiB, +50000 allocs
+
+# Xem traceback để biết ai allocate
+for stat in top_diffs[:3]:
+    print("\\n".join(str(f) for f in stat.traceback))`,
+      note: "tracemalloc overhead ~30% performance. Chỉ bật khi debug. start(25) = lưu 25 frame stack để biết chính xác code nào allocate.",
+    },
+    {
+      title: "lru_cache an toàn: maxsize + weakref",
+      code: `import functools, weakref, sys
+
+# BUG: lru_cache(None) = cache không bao giờ xóa
+@functools.lru_cache(maxsize=None)
+def embed(text: str):
+    return model.encode(text)  # mỗi embedding ~3KB
+# 100k unique text = 300MB+ không giải phóng!
+
+# FIX: set maxsize có kiểm soát
+@functools.lru_cache(maxsize=5000)  # LRU evict khi quá 5000
+def embed_safe(text: str):
+    return model.encode(text)
+
+# Kiểm tra cache stats
+print(embed_safe.cache_info())
+# CacheInfo(hits=8432, misses=1523, maxsize=5000, currsize=1523)
+
+# weakref cache: object bị GC khi không còn ai dùng
+_cache: weakref.WeakValueDictionary = weakref.WeakValueDictionary()
+def get_doc(doc_id: str):
+    if doc_id not in _cache:
+        _cache[doc_id] = load_document(doc_id)
+    return _cache[doc_id]`,
+      note: "Kiểm tra cache_info() định kỳ. Nếu currsize == maxsize và hit rate < 50%, cache đang thrash — tăng maxsize hoặc rethink key.",
+    },
+  ],
+},
+{
+  id: "gpu",
+  icon: "⚡",
+  label: "GPU",
+  grad: "from-emerald-600 to-green-500",
+  border: "border-emerald-200",
+  noteBg: "bg-emerald-50 text-emerald-900",
+  tips: [
+    {
+      title: "Mixed precision + no_grad: inference nhanh gấp 2–3x",
+      code: `import torch
+from torch.cuda.amp import autocast
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = model.to(device).eval()
+
+# Kiểm tra VRAM
+def vram_info():
+    alloc = torch.cuda.memory_allocated() / 1e9
+    total = torch.cuda.get_device_properties(0).total_memory / 1e9
+    return f"VRAM: {alloc:.2f}/{total:.2f} GB"
+
+print(vram_info())  # VRAM: 1.23/8.00 GB
+
+# Inference: no_grad + autocast
+# no_grad: không tính gradient → giảm ~50% VRAM
+# autocast fp16: tính bằng half-precision → 2x throughput
+@torch.no_grad()
+def run_inference(batch: torch.Tensor) -> torch.Tensor:
+    batch = batch.to(device)
+    with autocast(dtype=torch.float16):
+        return model(batch)
+
+# Sau batch lớn, release fragmented VRAM
+del large_intermediate_tensor
+torch.cuda.empty_cache()
+print(vram_info())`,
+      note: "torch.no_grad() + autocast() kết hợp thường giảm VRAM 40–50% và tăng throughput 2–3x. Luôn dùng trong inference.",
+    },
+    {
+      title: "Tự động tìm batch size tối đa",
+      code: `import torch
+
+def find_optimal_batch_size(
+    model, sample_input: torch.Tensor, start: int = 1
+) -> int:
+    """Tìm batch size lớn nhất không OOM."""
+    bs = start
+    model.eval()
+    while True:
+        try:
+            batch = sample_input.unsqueeze(0).repeat(bs, *[1]*(sample_input.dim()))
+            with torch.no_grad():
+                _ = model(batch.to("cuda"))
+            torch.cuda.empty_cache()
+            bs = int(bs * 1.5)  # tăng dần 50%
+        except torch.cuda.OutOfMemoryError:
+            torch.cuda.empty_cache()
+            return max(1, int(bs / 1.5))  # lùi lại
+
+optimal_bs = find_optimal_batch_size(model, sample)
+print(f"Optimal batch size: {optimal_bs}")
+
+# DataLoader với settings tối ưu
+loader = torch.utils.data.DataLoader(
+    dataset,
+    batch_size=optimal_bs,
+    num_workers=4,        # parallel CPU data loading
+    pin_memory=True,      # faster CPU→GPU transfer
+    prefetch_factor=2,    # prefetch 2 batch trước
+    persistent_workers=True,  # không respawn worker mỗi epoch
+)`,
+      note: "pin_memory=True tăng tốc transfer CPU→GPU đáng kể. persistent_workers=True tránh overhead respawn worker giữa các epoch.",
+    },
+    {
+      title: "GPU utilization monitoring",
+      code: `import subprocess, time, torch
+
+def gpu_stats():
+    out = subprocess.check_output([
+        "nvidia-smi",
+        "--query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu",
+        "--format=csv,noheader,nounits"
+    ]).decode()
+    util, mem_used, mem_total, temp = out.strip().split(", ")
+    return {
+        "gpu_util": f"{util}%",
+        "vram": f"{int(mem_used)//1024:.1f}/{int(mem_total)//1024:.1f} GB",
+        "temp": f"{temp}°C",
+    }
+
+# Monitor trong training loop
+for epoch in range(n_epochs):
+    for i, batch in enumerate(loader):
+        outputs = model(batch.to("cuda"))
+        loss = criterion(outputs, labels.to("cuda"))
+        loss.backward()
+        optimizer.step()
+
+        if i % 50 == 0:
+            stats = gpu_stats()
+            # GPU util < 60% → batch size quá nhỏ hoặc bottleneck ở CPU/data loading
+            # GPU temp > 85°C → cần giảm tốc hoặc kiểm tra cooling
+            print(f"Step {i}: {stats}")`,
+      note: "GPU util < 60% trong training thường do CPU bottleneck (data loading chậm, preprocessing nặng). Tăng num_workers hoặc cache preprocessing.",
+    },
+  ],
+},
+{
+  id: "disk",
+  icon: "💾",
+  label: "Disk",
+  grad: "from-slate-700 to-zinc-600",
+  border: "border-slate-300",
+  noteBg: "bg-slate-100 text-slate-800",
+  tips: [
+    {
+      title: "aiofiles: file I/O không block event loop",
+      code: `import aiofiles, asyncio, json
+
+async def read_jsonl_async(path: str):
+    async with aiofiles.open(path, "r") as f:
+        content = await f.read()
+    return [json.loads(l) for l in content.splitlines() if l]
+
+# Đọc nhiều file cùng lúc
+async def load_all_cases(paths: list[str]) -> list:
+    return await asyncio.gather(*[read_jsonl_async(p) for p in paths])
+
+# Append-safe write với lock
+_write_lock = asyncio.Lock()
+async def append_result(path: str, result: dict):
+    async with _write_lock:  # tránh interleaved write từ nhiều coroutine
+        async with aiofiles.open(path, "a") as f:
+            await f.write(json.dumps(result, ensure_ascii=False) + "\\n")
+
+# Streaming read (không load hết vào RAM)
+async def stream_large_file(path: str):
+    async with aiofiles.open(path, "r") as f:
+        async for line in f:   # iterate từng dòng
+            yield json.loads(line)`,
+      note: "pip install aiofiles. Dùng asyncio.Lock khi nhiều coroutine cùng write 1 file — không thì output bị interleave.",
+    },
+    {
+      title: "mmap: random access file lớn không OOM",
+      code: `import mmap, struct
+
+# Đọc embedding binary file (float32, 1M vectors × 1536 dim)
+# File size: 1M × 1536 × 4 bytes = ~6GB
+EMBEDDING_DIM = 1536
+EMBEDDING_SIZE = EMBEDDING_DIM * 4  # float32
+
+with open("embeddings.bin", "rb") as f:
+    with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+        def get_embedding(idx: int) -> list[float]:
+            offset = idx * EMBEDDING_SIZE
+            raw = mm[offset : offset + EMBEDDING_SIZE]
+            return struct.unpack(f"{EMBEDDING_DIM}f", raw)
+
+        # Truy cập random không load hết file
+        emb_42 = get_embedding(42)
+        emb_999 = get_embedding(999)
+
+# OS tự quản lý page loading từ disk
+# RAM dùng = chỉ những page đang truy cập, không phải 6GB`,
+      note: "mmap đặc biệt hiệu quả với binary embedding file hoặc dataset lớn cần random access. OS sẽ tự evict page khi RAM thiếu.",
+    },
+    {
+      title: "Atomic write: không corrupt file khi crash",
+      code: `import os, json, tempfile
+from pathlib import Path
+
+def atomic_write_json(path: str | Path, data: dict):
+    """Write JSON atomically — không bao giờ để file nửa vời."""
+    path = Path(path)
+    # Ghi vào temp file cùng thư mục (cùng filesystem = rename atomic)
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        dir=path.parent,
+        suffix=".tmp",
+        delete=False,
+        encoding="utf-8",
+    ) as tmp:
+        json.dump(data, tmp, ensure_ascii=False, indent=2)
+        tmp.flush()
+        os.fsync(tmp.fileno())  # flush OS buffer xuống disk
+        tmp_path = tmp.name
+
+    # atomic rename: không có trạng thái "nửa vời"
+    os.replace(tmp_path, path)
+
+# Async version
+async def atomic_write_json_async(path, data):
+    import aiofiles
+    tmp_path = str(path) + ".tmp"
+    async with aiofiles.open(tmp_path, "w") as f:
+        await f.write(json.dumps(data, ensure_ascii=False, indent=2))
+    os.replace(tmp_path, path)`,
+      note: "Đặc biệt quan trọng với checkpoint file trong training. os.replace() là atomic trên cùng filesystem — nếu crash giữa chừng, file cũ vẫn còn nguyên.",
+    },
+  ],
+},
+];
+
+const active = resources.find(r => r.id === activeRes);
+
+return (
+<section className="bg-slate-950 px-6 py-16 text-white">
+  <SectionTitle eyebrow="Tầng 6" title="Kiểm soát tài nguyên như thần" icon={Cpu}>
+    <span className="text-slate-300">
+      RAM, CPU, GPU, Disk, Network — mỗi loại có bottleneck và tool riêng. Đây là những trick mà hầu hết tutorial không đề cập.
+    </span>
+  </SectionTitle>
+
+  <div className="mx-auto max-w-7xl">
+    {/* Resource tabs */}
+    <div className="mb-8 flex flex-wrap justify-center gap-3">
+      {resources.map(r => (
+        <button key={r.id} onClick={() => setActiveRes(r.id)}
+          className={`rounded-2xl px-5 py-3 text-base font-black transition ${
+            activeRes === r.id
+              ? `bg-gradient-to-r ${r.grad} text-white shadow-lg scale-105`
+              : "border border-white/20 bg-white/5 text-slate-300 hover:bg-white/10"
+          }`}
+        >
+          {r.icon} {r.label}
+        </button>
+      ))}
+    </div>
+
+    <div className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
+      {/* Tip list */}
+      <div className="space-y-3 content-start grid">
+        {active.tips.map((tip, i) => (
+          <button key={i} onClick={() => setActiveTip(i)}
+            className={`w-full rounded-2xl border p-4 text-left transition ${
+              activeTip === i
+                ? "border-indigo-400 bg-indigo-500/20 shadow-md"
+                : "border-white/10 bg-white/5 hover:bg-white/10"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                activeTip === i ? "bg-indigo-500 text-white" : "bg-white/10 text-slate-300"
+              }`}>{i + 1}</div>
+              <span className={`font-bold text-sm leading-6 ${activeTip === i ? "text-white" : "text-slate-300"}`}>
+                {tip.title}
+              </span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Detail */}
+      <AnimatePresence mode="wait">
+        <motion.div key={`${activeRes}-${activeTip}`}
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.2 }}
+          className="flex flex-col gap-4"
+        >
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
+            <h3 className="mb-4 font-black text-white">{active.tips[activeTip].title}</h3>
+            <CodeBlock>{active.tips[activeTip].code}</CodeBlock>
+          </div>
+          <div className={`rounded-[2rem] border ${active.border} ${active.noteBg} p-5`}>
+            <div className="flex items-start gap-2">
+              <Lightbulb className="mt-0.5 shrink-0" size={18} />
+              <p className="text-sm leading-7">{active.tips[activeTip].note}</p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  </div>
+</section>
+);
+}
+
+function AsyncSyncExplainer() {
+return (
+<main className="min-h-screen bg-white font-sans text-slate-900">
+    <Hero />
+    <AnalogyCards />
+    <Simulator />
+    <AwaitDeepDive />
+    <BlockingWarning />
+    <PythonMechanisms />
+    <MythsSection />
+    <TipsProSection />
+    <ComparisonTable />
+    <GILSection />
+    <ResourceControlSection />
+    <WeaknessSection />
+    <TracingSection />
+    <Quiz />
+    <QASection />
+    <FinalCheatSheet />
+</main>
+);
+}
+
+createRoot(document.getElementById("root")).render(<AsyncSyncExplainer />);
+</script>
+</body>
+</html>

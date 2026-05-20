@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>03 Resources — DEEP DIVE PYTHON</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "framer-motion": "https://esm.sh/framer-motion@11.18.2?external=react,react-dom",
+    "lucide-react": "https://esm.sh/lucide-react@0.468.0?external=react"
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-type="module" data-presets="react">
+import React, { useState, useEffect } from "react";
+import { createRoot } from "react-dom/client";
+import { motion, AnimatePresence } from "framer-motion";
+import { Cpu, Lightbulb, Sparkles } from "lucide-react";
+
+const CURRENT_PAGE = "03-resource-control";
+
+const NAV_LINKS = [
+  { href: "index.html", label: "Trang chủ", id: "index" },
+  { href: "01-basics.html", label: "01 Cơ bản", id: "01-basics" },
+  { href: "02-concurrency.html", label: "02 Đồng thời", id: "02-concurrency" },
+  { href: "03-resource-control.html", label: "03 Tài nguyên", id: "03-resource-control" },
+  { href: "04-profiling.html", label: "04 Đở hiệu năng", id: "04-profiling" },
+  { href: "05-fastapi-architecture.html", label: "05 FastAPI", id: "05-fastapi" },
+];
+
+function Nav() {
+  return (
+    <nav className="sticky top-0 z-50 bg-slate-950 border-b border-white/10 shadow-xl">
+      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-3">
+        <a href="index.html" className="font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 text-lg tracking-tight">
+          DEEP DIVE PYTHON
+        </a>
+        <div className="flex gap-1">
+          {NAV_LINKS.slice(1).map(link => (
+            <a key={link.id} href={link.href}
+              className={`px-3 py-1.5 rounded-xl text-sm font-bold transition ${
+                CURRENT_PAGE === link.id
+                  ? "bg-indigo-600 text-white"
+                  : "text-slate-400 hover:text-white hover:bg-white/10"
+              }`}
+            >{link.label}</a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function PageFooterNav({ prev, prevLabel, next, nextLabel }) {
+  return (
+    <div className="border-t border-slate-200 bg-white px-6 py-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-between">
+        {prev ? (
+          <a href={prev} className="flex items-center gap-2 rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 hover:bg-slate-50">
+            <span>←</span> {prevLabel}
+          </a>
+        ) : <div />}
+        <a href="index.html" className="text-sm font-bold text-slate-500 hover:text-slate-900">Trang chủ</a>
+        {next ? (
+          <a href={next} className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 font-bold text-white hover:bg-indigo-500">
+            {nextLabel} <span>→</span>
+          </a>
+        ) : <div />}
+      </div>
+    </div>
+  );
+}
+
+function SectionTitle({ eyebrow, title, children, icon: Icon = Sparkles }) {
+  return (
+    <div className="mx-auto mb-8 max-w-3xl text-center">
+      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm">
+        <Icon size={16} />
+        {eyebrow}
+      </div>
+      <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{title}</h2>
+      {children && <p className="mt-4 text-lg leading-8 text-slate-600">{children}</p>}
+    </div>
+  );
+}
+
+function CodeBlock({ children }) {
+  return (
+    <pre className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-6 text-slate-100 shadow-xl">
+      <code>{children}</code>
+    </pre>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-orange-950 via-slate-950 to-red-950 px-6 py-20 text-white">
+      <div className="absolute left-10 top-10 h-40 w-40 rounded-full bg-orange-500/20 blur-3xl" />
+      <div className="absolute bottom-10 right-10 h-48 w-48 rounded-full bg-red-500/20 blur-3xl" />
+      <div className="relative mx-auto max-w-4xl text-center">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold">
+          <span className="text-orange-300">03</span>
+          <span className="text-white/70">·</span>
+          <span>RESOURCE CONTROL</span>
+        </div>
+        <h1 className="text-5xl font-black tracking-tight md:text-7xl">
+          Kiểm soát tài nguyên
+          <span className="block bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            nhu than
+          </span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-xl leading-9 text-slate-300">
+          RAM, CPU, GPU, Disk, Network — mỗi loại có bottleneck và tool kiểm soát riêng. 15 production tips mà hầu hết tutorial không để cap.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {["Network", "CPU", "RAM", "GPU", "Disk", "15 tips"].map(tag => (
+            <span key={tag} className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white/80">{tag}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ResourceControlSection() {
+const [activeRes, setActiveRes] = useState("network");
+const [activeTip, setActiveTip] = useState(0);
+
+useEffect(() => { setActiveTip(0); }, [activeRes]);
+
+const resources = [
+{
+  id: "network",
+  icon: "🌐",
+  label: "Network",
+  grad: "from-blue-600 to-cyan-500",
+  border: "border-blue-200",
+  noteBg: "bg-blue-50 text-blue-900",
+  tips: [
+    {
+      title: "Connection pool + keep-alive tái dùng TCP",
+      code: `import httpx, asyncio
+
+# SAI: tạở client mới mỗi request -> TCP handshake mỗi lần
+async def bad():
+    async with httpx.AsyncClient() as c:  # mở TCP, xong đóng luôn
+        return await c.get(url)
+
+# DUNG: 1 client dùng lại -> connection pool
+limits = httpx.Limits(
+    max_connections=100,
+    max_keepalive_connections=20,
+    keepalive_expiry=30,
+)
+client = httpx.AsyncClient(limits=limits, timeout=10)
+
+async def good():
+    return await client.get(url)  # tái dùng connection san
+
+# Tốt nhất: dùng lifespan event trong FastAPI
+# app.on_startup -> khoi tạở client
+# app.on_shutdown -> await client.aclose()`,
+      note: "Mỗi lần tạở AsyncClient moi = TCP handshake + TLS handshake lại từ đầu. Với 100 req/s, tái dùng connection tiết kiệm ~50ms/request.",
+    },
+    {
+      title: "Retry với exponential backoff + jitter",
+      code: `import asyncio, httpx, random
+
+async def fetch_with_retry(
+    client: httpx.AsyncClient,
+    url: str,
+    max_retries: int = 3,
+) -> dict:
+    for attempt in range(max_retries):
+        try:
+            async with asyncio.timeout(10):
+                r = await client.get(url)
+                r.raise_for_status()
+                return r.json()
+        except (httpx.HTTPStatusError, TimeoutError) as e:
+            if attempt == max_retries - 1:
+                raise
+            # Jitter: trảnh thundering herd khi nhiều client cung retry
+            wait = (2 ** attempt) + random.uniform(0, 1)
+            await asyncio.sleep(wait)
+            # Lan 1: ~1s, Lan 2: ~2s, Lan 3: ~4s
+
+# Với httpx có thể dùng tenacity:
+from tenacity import retry, stop_after_attempt, wait_exponential
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
+async def fetch_tenacity(url): ...`,
+      note: "Jitter (+ random) quan trọng khi nhiều client cung retry cùng lúc -- trảnh mỗi người cung ban lại server cung một lúc (thundering herd).",
+    },
+    {
+      title: "Bandwidth throttle & timeout per operation",
+      code: `import asyncio, httpx
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def timed_request(label: str, warn_ms: float = 500):
+    """Log khi request chậm hơn ngưỡng."""
+    import time
+    start = time.monotonic()
+    try:
+        yield
+    finally:
+        elapsed_ms = (time.monotonic() - start) * 1000
+        if elapsed_ms > warn_ms:
+            print(f"[SLOW] {label}: {elapsed_ms:.0f}ms")
+
+async def monitored_call(client, url):
+    async with timed_request(url, warn_ms=200):
+        async with asyncio.timeout(5):
+            return (await client.get(url)).json()
+
+# Kiểm soát bandwidth với semaphore + delay
+sem = asyncio.Semaphore(5)
+async def throttled_fetch(client, url):
+    async with sem:
+        result = await client.get(url)
+        await asyncio.sleep(0.1)  # 5 req/s max
+        return result`,
+      note: "asyncio.timeout() (3.11+) chuan hơn asyncio.wait_for() vi có thể nest nhiều timeout scope lại với nhau.",
+    },
+  ],
+},
+{
+  id: "cpu",
+  icon: "⚙️",
+  label: "CPU",
+  grad: "from-orange-600 to-red-500",
+  border: "border-orange-200",
+  noteBg: "bg-orange-50 text-orange-900",
+  tips: [
+    {
+      title: "Calibrate worker count theo CPU thuc",
+      code: `import os
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+
+# So CPU logic (hyperthreading tinh)
+logical = os.cpu_count()
+# So CPU vat lý (cần psutil)
+import psutil
+physical = psutil.cpu_count(logical=False)
+
+# CPU-bound: dùng physical core, không tạở nhiều hơn
+cpu_pool = ProcessPoolExecutor(max_workers=physical)
+
+# I/Ở-bound thread: có thể cao hơn core count
+# ThreadPoolExecutor Python 3.8+ default = min(32, cpu_count+4)
+io_pool = ThreadPoolExecutor(max_workers=min(32, logical + 4))
+
+# Đó CPU usage để dieu chỉnh
+import psutil
+print(f"CPU usage: {psutil.cpu_percent(interval=1, percpu=True)}")
+# [12.5, 89.3, 11.2, 87.9, ...]  <- thấy core nàở đang bao`,
+      note: "os.cpu_count() tra ve logical CPU (hyperthreading). Với CPU-bound thuần dùng physical core sẽ on dinh hơn.",
+    },
+    {
+      title: "Profile CPU trước khi optimize",
+      code: `import cProfile, pstats, io
+
+# Quick profile
+pr = cProfile.Profile()
+pr.enable()
+result = [expensive_fn(x) for x in data]
+pr.disable()
+
+s = io.StringIO()
+pstats.Stats(pr, stream=s).sort_stats("cumulative").print_stats(15)
+print(s.getvalue())
+
+# Output:
+#    ncalls  tottime  cumtime  filename:lineno(function)
+#     10000    4.523    4.523  score.py:42(compute_bleu)  <- hotspot!
+#     10000    0.234    0.234  score.py:67(tokenize)
+
+# Line profiler (chi tiết hơn):
+# pip install line_profiler
+# @profile
+# def compute_bleu(text): ...
+# kernprof -l -v script.py`,
+      note: "80% thời gian thường nam trong 3-5 function. Dùng optimize mu -- profile trước, optimize sau.",
+    },
+    {
+      title: "asyncio + CPU: mix I/Ở và CPU trong cung app",
+      code: `import asyncio, os
+from concurrent.futures import ProcessPoolExecutor
+
+_cpu_pool = ProcessPoolExecutor(max_workers=os.cpu_count())
+_cpu_sem = asyncio.Semaphore(os.cpu_count())
+
+async def cpu_task_async(data: dict) -> float:
+    """Chạy CPU-heavy function mà không block event loop."""
+    async with _cpu_sem:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(
+            _cpu_pool,
+            compute_heavy_metric,  # phải picklable
+            data,
+        )
+
+# Bay gio có thể mix với I/Ở tasks
+async def full_pipeline(case: dict):
+    # HTTP và CPU chạy concurrently
+    llm_result, cpu_score = await asyncio.gather(
+        fetch_llm_response(case),   # I/Ở async
+        cpu_task_async(case),       # CPU qua process pool
+    )
+    return combine(llm_result, cpu_score)`,
+      note: "run_in_executor với ProcessPoolExecutor gìúp app vua async I/Ở vua parallel CPU -- không block event loop.",
+    },
+  ],
+},
+{
+  id: "ram",
+  icon: "🧠",
+  label: "RAM",
+  grad: "from-violet-600 to-purple-500",
+  border: "border-violet-200",
+  noteBg: "bg-violet-50 text-violet-900",
+  tips: [
+    {
+      title: "Generator pipeline: không load hết vàở RAM",
+      code: `import itertools, json
+
+# SAI: 1M records vàở RAM -> OOM
+cases = [json.loads(l) for l in open("1M_cases.jsonl")]
+
+# DUNG: generator pipeline -- mỗi lúc chỉ giu 1 item
+def stream_jsonl(path: str):
+    with open(path) as f:
+        for line in f:
+            if line.strip():
+                yield json.loads(line)
+
+def filter_valid(cases):
+    for c in cases:
+        if c.get("input"):
+            yield c
+
+def enrich(cases):
+    for c in cases:
+        c["tokens"] = len(c["input"].split())
+        yield c
+
+# Pipeline: xử lý 1 case mỗi bước, RAM ~ Ở(1)
+pipeline = enrich(filter_valid(stream_jsonl("1M_cases.jsonl")))
+for batch in itertools.batched(pipeline, 500):  # Python 3.12+
+    results = process_batch(batch)
+    save_results(results)`,
+      note: "itertools.batched (3.12+) hoặc: (list(itertools.islice(it, n)) for it in iter(lambda: list(islice(gen, n)), [])). Generator pipeline xử lý dataset bất kỳ to với RAM có dinh.",
+    },
+    {
+      title: "tracemalloc: hunt memory leak",
+      code: `import tracemalloc
+
+# Bật từ dau app
+tracemalloc.start(25)  # 25 = depth stack trace
+
+# Chup snapshot lúc dau
+snap1 = tracemalloc.take_snapshot()
+
+# Chạy pipeline
+run_eval_batch(cases)
+
+# Chup snapshot sau
+snap2 = tracemalloc.take_snapshot()
+
+# So sanh: cái gì TANG?
+top_diffs = snap2.compare_to(snap1, "lineno")
+print("=== Memory tang nhiều nhất ===")
+for stat in top_diffs[:10]:
+    print(stat)
+
+# Output:
+# /app/embedder.py:89: +45.2 MiB, +22000 allocs  <- leak ở đây
+# /app/cache.py:34: +12.1 MiB, +50000 allocs
+
+# Xem traceback để biết ai allocate
+for stat in top_diffs[:3]:
+    print("\\n".join(str(f) for f in stat.traceback))`,
+      note: "tracemalloc overhead ~30% performance. Chỉ bật khi debug. start(25) = luu 25 frame stack để biết chính xác code nàở allocate.",
+    },
+    {
+      title: "lru_cache an toàn: maxsize + weakref",
+      code: `import functools, weakref, sys
+
+# BUG: lru_cache(None) = cache không bao gio xoa
+@functools.lru_cache(maxsize=None)
+def embed(text: str):
+    return model.encode(text)  # mỗi embedding ~3KB
+# 100k unique text = 300MB+ không gìải phóng!
+
+# FIX: set maxsize có kiểm soát
+@functools.lru_cache(maxsize=5000)  # LRU evict khi qua 5000
+def embed_safe(text: str):
+    return model.encode(text)
+
+# Kiểm tra cache stats
+print(embed_safe.cache_info())
+# CacheInfo(hits=8432, misses=1523, maxsize=5000, currsize=1523)
+
+# weakref cache: object bi GC khi không con ai dùng
+_cache: weakref.WeakValueDictionary = weakref.WeakValueDictionary()
+def get_doc(doc_id: str):
+    if doc_id not in _cache:
+        _cache[doc_id] = load_document(doc_id)
+    return _cache[doc_id]`,
+      note: "Kiểm tra cache_info() định kỳ. Nếu currsize == maxsize và hit rate < 50%, cache đang thrash -- tang maxsize hoặc rethink key.",
+    },
+  ],
+},
+{
+  id: "gpu",
+  icon: "⚡",
+  label: "GPU",
+  grad: "from-emerald-600 to-green-500",
+  border: "border-emerald-200",
+  noteBg: "bg-emerald-50 text-emerald-900",
+  tips: [
+    {
+      title: "Mixed precision + no_grad: inference nhanh gap 2-3x",
+      code: `import torch
+from torch.cuda.amp import autocast
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = model.to(device).eval()
+
+# Kiểm tra VRAM
+def vram_info():
+    alloc = torch.cuda.memory_allocated() / 1e9
+    total = torch.cuda.get_device_properties(0).total_memory / 1e9
+    return f"VRAM: {alloc:.2f}/{total:.2f} GB"
+
+print(vram_info())  # VRAM: 1.23/8.00 GB
+
+# Inference: no_grad + autocast
+# no_grad: không tinh gradient -> giam ~50% VRAM
+# autocast fp16: tinh bang half-precision -> 2x throughput
+@torch.no_grad()
+def run_inference(batch: torch.Tensor) -> torch.Tensor:
+    batch = batch.to(device)
+    with autocast(dtype=torch.float16):
+        return model(batch)
+
+# Sau batch lớn, release fragmented VRAM
+del large_intermediate_tensor
+torch.cuda.empty_cache()
+print(vram_info())`,
+      note: "torch.no_grad() + autocast() ket hợp thường giam VRAM 40-50% và tang throughput 2-3x. Luôn dùng trong inference.",
+    },
+    {
+      title: "Tự động tim batch size tối đa",
+      code: `import torch
+
+def find_optimal_batch_size(
+    model, sample_input: torch.Tensor, start: int = 1
+) -> int:
+    """Tim batch size lớn nhất không OOM."""
+    bs = start
+    model.eval()
+    while True:
+        try:
+            batch = sample_input.unsqueeze(0).repeat(bs, *[1]*(sample_input.dim()))
+            with torch.no_grad():
+                _ = model(batch.to("cuda"))
+            torch.cuda.empty_cache()
+            bs = int(bs * 1.5)  # tăng dần 50%
+        except torch.cuda.OutOfMemoryError:
+            torch.cuda.empty_cache()
+            return max(1, int(bs / 1.5))  # lui lại
+
+optimal_bs = find_optimal_batch_size(model, sample)
+print(f"Optimal batch size: {optimal_bs}")
+
+# DataLoader với settings tới uu
+loader = torch.utils.data.DataLoader(
+    dataset,
+    batch_size=optimal_bs,
+    num_workers=4,        # parallel CPU data loading
+    pin_memory=True,      # faster CPU->GPU transfer
+    prefetch_factor=2,    # prefetch 2 batch trước
+    persistent_workers=True,  # không respawn worker mỗi epoch
+)`,
+      note: "pin_memory=True tang toc transfer CPU->GPU đang ke. persistent_workers=True trảnh overhead respawn worker giua các epoch.",
+    },
+    {
+      title: "GPU utilization monitoring",
+      code: `import subprocess, time, torch
+
+def gpu_stats():
+    out = subprocess.check_output([
+        "nvidia-smi",
+        "--query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu",
+        "--format=csv,noheader,nounits"
+    ]).decode()
+    util, mem_used, mem_total, temp = out.strip().split(", ")
+    return {
+        "gpu_util": f"{util}%",
+        "vram": f"{int(mem_used)//1024:.1f}/{int(mem_total)//1024:.1f} GB",
+        "temp": f"{temp}C",
+    }
+
+# Monitor trong training loop
+for epoch in range(n_epochs):
+    for i, batch in enumerate(loader):
+        outputs = model(batch.to("cuda"))
+        loss = criterion(outputs, labels.to("cuda"))
+        loss.backward()
+        optimizer.step()
+
+        if i % 50 == 0:
+            stats = gpu_stats()
+            # GPU util < 60% -> batch size qua nhỏ hoặc bottleneck ở CPU/data loading
+            # GPU temp > 85C -> cần gìảm tốc hoặc kiểm tra cooling
+            print(f"Step {i}: {stats}")`,
+      note: "GPU util < 60% trong training thường đó CPU bottleneck (data loading chậm, preprocessing nặng). Tang num_workers hoặc cache preprocessing.",
+    },
+  ],
+},
+{
+  id: "disk",
+  icon: "💾",
+  label: "Disk",
+  grad: "from-slate-700 to-zinc-600",
+  border: "border-slate-300",
+  noteBg: "bg-slate-100 text-slate-800",
+  tips: [
+    {
+      title: "aiofiles: file I/Ở không block event loop",
+      code: `import aiofiles, asyncio, json
+
+async def read_jsonl_async(path: str):
+    async with aiofiles.open(path, "r") as f:
+        content = await f.read()
+    return [json.loads(l) for l in content.splitlines() if l]
+
+# Đọc nhiều file cùng lúc
+async def load_all_cases(paths: list[str]) -> list:
+    return await asyncio.gather(*[read_jsonl_async(p) for p in paths])
+
+# Append-safe write với lock
+_write_lock = asyncio.Lock()
+async def append_result(path: str, result: dict):
+    async with _write_lock:  # trảnh interleaved write từ nhiều coroutine
+        async with aiofiles.open(path, "a") as f:
+            await f.write(json.dumps(result, ensure_ascii=False) + "\\n")
+
+# Streaming read (không load hết vàở RAM)
+async def stream_large_file(path: str):
+    async with aiofiles.open(path, "r") as f:
+        async for line in f:   # iterate từng dòng
+            yield json.loads(line)`,
+      note: "pip install aiofiles. Dùng asyncio.Lock khi nhiều coroutine cung write 1 file -- không thì output bi interleave.",
+    },
+    {
+      title: "mmap: random access file lớn không OOM",
+      code: `import mmap, struct
+
+# Đọc embedding binary file (float32, 1M vectors x 1536 dim)
+# File size: 1M x 1536 x 4 bytes = ~6GB
+EMBEDDING_DIM = 1536
+EMBEDDING_SIZE = EMBEDDING_DIM * 4  # float32
+
+with open("embeddings.bin", "rb") as f:
+    with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+        def get_embedding(idx: int) -> list[float]:
+            offset = idx * EMBEDDING_SIZE
+            raw = mm[offset : offset + EMBEDDING_SIZE]
+            return struct.unpack(f"{EMBEDDING_DIM}f", raw)
+
+        # Truy cap random không load hết file
+        emb_42 = get_embedding(42)
+        emb_999 = get_embedding(999)
+
+# OS tự quản lý page loading từ disk
+# RAM dùng = chỉ nhưng page đang truy cap, không phải 6GB`,
+      note: "mmap dac biết hieu qua với binary embedding file hoặc dataset lớn cần random access. OS sẽ từ evict page khi RAM thìeu.",
+    },
+    {
+      title: "Atomic write: không corrupt file khi crash",
+      code: `import os, json, tempfile
+from pathlib import Path
+
+def atomic_write_json(path: str | Path, data: dict):
+    """Write JSON atomically -- không bao gio để file nua với."""
+    path = Path(path)
+    # Ghi vàở temp file cung thu muc (cung filesystem = rename atomic)
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        dir=path.parent,
+        suffix=".tmp",
+        delete=False,
+        encoding="utf-8",
+    ) as tmp:
+        json.dump(data, tmp, ensure_ascii=False, indent=2)
+        tmp.flush()
+        os.fsync(tmp.fileno())  # flush OS buffer xuong disk
+        tmp_path = tmp.name
+
+    # atomic rename: không có trạng thái "nua với"
+    os.replace(tmp_path, path)
+
+# Async version
+async def atomic_write_json_async(path, data):
+    import aiofiles
+    tmp_path = str(path) + ".tmp"
+    async with aiofiles.open(tmp_path, "w") as f:
+        await f.write(json.dumps(data, ensure_ascii=False, indent=2))
+    os.replace(tmp_path, path)`,
+      note: "Dac biết quan trọng với checkpoint file trong training. os.replace() là atomic trên cung filesystem -- nếu crash giua chung, file cu vẫn còn nguyên.",
+    },
+  ],
+},
+];
+
+const active = resources.find(r => r.id === activeRes);
+
+return (
+<section className="bg-slate-950 px-6 py-16 text-white">
+  <SectionTitle eyebrow="Tầng 6" title="Kiểm soát tài nguyên nhu than" icon={Cpu}>
+    <span className="text-slate-300">
+      RAM, CPU, GPU, Disk, Network -- mỗi loại có bottleneck và tool riêng. Đây là nhưng trick mà hầu hết tutorial không để cap.
+    </span>
+  </SectionTitle>
+
+  <div className="mx-auto max-w-7xl">
+    {/* Resource tabs */}
+    <div className="mb-8 flex flex-wrap justify-center gap-3">
+      {resources.map(r => (
+        <button key={r.id} onClick={() => setActiveRes(r.id)}
+          className={`rounded-2xl px-5 py-3 text-base font-black transition ${
+            activeRes === r.id
+              ? `bg-gradient-to-r ${r.grad} text-white shadow-lg scale-105`
+              : "border border-white/20 bg-white/5 text-slate-300 hover:bg-white/10"
+          }`}
+        >
+          {r.icon} {r.label}
+        </button>
+      ))}
+    </div>
+
+    <div className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
+      {/* Tip list */}
+      <div className="space-y-3 content-start grid">
+        {active.tips.map((tip, i) => (
+          <button key={i} onClick={() => setActiveTip(i)}
+            className={`w-full rounded-2xl border p-4 text-left transition ${
+              activeTip === i
+                ? "border-indigo-400 bg-indigo-500/20 shadow-md"
+                : "border-white/10 bg-white/5 hover:bg-white/10"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                activeTip === i ? "bg-indigo-500 text-white" : "bg-white/10 text-slate-300"
+              }`}>{i + 1}</div>
+              <span className={`font-bold text-sm leading-6 ${activeTip === i ? "text-white" : "text-slate-300"}`}>
+                {tip.title}
+              </span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Detail */}
+      <AnimatePresence mode="wait">
+        <motion.div key={`${activeRes}-${activeTip}`}
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.2 }}
+          className="flex flex-col gap-4"
+        >
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6">
+            <h3 className="mb-4 font-black text-white">{active.tips[activeTip].title}</h3>
+            <CodeBlock>{active.tips[activeTip].code}</CodeBlock>
+          </div>
+          <div className={`rounded-[2rem] border ${active.border} ${active.noteBg} p-5`}>
+            <div className="flex items-start gap-2">
+              <Lightbulb className="mt-0.5 shrink-0" size={18} />
+              <p className="text-sm leading-7">{active.tips[activeTip].note}</p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  </div>
+</section>
+);
+}
+
+function PageRoot() {
+  return (
+    <main className="min-h-screen bg-white font-sans text-slate-900">
+      <Nav />
+      <Hero />
+      <ResourceControlSection />
+      <PageFooterNav
+        prev="02-concurrency.html"
+        prevLabel="02 Concurrency"
+        next="04-profiling.html"
+        nextLabel="04 Profiling"
+      />
+    </main>
+  );
+}
+
+createRoot(document.getElementById("root")).render(<PageRoot />);
+</script>
+</body>
+</html>

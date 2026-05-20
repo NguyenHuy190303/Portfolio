@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEEP DIVE PYTHON - Dashboard</title>
+  <style>
+    :root {
+      --ink: #111827;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --paper: #ffffff;
+      --soft: #f8fafc;
+      --blue: #2563eb;
+      --cyan: #0891b2;
+      --orange: #ea580c;
+      --violet: #7c3aed;
+      --green: #059669;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(37, 99, 235, 0.12), transparent 28rem),
+        radial-gradient(circle at 88% 18%, rgba(8, 145, 178, 0.10), transparent 24rem),
+        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(16px);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 14px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.24);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .nav-links a {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 8px 10px;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .nav-links a:hover {
+      border-color: var(--line);
+      background: white;
+      color: var(--ink);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+      gap: 24px;
+      padding: 42px 0 26px;
+    }
+    .panel {
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 18px 55px rgba(15, 23, 42, 0.08);
+    }
+    .hero-main { padding: 32px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      background: #eff6ff;
+      padding: 8px 12px;
+      color: #1d4ed8;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(42px, 7vw, 82px);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+    }
+    .lead {
+      margin: 20px 0 0;
+      max-width: 760px;
+      color: #475569;
+      font-size: 18px;
+      line-height: 1.75;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--soft);
+      padding: 16px;
+    }
+    .stat strong { display: block; font-size: 30px; line-height: 1; }
+    .stat span { display: block; margin-top: 7px; color: var(--muted); font-size: 13px; font-weight: 800; }
+
+    .quick {
+      padding: 22px;
+      color: white;
+      background: linear-gradient(160deg, #0f172a, #1e293b 62%, #0e7490);
+    }
+    .quick h2 { margin: 0; font-size: 22px; letter-spacing: -0.03em; }
+    .quick p { margin: 6px 0 18px; color: #cbd5e1; line-height: 1.6; }
+    .quick a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 14px;
+      font-weight: 850;
+    }
+    .quick a span { color: #67e8f9; font-size: 13px; }
+
+    .section { padding: 22px 0; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+    .section h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+    }
+    .section p { margin: 6px 0 0; color: var(--muted); line-height: 1.6; }
+    .primary {
+      border-radius: 12px;
+      background: #0f172a;
+      padding: 12px 16px;
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .card {
+      position: relative;
+      overflow: hidden;
+      min-height: 270px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.07);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: var(--accent);
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .code {
+      color: var(--tone);
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+    }
+    .number {
+      color: var(--tone);
+      font-size: 48px;
+      font-weight: 950;
+      line-height: 1;
+      opacity: 0.18;
+    }
+    .card h3 {
+      margin: 14px 0 12px;
+      font-size: 20px;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+    }
+    .card ul {
+      margin: 0 0 18px;
+      padding: 0 0 0 18px;
+      color: #475569;
+      line-height: 1.75;
+      font-size: 14px;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+    }
+    .badge {
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--tone) 10%, white);
+      padding: 7px 10px;
+      color: var(--tone);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .open {
+      border-radius: 10px;
+      background: var(--tone);
+      padding: 9px 12px;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .blue { --tone: var(--blue); --accent: linear-gradient(90deg, #2563eb, #06b6d4); }
+    .indigo { --tone: #4f46e5; --accent: linear-gradient(90deg, #4f46e5, #7c3aed); }
+    .orange { --tone: var(--orange); --accent: linear-gradient(90deg, #ea580c, #f59e0b); }
+    .violet { --tone: var(--violet); --accent: linear-gradient(90deg, #7c3aed, #db2777); }
+    .green { --tone: var(--green); --accent: linear-gradient(90deg, #059669, #0d9488); }
+
+    .paths {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .path {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+      padding: 20px;
+    }
+    .path h3 { margin: 0 0 6px; font-size: 18px; }
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .pills a {
+      border-radius: 999px;
+      background: #f1f5f9;
+      padding: 8px 11px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .pills a:hover { background: #dbeafe; color: #1d4ed8; }
+
+    .refs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      padding-bottom: 40px;
+    }
+    .ref {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+      padding: 20px;
+    }
+    .ref b { display: block; margin-bottom: 8px; font-size: 17px; }
+    .ref p { margin: 0; color: #475569; line-height: 1.7; }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 22px 0;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 920px) {
+      .nav-inner, .section-head { align-items: flex-start; flex-direction: column; }
+      .hero { grid-template-columns: 1fr; }
+      .cards, .refs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 20px, 1180px); }
+      .hero-main { padding: 24px; }
+      .stats, .cards, .paths, .refs { grid-template-columns: 1fr; }
+      .nav-links { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="shell nav-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">Py</span>
+        <span>DEEP DIVE PYTHON</span>
+      </a>
+      <div class="nav-links">
+        <a href="01-basics.html">01 Cơ bản</a>
+        <a href="02-concurrency.html">02 Đồng thời</a>
+        <a href="03-resource-control.html">03 Tài nguyên</a>
+        <a href="04-profiling.html">04 Đo hiệu năng</a>
+        <a href="05-fastapi-architecture.html">05 FastAPI</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="panel hero-main">
+        <div class="eyebrow">Dashboard học Python thực chiến</div>
+        <h1>Deep Dive Python</h1>
+        <p class="lead">
+          Bản đồ học Python cho người đã viết code một thời gian và bắt đầu gặp vấn đề thật:
+          async bị kẹt, code chậm không rõ lý do, worker quá tải, hoặc FastAPI khó shutdown sạch.
+        </p>
+        <div class="stats">
+          <div class="stat"><strong>5</strong><span>chương trọng tâm</span></div>
+          <div class="stat"><strong>21+</strong><span>component học tương tác</span></div>
+          <div class="stat"><strong>2</strong><span>lộ trình đọc nhanh</span></div>
+        </div>
+      </div>
+
+      <aside class="panel quick">
+        <h2>Bắt đầu nhanh</h2>
+        <p>Chọn theo vấn đề bạn đang gặp, không cần đọc tuần tự từ đầu.</p>
+        <a href="01-basics.html">Mới với async <span>Đọc chương 01 -></span></a>
+        <a href="04-profiling.html">Code bị chậm hoặc kẹt <span>Đọc chương 04 -></span></a>
+        <a href="05-fastapi-architecture.html">FastAPI cần chạy production <span>Đọc chương 05 -></span></a>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Bảng điều khiển nội dung</h2>
+          <p>Mỗi chương là một module độc lập, có thể đọc theo thứ tự hoặc nhảy thẳng vào phần cần sửa.</p>
+        </div>
+        <a class="primary" href="01-basics.html">Bắt đầu từ chương 01 -></a>
+      </div>
+
+      <div class="cards">
+        <article class="card blue">
+          <div class="card-top"><span class="code">01 - CƠ BẢN</span><span class="number">01</span></div>
+          <h3>Sync/Async từ ví dụ trà sữa đến cơ chế await</h3>
+          <ul>
+            <li>await từng bước, có code và output thật</li>
+            <li>Mô phỏng trực quan</li>
+            <li>Blocking vs non-blocking</li>
+            <li>Mô hình tư duy về event loop</li>
+          </ul>
+          <div class="card-footer"><span class="badge">6 phần</span><a class="open" href="01-basics.html">Mở chương</a></div>
+        </article>
+
+        <article class="card indigo">
+          <div class="card-top"><span class="code">02 - ĐỒNG THỜI</span><span class="number">02</span></div>
+          <h3>5 cơ chế chạy đồng thời: khi nào dùng cái nào</h3>
+          <ul>
+            <li>asyncio, threading, multiprocessing, queue workers</li>
+            <li>GIL thật sự làm gì?</li>
+            <li>6 lầm tưởng phổ biến</li>
+            <li>6 mẹo dùng trong production</li>
+          </ul>
+          <div class="card-footer"><span class="badge">9 phần</span><a class="open" href="02-concurrency.html">Mở chương</a></div>
+        </article>
+
+        <article class="card orange">
+          <div class="card-top"><span class="code">03 - TÀI NGUYÊN</span><span class="number">03</span></div>
+          <h3>Kiểm soát RAM, CPU, GPU, ổ đĩa và mạng</h3>
+          <ul>
+            <li>Connection pool, retry và backoff</li>
+            <li>tracemalloc</li>
+            <li>torch.no_grad và aiofiles</li>
+            <li>Ghi file nguyên tử</li>
+          </ul>
+          <div class="card-footer"><span class="badge">5 tab, 15 mẹo</span><a class="open" href="03-resource-control.html">Mở chương</a></div>
+        </article>
+
+        <article class="card violet">
+          <div class="card-top"><span class="code">04 - ĐO HIỆU NĂNG</span><span class="number">04</span></div>
+          <h3>Debug và đo hiệu năng async code như dân production</h3>
+          <ul>
+            <li>asyncio debug mode</li>
+            <li>yappi async profiler</li>
+            <li>aiomonitor live inspection</li>
+            <li>SIGUSR1 task dump</li>
+          </ul>
+          <div class="card-footer"><span class="badge">6 phần, mới</span><a class="open" href="04-profiling.html">Mở chương</a></div>
+        </article>
+
+        <article class="card green">
+          <div class="card-top"><span class="code">05 - FASTAPI</span><span class="number">05</span></div>
+          <h3>FastAPI thực chiến và mẫu Worker Pool</h3>
+          <ul>
+            <li>lifespan pattern</li>
+            <li>BackgroundTasks vs Celery</li>
+            <li>WorkerPool có backpressure</li>
+            <li>Top 5 lỗi async</li>
+          </ul>
+          <div class="card-footer"><span class="badge">6 phần, mới</span><a class="open" href="05-fastapi-architecture.html">Mở chương</a></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Lộ trình đọc</h2>
+          <p>Chọn đường đi phù hợp với mục tiêu hiện tại.</p>
+        </div>
+      </div>
+      <div class="paths">
+        <div class="path">
+          <h3>Lộ trình A - Học từ đầu</h3>
+          <p>Đi từng bước để xây nền vững.</p>
+          <div class="pills">
+            <a href="01-basics.html">01 Cơ bản</a>
+            <a href="02-concurrency.html">02 Đồng thời</a>
+            <a href="03-resource-control.html">03 Tài nguyên</a>
+            <a href="04-profiling.html">04 Đo hiệu năng</a>
+            <a href="05-fastapi-architecture.html">05 FastAPI</a>
+          </div>
+        </div>
+        <div class="path">
+          <h3>Lộ trình B - Đang debug production</h3>
+          <p>Vào thẳng vấn đề cần xử lý ngay.</p>
+          <div class="pills">
+            <a href="04-profiling.html">04 Đo hiệu năng</a>
+            <a href="02-concurrency.html">02 Đồng thời</a>
+            <a href="03-resource-control.html">03 Tài nguyên</a>
+            <a href="05-fastapi-architecture.html">05 FastAPI</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Ghi nhớ nhanh</h2>
+          <p>Ba quyết định kỹ thuật xuất hiện thường xuyên nhất.</p>
+        </div>
+      </div>
+      <div class="refs">
+        <div class="ref"><b>Async</b><p>Không để CPU ngồi chờ khi đang đợi I/O. Mạnh nhất với network, database, file và API.</p></div>
+        <div class="ref"><b>Thread</b><p>Hợp khi phải dùng thư viện đồng bộ như requests, boto3 hoặc SDK cũ mà vẫn cần chạy nhiều I/O.</p></div>
+        <div class="ref"><b>Process</b><p>Dùng khi cần chạy CPU song song thật. Mỗi process có GIL riêng nên vượt được giới hạn của thread.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>DEEP DIVE PYTHON - Dashboard tĩnh, mở nhanh, không phụ thuộc JavaScript.</footer>
+</body>
+</html>

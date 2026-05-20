@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>01 Basics — DEEP DIVE PYTHON</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "framer-motion": "https://esm.sh/framer-motion@11.18.2?external=react,react-dom",
+    "lucide-react": "https://esm.sh/lucide-react@0.468.0?external=react"
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-type="module" data-presets="react">
+import React, { useState, useEffect, useMemo } from "react";
+import { createRoot } from "react-dom/client";
+import { motion, AnimatePresence } from "framer-motion";
+import { Baby, Brain, Clock, Cpu, GitBranch, HelpCircle, Lightbulb, Play, RotateCcw, Sparkles, Timer, Zap } from "lucide-react";
+
+const CURRENT_PAGE = "01-basics";
+
+const NAV_LINKS = [
+  { href: "index.html", label: "Trang chủ", id: "index" },
+  { href: "01-basics.html", label: "01 Cơ bản", id: "01-basics" },
+  { href: "02-concurrency.html", label: "02 Đồng thời", id: "02-concurrency" },
+  { href: "03-resource-control.html", label: "03 Tài nguyên", id: "03-resource-control" },
+  { href: "04-profiling.html", label: "04 Đở hiệu năng", id: "04-profiling" },
+  { href: "05-fastapi-architecture.html", label: "05 FastAPI", id: "05-fastapi" },
+];
+
+function Nav() {
+  return (
+    <nav className="sticky top-0 z-50 bg-slate-950 border-b border-white/10 shadow-xl">
+      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-3">
+        <a href="index.html" className="font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 text-lg tracking-tight">
+          DEEP DIVE PYTHON
+        </a>
+        <div className="flex gap-1">
+          {NAV_LINKS.slice(1).map(link => (
+            <a key={link.id} href={link.href}
+              className={`px-3 py-1.5 rounded-xl text-sm font-bold transition ${
+                CURRENT_PAGE === link.id
+                  ? "bg-indigo-600 text-white"
+                  : "text-slate-400 hover:text-white hover:bg-white/10"
+              }`}
+            >{link.label}</a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function PageFooterNav({ prev, prevLabel, next, nextLabel }) {
+  return (
+    <div className="border-t border-slate-200 bg-white px-6 py-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-between">
+        {prev ? (
+          <a href={prev} className="flex items-center gap-2 rounded-2xl border border-slate-200 px-5 py-3 font-bold text-slate-700 hover:bg-slate-50">
+            <span>&#8592;</span> {prevLabel}
+          </a>
+        ) : <div />}
+        <a href="index.html" className="text-sm font-bold text-slate-500 hover:text-slate-900">Trang chủ</a>
+        {next ? (
+          <a href={next} className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 font-bold text-white hover:bg-indigo-500">
+            {nextLabel} <span>&#8594;</span>
+          </a>
+        ) : <div />}
+      </div>
+    </div>
+  );
+}
+
+function Badge({ children }) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+      {children}
+    </span>
+  );
+}
+
+function SectionTitle({ eyebrow, title, children, icon: Icon = Sparkles }) {
+  return (
+    <div className="mx-auto mb-8 max-w-3xl text-center">
+      <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm">
+        <Icon size={16} />
+        {eyebrow}
+      </div>
+      <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{title}</h2>
+      {children && <p className="mt-4 text-lg leading-8 text-slate-600">{children}</p>}
+    </div>
+  );
+}
+
+function CodeBlock({ children }) {
+  return (
+    <pre className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-6 text-slate-100 shadow-xl">
+      <code>{children}</code>
+    </pre>
+  );
+}
+
+function InfoBox({ title, text }) {
+  return (
+    <div className="rounded-3xl border border-slate-100 bg-slate-50 p-5">
+      <p className="text-sm font-bold uppercase tracking-widest text-slate-500">{title}</p>
+      <p className="mt-2 leading-7 text-slate-800">{text}</p>
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-blue-950 via-slate-950 to-indigo-950 px-6 py-20 text-white">
+      <div className="absolute left-10 top-10 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl" />
+      <div className="absolute bottom-10 right-10 h-48 w-48 rounded-full bg-indigo-500/20 blur-3xl" />
+      <div className="relative mx-auto max-w-4xl text-center">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold">
+          <span className="text-blue-300">01</span>
+          <span className="text-white/70">·</span>
+          <span>BASICS</span>
+        </div>
+        <h1 className="text-5xl font-black tracking-tight md:text-7xl">
+          Sync / Async
+          <span className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            Hiểu từ bên trong
+          </span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-xl leading-9 text-slate-300">
+          Từ ví dụ trà sữa đến cơ chế await thực sự. Event loop, coroutine, cooperative multitasking — gìải thích bằng code thật và output thật.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {["Sync vs Async", "await internals", "Mô phỏng trực quan", "Event loop", "Blocking calls"].map(tag => (
+            <span key={tag} className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white/80">{tag}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const cards = [
+  {
+    id: "sync",
+    title: "Sync",
+    subtitle: "Làm từng việc, xong cái này mới tới cái kia",
+    icon: Clock,
+    color: "from-slate-100 to-slate-50",
+    border: "border-slate-200",
+    example: "Bạn đứng trước quầy trà sữa. Gọi 1 lý, đứng chờ pha xong, rồi mới gọi lý tiếp theo.",
+    code: `def call_api():\n response = requests.post(url)\n return response.json()\n\nresult = call_api()\nprint(result)`,
+  },
+  {
+    id: "async",
+    title: "Async",
+    subtitle: "Bắt đầu việc chậm, trong lúc chờ thì làm việc khác",
+    icon: Zap,
+    color: "from-indigo-100 to-violet-50",
+    border: "border-indigo-200",
+    example: "Bạn gọi 3 lý trà sữa cùng lúc. Quán đưa số thứ tự. Trong lúc chờ, bạn ngồi chơi; lý nàở xong thì ra lấy.",
+    code: `async def call_api(case):\n response = await client.post(url, json=case)\n return response.json()\n\nresults = await asyncio.gather(\n call_api(case_1),\n call_api(case_2),\n call_api(case_3),\n)`,
+  },
+];
+
+function AnalogyCards() {
+  const [selected, setSelected] = useState("sync");
+  const item = cards.find((card) => card.id === selected);
+  const Icon = item.icon;
+
+  return (
+    <section className="px-6 py-16">
+      <SectionTitle eyebrow="Tầng 1" title="Gìải thích bằng chuyện đời thường" icon={Baby}>
+        trước khi deep dive, cần nắm một ý: sync/async nói về cách chương trình chờ việc chậm.
+      </SectionTitle>
+      <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-[0.8fr_1.2fr]">
+        <div className="space-y-4">
+          {cards.map((card) => {
+            const CardIcon = card.icon;
+            const active = selected === card.id;
+            return (
+              <button key={card.id} onClick={() => setSelected(card.id)}
+                className={`w-full rounded-3xl border p-5 text-left transition ${active ? "border-indigo-300 bg-indigo-50 shadow-lg" : "border-slate-200 bg-white hover:bg-slate-50"}`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="rounded-2xl bg-white p-3 shadow-sm">
+                    <CardIcon className={active ? "text-indigo-700" : "text-slate-600"} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-slate-950">{card.title}</h3>
+                    <p className="mt-1 text-slate-600">{card.subtitle}</p>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div key={item.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className={`rounded-[2rem] border ${item.border} bg-gradient-to-br ${item.color} p-6 shadow-xl`}>
+            <div className="mb-6 flex items-center gap-4">
+              <div className="rounded-3xl bg-white p-4 shadow-sm">
+                <Icon size={34} className="text-indigo-700" />
+              </div>
+              <div>
+                <p className="text-sm font-bold uppercase tracking-widest text-indigo-700">{item.title}</p>
+                <h3 className="text-3xl font-black text-slate-950">{item.subtitle}</h3>
+              </div>
+            </div>
+            <div className="rounded-3xl bg-white/85 p-5 text-lg leading-8 text-slate-700 shadow-sm">
+              <b>Ví dụ:</b> {item.example}
+            </div>
+            <div className="mt-5">
+              <CodeBlock>{item.code}</CodeBlock>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+function Simulator() {
+  const [mode, setMode] = useState("sync");
+  const [running, setRunning] = useState(false);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setTick((t) => (t >= 8 ? 8 : t + 1)), 650);
+    return () => clearInterval(id);
+  }, [running]);
+
+  useEffect(() => {
+    if (tick >= 8) setRunning(false);
+  }, [tick]);
+
+  const reset = () => {
+    setRunning(false);
+    setTick(0);
+  };
+
+  const syncSteps = [
+    { name: "Case 1", start: 0, end: 2 },
+    { name: "Case 2", start: 2, end: 4 },
+    { name: "Case 3", start: 4, end: 6 },
+  ];
+  const asyncSteps = [
+    { name: "Case 1", start: 0, end: 4 },
+    { name: "Case 2", start: 0, end: 3 },
+    { name: "Case 3", start: 0, end: 5 },
+  ];
+  const steps = mode === "sync" ? syncSteps : asyncSteps;
+
+  return (
+    <section className="bg-slate-950 px-6 py-16 text-white">
+      <SectionTitle eyebrow="Tầng 2" title="Bấm chạy để thấy khác biệt" icon={Play}>
+        <span className="text-slate-300">Cùng 3 việc chậm. Sync xếp hàng. Async cho tất cả bắt đầu, rồi xử lý cái nàở xong trước.</span>
+      </SectionTitle>
+
+      <div className="mx-auto max-w-6xl rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex rounded-2xl bg-slate-900 p-1">
+            <button onClick={() => { setMode("sync"); reset(); }}
+              className={`rounded-xl px-4 py-2 font-bold transition ${mode === "sync" ? "bg-white text-slate-950" : "text-slate-300"}`}
+            >Sync</button>
+            <button onClick={() => { setMode("async"); reset(); }}
+              className={`rounded-xl px-4 py-2 font-bold transition ${mode === "async" ? "bg-white text-slate-950" : "text-slate-300"}`}
+            >Async</button>
+          </div>
+          <div className="flex gap-3">
+            <button onClick={() => setRunning(true)} className="inline-flex items-center gap-2 rounded-2xl bg-indigo-500 px-5 py-3 font-bold shadow-lg hover:bg-indigo-400">
+              <Play size={18} /> Chạy mô phỏng
+            </button>
+            <button onClick={reset}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/15 px-5 py-3 font-bold text-slate-200 hover:bg-white/10">
+              <RotateCcw size={18} /> Reset
+            </button>
+          </div>
+        </div>
+
+        <div className="grid gap-4">
+          {steps.map((step) => {
+            const active = tick >= step.start && tick < step.end;
+            const done = tick >= step.end;
+            const width = Math.max(0, Math.min(100, ((tick - step.start) / (step.end - step.start)) * 100));
+            return (
+              <div key={step.name} className="rounded-3xl bg-slate-900 p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`h-3 w-3 rounded-full ${done ? "bg-green-400" : active ? "bg-indigo-400" : "bg-slate-600"}`} />
+                    <b>{step.name}</b>
+                  </div>
+                  <span className="text-sm text-slate-400">{done ? "xong" : active ? "đang chờ I/Ở" : "chua bắt đầu"}</span>
+                </div>
+                <div className="h-5 overflow-hidden rounded-full bg-slate-800">
+                  <motion.div className="h-full rounded-full bg-gradient-to-r from-indigo-400 to-cyan-400"
+                    animate={{ width: done ? "100%" : active ? `${width}%` : "0%" }} transition={{ duration: 0.25 }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+            <h3 className="mb-2 text-xl font-black">Dieu đang xay ra</h3>
+            <p className="leading-8 text-slate-300">
+              {mode === "sync"
+                ? "Sync: Case 2 phải doi Case 1 xong. Case 3 phải doi Case 2 xong. Để hieu nhưng chậm nếu mỗi case chỉ đang chờ network."
+                : "Async: ca 3 case được bắt đầu gan nhu cùng lúc. Khi task nàở awaít I/Ở, event loop chuyển sang task khác."}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+            <h3 className="mb-2 text-xl font-black">Câu than chu</h3>
+            <p className="leading-8 text-slate-300">
+              Async trong Python là <b>cooperative multitasking</b>: task phải từ nhuong quyen bang <code className="rounded bg-slate-800 px-2 py-1">await</code>. Không await thì event loop bi chỉem.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AwaitDeepDive() {
+  const [activeTab, setActiveTab] = useState("mechanic");
+  const [step, setStep] = useState(0);
+
+  const steps = [
+    {
+      label: "async def tạở coroutine function",
+      code: `async def fetch(name, delay):
+    print(f"[{name}] bắt đầu")
+    await asyncio.sleep(delay)
+    print(f"[{name}] xong")
+    return f"data-{name}"
+
+# Gọi fetch() KHONG chạy gì ca!
+# Nó chỉ tạở ra một coroutine object.
+coro = fetch("A", 2)
+print(type(coro))  # <class 'coroutine'>`,
+      explain: "async def không chạy code ngay. Khi gọi fetch(), Python tra ve một coroutine object — gìống nhu to giay ghi ten việc cần làm, chua ai làm.",
+    },
+    {
+      label: "asyncio.run() khởi động event loop",
+      code: `import asyncio
+
+async def main():
+    result = await fetch("A", 2)
+    print(result)
+
+asyncio.run(main())
+# asyncio.run() làm 3 việc:
+#   1. Tạở event loop mới
+#   2. Chạy coroutine main()
+#   3. Dong loop khi xong`,
+      explain: "Event loop là 'quan lý cong việc'. Nó quyết định task nàở chạy lúc nàở. asyncio.run() tạở loop và bắt đầu chạy.",
+    },
+    {
+      label: "Gap await → coroutine từ pause",
+      code: `async def fetch(name, delay):
+    print(f"[{name}] bắt đầu")
+    # ↓ Đây là diem pivot
+    await asyncio.sleep(delay)
+    # ↑ Python làm 3 dieu:
+    #   1. Lưu toàn bộ state (biến, vị trí dòng)
+    #   2. Đang ky callback: "khi sleep xong, resume đây"
+    #   3. Tra quyen về cho event loop
+    print(f"[{name}] xong")`,
+      explain: "await là nut 'tới cần chờ, nhường cho người khác'. Python dong bang coroutine tại chỗ, lưu mọi biến local, và event loop chạy task khác.",
+    },
+    {
+      label: "Event loop chạy task khác khi đang chờ",
+      code: `async def main():
+    # asyncio.gather chạy ca 3 gan nhu cùng lúc
+    await asyncio.gather(
+        fetch("API-1", 3),   # chờ 3s
+        fetch("API-2", 1),   # chờ 1s  <- xong trước
+        fetch("API-3", 2),   # chờ 2s
+    )
+
+# Timeline thực tế:
+# t=0s  -> ca 3 bắt đầu, rồi cùng await sleep()
+# t=1s  -> event loop resume API-2 (xong trước)
+# t=2s  -> event loop resume API-3
+# t=3s  -> event loop resume API-1
+# Tổng: 3s, không phải 1+2+3=6s`,
+      explain: "Khi API-1 đang await (chờ 3s), event loop không ngồi chơi. Nó chuyển sang API-2, API-3. Cái nàở callback ve trước thì được resume trước.",
+    },
+    {
+      label: "Resume: tiếp tục ngay sau dòng await",
+      code: `async def fetch(name, delay):
+    print(f"[{name}] bắt đầu")   # <- chạy lần 1
+    await asyncio.sleep(delay)    # <- pause tại đây
+    # Python restore state: name, delay vẫn còn nguyên
+    print(f"[{name}] xong")       # <- chạy khi resume
+    return f"data-{name}"
+
+# Output với gather(fetch("A",3), fetch("B",1)):
+# [A] bắt đầu
+# [B] bắt đầu
+# [B] xong      <- resume B trước vi chờ it hơn
+# [A] xong`,
+      explain: "Khi I/Ở xong, event loop resume coroutine dừng vàở dòng ngay sau await. Mọi biến local (name, delay) vẫn còn nguyên — Python đã lưu chúng lại.",
+    },
+  ];
+
+  const realCodeExample = `import asyncio
+import time
+
+async def call_api(name: str, delay: float) -> str:
+    print(f"  -> [{name}] gửi request (t={time.time()-start:.1f}s)")
+    await asyncio.sleep(delay)   # gia lap network latency
+    print(f"  <- [{name}] nhận response (t={time.time()-start:.1f}s)")
+    return f"kết quả từ {name}"
+
+async def main():
+    global start
+    start = time.time()
+
+    print("=== Chạy async (gather) ===")
+    results = await asyncio.gather(
+        call_api("LLM-eval-1", 3.0),
+        call_api("LLM-eval-2", 1.0),
+        call_api("LLM-eval-3", 2.0),
+    )
+
+    elapsed = time.time() - start
+    print(f"\\nXong! Tổng: {elapsed:.1f}s")
+    print(f"(sync từần tự sẽ mất: {3+1+2}s)")
+    for r in results:
+        print(f"  * {r}")
+
+asyncio.run(main())`;
+
+  const realCodeOutput = `=== Chạy async (gather) ===
+  -> [LLM-eval-1] gửi request (t=0.0s)
+  -> [LLM-eval-2] gửi request (t=0.0s)
+  -> [LLM-eval-3] gửi request (t=0.0s)
+  <- [LLM-eval-2] nhận response (t=1.0s)   <- ve trước
+  <- [LLM-eval-3] nhận response (t=2.0s)
+  <- [LLM-eval-1] nhận response (t=3.0s)   <- ve sau cung
+
+Xong! Tổng: 3.0s
+(sync từần tự sẽ mất: 6s)
+  * kết quả từ LLM-eval-1
+  * kết quả từ LLM-eval-2
+  * kết quả từ LLM-eval-3`;
+
+  const coroutineModel = [
+    {
+      term: "coroutine function",
+      code: "async def fetch():",
+      desc: "Hàm dac biết, khi gọi không chạy ngay. Tra ve coroutine object.",
+      color: "bg-indigo-50 border-indigo-200 text-indigo-950",
+      tag: "bg-indigo-600",
+    },
+    {
+      term: "coroutine object",
+      code: "coro = fetch()  # object, chua chạy",
+      desc: "Dài dien chờ một 'việc chua làm'. Có thể await hoặc schedule vàở event loop.",
+      color: "bg-violet-50 border-violet-200 text-violet-950",
+      tag: "bg-violet-600",
+    },
+    {
+      term: "Task",
+      code: "asyncio.create_task(fetch())",
+      desc: "Coroutine được đóng gói, da được event loop nhận. Có thể chạy xen kẽ với task khác.",
+      color: "bg-cyan-50 border-cyan-200 text-cyan-950",
+      tag: "bg-cyan-600",
+    },
+    {
+      term: "event loop",
+      code: "asyncio.run(main())",
+      desc: "Vòng lặp trung tâm: nhận callback từ OS, quyết định task nàở resume, đảm bảở chỉ 1 task chạy Python tai một thời điểm.",
+      color: "bg-emerald-50 border-emerald-200 text-emerald-950",
+      tag: "bg-emerald-600",
+    },
+  ];
+
+  const tabs = [
+    { id: "mechanic", label: "Có che tung buoc" },
+    { id: "realcode", label: "Code thật + Output" },
+    { id: "model", label: "Coroutine là gì?" },
+  ];
+
+  return (
+    <section className="px-6 py-16 bg-white">
+      <SectionTitle eyebrow="Tang 3" title="Deep dive: await thật sự làm gì?" icon={Brain}>
+        <code className="rounded bg-slate-100 px-2 py-1 text-base">await</code> không phải "doi ngủ" — nó là nut{" "}
+        <b>nhuong san + luu trạng thái</b>. Hiểu dùng thì moi bug async sẽ từ sang ra.
+      </SectionTitle>
+
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 flex flex-wrap gap-2 rounded-2xl border bg-slate-50 p-2">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id)}
+              className={`rounded-xl px-5 py-2.5 font-bold transition ${
+                activeTab === t.id
+                  ? "bg-indigo-600 text-white shadow-md"
+                  : "text-slate-600 hover:bg-white hover:text-slate-950"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === "mechanic" && (
+          <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+            <div className="space-y-3">
+              {steps.map((s, i) => (
+                <button
+                  key={i}
+                  onClick={() => setStep(i)}
+                  className={`w-full rounded-2xl border p-4 text-left transition ${
+                    step === i
+                      ? "border-indigo-300 bg-indigo-50 shadow-md"
+                      : "border-slate-200 bg-white hover:bg-slate-50"
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                        step === i ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"
+                      }`}
+                    >
+                      {i + 1}
+                    </div>
+                    <span className={`mt-0.5 font-bold ${step === i ? "text-indigo-900" : "text-slate-700"}`}>
+                      {s.label}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col gap-4"
+              >
+                <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+                  <div className="mb-3 flex items-center gap-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-indigo-600 text-sm font-black text-white">
+                      {step + 1}
+                    </div>
+                    <span className="font-black text-slate-950">{steps[step].label}</span>
+                  </div>
+                  <CodeBlock>{steps[step].code}</CodeBlock>
+                </div>
+                <div className="rounded-[2rem] border border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50 p-5">
+                  <div className="flex items-start gap-3">
+                    <Lightbulb className="mt-0.5 shrink-0 text-indigo-600" size={20} />
+                    <p className="leading-8 text-indigo-950">{steps[step].explain}</p>
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <button
+                    onClick={() => setStep((s) => Math.max(0, s - 1))}
+                    disabled={step === 0}
+                    className="rounded-2xl border px-5 py-2.5 font-bold text-slate-700 disabled:opacity-30 hover:bg-slate-50"
+                  >
+                    &#8592; Truoc
+                  </button>
+                  <span className="self-center text-sm text-slate-500">
+                    {step + 1} / {steps.length}
+                  </span>
+                  <button
+                    onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}
+                    disabled={step === steps.length - 1}
+                    className="rounded-2xl bg-indigo-600 px-5 py-2.5 font-bold text-white disabled:opacity-30 hover:bg-indigo-500"
+                  >
+                    Tiếp &#8594;
+                  </button>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        )}
+
+        {activeTab === "realcode" && (
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="flex flex-col gap-4">
+              <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="h-3 w-3 rounded-full bg-red-400" />
+                  <div className="h-3 w-3 rounded-full bg-yellow-400" />
+                  <div className="h-3 w-3 rounded-full bg-green-400" />
+                  <span className="ml-2 text-sm font-mono text-slate-500">demo_await.py</span>
+                </div>
+                <CodeBlock>{realCodeExample}</CodeBlock>
+              </div>
+              <div className="rounded-[2rem] border border-amber-200 bg-amber-50 p-5">
+                <div className="flex items-center gap-2 font-black text-amber-900">
+                  <Lightbulb size={18} /> Chạy thu ngay
+                </div>
+                <p className="mt-2 leading-7 text-amber-900">
+                  Copy code trên, paste vàở terminal. Quan sat thu từ output và tổng thời gian. Đây là bang chung rõ nhất ràng 3 coroutine chạy xen kẽ chu không từần tự.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="rounded-[2rem] border bg-slate-950 p-6 shadow-xl">
+                <div className="mb-4 flex items-center gap-2 text-sm text-slate-400">
+                  <Play size={14} className="text-green-400" />
+                  <span className="font-mono">Output thực tế</span>
+                </div>
+                <pre className="text-sm leading-7 text-slate-100 whitespace-pre-wrap">{realCodeOutput}</pre>
+              </div>
+
+              <div className="rounded-[2rem] border bg-white p-5 shadow-xl">
+                <h3 className="mb-4 font-black text-slate-950">Tại sao chỉ mất 3s thấy vi 6s?</h3>
+                <div className="space-y-3">
+                  {[
+                    { time: "t = 0.0s", text: "asyncio.gather khởi động ca 3 coroutine. Cả 3 cung gửi request, rồi cùng await.", color: "bg-slate-100" },
+                    { time: "t = 1.0s", text: "LLM-eval-2 callback ve (chờ 1s). Event loop resume nó, in 'nhận response'.", color: "bg-cyan-50" },
+                    { time: "t = 2.0s", text: "LLM-eval-3 callback ve. Event loop resume.", color: "bg-indigo-50" },
+                    { time: "t = 3.0s", text: "LLM-eval-1 callback ve. Tat ca xong. gather tra kết quả.", color: "bg-violet-50" },
+                  ].map((row) => (
+                    <div key={row.time} className={`flex items-start gap-3 rounded-2xl p-3 ${row.color}`}>
+                      <span className="shrink-0 rounded-xl bg-white px-2 py-0.5 text-xs font-mono font-bold text-slate-700 shadow-sm">
+                        {row.time}
+                      </span>
+                      <span className="text-sm leading-6 text-slate-700">{row.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "model" && (
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="space-y-4">
+              <h3 className="text-xl font-black text-slate-950">Các khái niệm bạn cần biết</h3>
+              {coroutineModel.map((item) => (
+                <motion.div
+                  key={item.term}
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className={`rounded-3xl border p-5 ${item.color}`}
+                >
+                  <div className="mb-2 flex items-center gap-3">
+                    <span className={`rounded-xl px-3 py-1 text-xs font-black text-white ${item.tag}`}>
+                      {item.term}
+                    </span>
+                    <code className="rounded bg-white/70 px-2 py-0.5 text-xs font-mono">{item.code}</code>
+                  </div>
+                  <p className="leading-7 text-sm">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-5">
+              <div className="rounded-[2rem] border bg-white p-6 shadow-xl">
+                <h3 className="mb-4 font-black text-slate-950">Quan he giua chung</h3>
+                <CodeBlock>{`# 1. Dinh nghia coroutine function
+async def fetch(url):
+    ...
+
+# 2. Gọi -> tạở coroutine object (chua chạy!)
+coro = fetch("http://api.example.com")
+# >>> <coroutine object fetch at 0x...>
+
+# 3. await trong async context -> chạy + có thể pause
+result = await coro
+
+# -- hoặc --
+
+# 3b. create_task -> wrap thanh Task, chạy "background"
+task = asyncio.create_task(fetch("http://..."))
+result = await task  # chờ task xong
+
+# 4. asyncio.gather -> tạở nhiều task song song
+results = await asyncio.gather(
+    fetch("http://api-1.com"),  # ngam tạở Task
+    fetch("http://api-2.com"),
+)`}</CodeBlock>
+              </div>
+
+              <div className="rounded-[2rem] border border-rose-200 bg-rose-50 p-5">
+                <div className="mb-3 font-black text-rose-900 flex items-center gap-2">
+                  <Zap size={18} /> Tại sao cần hiểu điều này?
+                </div>
+                <div className="space-y-2 text-sm leading-7 text-rose-900">
+                  <p>• <b>Bug phổ biến #1:</b> quen <code className="rounded bg-white/70 px-1">await</code> trước coroutine → coroutine không chạy, không bao lỗi, chỉ return object.</p>
+                  <p>• <b>Bug phổ biến #2:</b> <code className="rounded bg-white/70 px-1">asyncio.run()</code> trong loop đang chạy → lỗi "cannot run nested event loop".</p>
+                  <p>• <b>Bug phổ biến #3:</b> <code className="rounded bg-white/70 px-1">time.sleep()</code> thấy vi <code className="rounded bg-white/70 px-1">await asyncio.sleep()</code> → chan toàn bo event loop.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function BlockingWarning() {
+  return (
+    <section className="bg-gradient-to-br from-rose-50 to-orange-50 px-6 py-16">
+      <SectionTitle eyebrow="Bẫy lớn" title="Async mà vẫn bị đứng là vì sao?" icon={Timer}>
+        Vi có lệnh blocking chen vàở. Nó gìống một bạn dùng giua của lớp, không ai đi qua được.
+      </SectionTitle>
+      <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
+        <div className="rounded-[2rem] border border-rose-200 bg-white p-6 shadow-xl">
+          <h3 className="mb-4 text-2xl font-black text-rose-700">Sai: chan event loop</h3>
+          <CodeBlock>{`import time
+
+async def bad_task():
+    print("start")
+    time.sleep(5)  # blocking
+    print("end")`}</CodeBlock>
+          <p className="mt-4 leading-8 text-slate-700">
+            <code>time.sleep(5)</code> chan ca thread. Trong 5 giay đó, event loop không chạy task khác được.
+          </p>
+        </div>
+        <div className="rounded-[2rem] border border-emerald-200 bg-white p-6 shadow-xl">
+          <h3 className="mb-4 text-2xl font-black text-emerald-700">Dùng: nhuong event loop</h3>
+          <CodeBlock>{`import asyncio
+
+async def good_task():
+    print("start")
+    await asyncio.sleep(5)
+    print("end")`}</CodeBlock>
+          <p className="mt-4 leading-8 text-slate-700">
+            <code>await asyncio.sleep(5)</code> noi với event loop: "Minh đang chờ, ban chạy task khác di".
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function QASection() {
+  const items = [
+    {
+      question: "Async có phải tận dụng thời gian làm việc của RAM/ROM không?",
+      answer: "Không han. Noi chính xác hơn: async tận dụng thời gian CPU đang phải chờ I/Ở nhu network, database, disk hoặc API response. RAM chỉ giu state của task trong lúc chờ; ROM không phải khái niệm phù hợp ở đây.",
+    },
+    {
+      question: "Có case nàở sync ngon hơn async không?",
+      answer: "Có. Sync hợp với flow đơn gìản, ít I/Ở chờ, script nhỏ, logic từần tự, cần dễ đọc/dễ debug, hoặc CPU-bound Python thuần. Nếu chỉ gọi một API rồi xử lý tiếp, async thường làm code phức tạp hơn lợi ích nhận được.",
+    },
+    {
+      question: "Nếu dùng parallel và GPU thì nên dùng async dùng không?",
+      answer: "Không tự động dùng. GPU và parallel gìải quyết tính toán nặng; async gìải quyết thời gian chờ I/Ở. Với GPU-heavy, ưu tiên batching, data pipeline, multiprocessing/data loader hoặc queue worker. Async chỉ đang thêm khi ban cần nhận nhiều request, chờ network, gom batch hoặc điều phối nhiều I/Ở quanh GPU.",
+    },
+    {
+      question: "Một câu phân biệt async, parallel và GPU?",
+      answer: "Async gìúp không phi thời gian chờ. Parallel gìúp làm nhiều việc that cùng lúc. GPU gìúp tính toán vector/matrix cực nhanh. Ba cái này khác tầng và có thể kết hợp, nhưng không thay thế nhau.",
+    },
+  ];
+
+  return (
+    <section className="px-6 py-16">
+      <SectionTitle eyebrow="Q/A hay nhầm" title="Mấy câu nên chốt lại" icon={HelpCircle}>
+        Nhung hieu làm thường gap sau khi hoc sync, async, parallel và GPU.
+      </SectionTitle>
+      <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">
+        {items.map((item) => (
+          <div key={item.question} className="rounded-[2rem] border bg-white p-6 shadow-xl">
+            <h3 className="text-xl font-black text-slate-950">{item.question}</h3>
+            <p className="mt-3 leading-8 text-slate-700">{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PageRoot() {
+  return (
+    <main className="min-h-screen bg-white font-sans text-slate-900">
+      <Nav />
+      <Hero />
+      <AnalogyCards />
+      <Simulator />
+      <AwaitDeepDive />
+      <BlockingWarning />
+      <QASection />
+      <PageFooterNav
+        next="02-concurrency.html"
+        nextLabel="02 Concurrency"
+      />
+    </main>
+  );
+}
+
+createRoot(document.getElementById("root")).render(<PageRoot />);
+</script>
+</body>
+</html>

@@ -10,7 +10,11 @@ import { useTranslations } from "next-intl";
 import { Menu, X, Home, Settings, BookOpen, Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { SearchModal } from "@/components/blog/SearchModal";
+import dynamic from "next/dynamic";
+
+const SearchModal = dynamic(() =>
+  import("@/components/blog/SearchModal").then((m) => m.SearchModal)
+);
 import { useLocale } from "next-intl";
 
 const linkKeys = [
@@ -26,12 +30,14 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled((prev) => {
+        const next = window.scrollY > 20;
+        return prev === next ? prev : next;
+      });
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

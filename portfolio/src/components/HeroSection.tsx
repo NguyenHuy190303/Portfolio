@@ -34,6 +34,7 @@ export default function HeroSection() {
             fill
             className="object-cover"
             priority
+            sizes="(max-width: 768px) 144px, 192px"
           />
         </div>
       </div>
