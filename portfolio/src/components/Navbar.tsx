@@ -58,7 +58,7 @@ export default function Navbar() {
               className="font-bold text-xl tracking-tight flex items-center gap-1 group relative z-50"
             >
               <Image
-                src="/lion-logo.jpg"
+                src="/lion-logo.avif"
                 alt="Leo logo"
                 width={32}
                 height={32}
