@@ -45,7 +45,7 @@ export default async function LocaleLayout({
             disableTransitionOnChange
           >
             <Navbar />
-            <main className="relative pt-20">
+            <main>
               {children}
             </main>
             <ScrollToTopButton />

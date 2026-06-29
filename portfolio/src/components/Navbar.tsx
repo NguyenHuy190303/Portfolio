@@ -1,177 +1,109 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React, { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { usePathname } from "@/i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useTranslations } from "next-intl";
-import { Menu, X, Home, Settings, BookOpen, Search } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Menu, X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
+import { useLocale } from "next-intl";
 
 const SearchModal = dynamic(() =>
   import("@/components/blog/SearchModal").then((m) => m.SearchModal)
 );
-import { useLocale } from "next-intl";
 
 const linkKeys = [
-  { href: "/about", labelKey: "home", icon: Home },
-  { href: "/blog", labelKey: "blog", icon: BookOpen },
+  { href: "/about", labelKey: "about" },
+  { href: "/blog",  labelKey: "blog"  },
 ];
 
 export default function Navbar() {
-  const t = useTranslations('nav');
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const locale = useLocale();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled((prev) => {
-        const next = window.scrollY > 20;
-        return prev === next ? prev : next;
-      });
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <>
-      <nav
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out",
-          scrolled ? "py-2" : "py-6"
-        )}
-      >
-        <div className="container-custom">
-          <div
-            className={cn(
-              "mx-auto rounded-full transition-all duration-500 flex items-center justify-between",
-              scrolled
-                ? "glass px-6 py-2 shadow-lg max-w-4xl"
-                : "bg-transparent px-2 py-0 max-w-6xl"
-            )}
-          >
-            {/* Logo */}
-            <Link
-              href="/"
-              className="font-bold text-xl tracking-tight flex items-center gap-1 group relative z-50"
-            >
-              <Image
-                src="/lion-logo.avif"
-                alt="Leo logo"
-                width={32}
-                height={32}
-                className="rounded-lg group-hover:scale-110 transition-transform duration-300 shadow-md shadow-primary/25 object-cover"
-              />
-              <span className="hidden sm:inline-block font-semibold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent ml-2">Leo</span>
-            </Link>
+      <header className="w-full border-b border-border">
+        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="font-semibold text-foreground hover:text-primary transition-colors no-underline">
+            Leo
+          </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-1 bg-secondary/30 backdrop-blur-sm rounded-full p-1 border border-border/50">
-              {linkKeys.map((link) => {
-                const isActive = pathname === link.href;
-                const Icon = link.icon;
-
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      "px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2",
-                      isActive
-                        ? "bg-background shadow-sm text-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                    )}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {t(link.labelKey)}
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Right Section */}
-            <div className="flex items-center gap-2 z-50">
-              <div className="hidden md:flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSearchOpen(true)}
-                  className="rounded-full hover:bg-background/20"
-                  aria-label="Search"
-                >
-                  <Search className="w-4 h-4" />
-                </Button>
-                <ThemeSwitcher />
-                <LanguageSwitcher />
-              </div>
-
-              {/* Mobile menu button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden rounded-full hover:bg-background/20"
-                aria-label="Menu"
-              >
-                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} locale={locale} />}
-
-      {/* Mobile Navigation Menu Overlay */}
-      <div
-        className={cn(
-          "fixed inset-0 bg-background/80 backdrop-blur-xl z-40 md:hidden transition-all duration-300 flex flex-col pt-24 px-6",
-          isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        )}
-      >
-        <div className="flex flex-col gap-2">
-          {linkKeys.map((link, idx) => {
-            const isActive = pathname === link.href;
-            const Icon = link.icon;
-            return (
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-6">
+            {linkKeys.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
-                  "p-4 rounded-xl text-lg font-medium transition-all duration-300 flex items-center gap-3 border",
-                  isActive
-                    ? "bg-primary/10 border-primary/20 text-primary"
-                    : "bg-card border-border text-foreground hover:bg-accent/10"
+                  "text-sm transition-colors no-underline",
+                  pathname === link.href
+                    ? "text-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
-                style={{ transitionDelay: `${idx * 50}ms`, transform: isMobileMenuOpen ? 'translateY(0)' : 'translateY(20px)' }}
               >
-                <Icon className="w-5 h-5" />
                 {t(link.labelKey)}
               </Link>
-            );
-          })}
-        </div>
+            ))}
+          </nav>
 
-        <div className="mt-8 pt-6 border-t border-border flex justify-between items-center animate-fade-in" style={{ animationDelay: '200ms' }}>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Settings className="w-4 h-4" />
-            <span className="text-sm font-medium uppercase tracking-wider">Preferences</span>
-          </div>
-          <div className="flex gap-3">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="hidden md:flex items-center text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Search"
+            >
+              <Search className="w-4 h-4" />
+            </button>
             <ThemeSwitcher />
             <LanguageSwitcher />
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Menu"
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
-      </div>
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-border">
+            <div className="max-w-3xl mx-auto px-6 py-4 flex flex-col gap-3">
+              {linkKeys.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "text-sm py-1 transition-colors no-underline",
+                    pathname === link.href
+                      ? "text-foreground font-medium"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {t(link.labelKey)}
+                </Link>
+              ))}
+              <button
+                onClick={() => { setMobileOpen(false); setSearchOpen(true); }}
+                className="text-sm py-1 text-left text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} locale={locale} />}
     </>
   );
 }
