@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Trang chủ",
-    "about": "Triết lý",
+    "about": "Giới thiệu",
     "skills": "Kỹ năng",
     "experience": "Kinh nghiệm",
     "projects": "Dự án",
@@ -99,21 +99,23 @@
     "readMore": "Đọc thêm"
   },
   "hero": {
+    "name": "Leo (Nguyễn Huy)",
+    "role": "Kỹ sư AI/ML · Trivita AI",
+    "bio": "Xây dựng AI y tế tiếng Việt. Pipeline dữ liệu thực tế (EMR → tổng hợp → dataset có version), cụm 2×8×H100 on-prem, truy cập NVL72 GB200. Mentor lineage quốc tế từ nghiên cứu AI Taiwan.",
     "title": "Nguyễn Huy",
     "alias": "alias: ",
-    "greeting": "Research Engineer",
-    "role": "Viết về AI, hệ thống & ý tưởng.",
-    "description": "Tôi xây dựng và viết về những gì tôi học được.",
+    "greeting": "Sẵn sàng cho cơ hội mới",
+    "description": "Xây dựng AI y tế tiếng Việt.",
     "cta": "Đọc Blog",
     "viewProjects": "Đọc Blog",
-    "readBlog": "Đọc Blog",
+    "readBlog": "Đọc blog",
     "contactMe": "Liên hệ",
     "typing": {
-      "1": "Kỹ sư Nghiên cứu AI",
-      "2": "Doanh nhân công nghệ",
-      "3": "Xây dựng tương lai EdTech",
-      "4": "Đam mê giải quyết vấn đề",
-      "5": "Nhà phát triển Full-stack"
+      "1": "Kỹ sư AI/ML",
+      "2": "Medical AI Builder",
+      "3": "Vietnamese NLP",
+      "4": "H100 Cluster",
+      "5": "Real-world Data Pipeline"
     },
     "cv": {
       "button": "TẢI CV CỦA TÔI"
