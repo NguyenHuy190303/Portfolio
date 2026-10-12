@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import type { PostMetadata } from '@/types/notion';
 import { cn } from '@/lib/utils';
@@ -15,6 +16,7 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const locale = useLocale();
   const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -24,9 +26,8 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <Link href={`/blog/${post.slug}`} className="group block no-underline">
       <article className="h-full border border-border rounded-xl overflow-hidden bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 flex flex-col">
-        {/* Cover image or gradient placeholder */}
-        <div className="relative h-48 bg-gradient-to-br from-secondary to-secondary/50 overflow-hidden">
-          {post.coverUrl ? (
+        {post.coverUrl && (
+          <div className="relative h-48 overflow-hidden">
             <Image
               src={post.coverUrl}
               alt={post.title}
@@ -34,26 +35,22 @@ export function PostCard({ post }: PostCardProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-6xl opacity-10 select-none font-bold text-foreground">
-                {post.lessonNumber ? `#${post.lessonNumber}` : post.category.charAt(0)}
-              </div>
-            </div>
-          )}
-          {/* Category badge */}
-          <div className="absolute top-3 left-3">
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="flex flex-col flex-1 p-5 gap-3">
+          <div className="flex items-center gap-2">
             <span className={cn(
               'text-xs font-semibold px-2.5 py-1 rounded-full border uppercase tracking-wide',
               categoryColors[post.category] ?? categoryColors['Personal']
             )}>
               {post.category}
             </span>
+            {post.language !== locale && (
+              <span className="text-xs text-muted-foreground">{post.language === 'vi' ? 'Tiếng Việt' : 'English'}</span>
+            )}
           </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex flex-col flex-1 p-5 gap-3">
           <h2 className="font-sans font-bold text-lg leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {post.lessonNumber && (
               <span className="text-primary mr-1">#{post.lessonNumber}</span>

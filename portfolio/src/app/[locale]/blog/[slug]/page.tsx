@@ -15,6 +15,7 @@ import rehypeKatex from 'rehype-katex';
 import rehypeShiki from '@shikijs/rehype';
 import 'katex/dist/katex.min.css';
 import type { PostMetadata } from '@/types/notion';
+import { OG_IMAGE } from '@/lib/utils';
 
 export const revalidate = 3600;
 
@@ -65,6 +66,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: local.title,
       description: local.description,
+      openGraph: {
+        type: 'article',
+        title: local.title,
+        description: local.description,
+        images: [OG_IMAGE],
+      },
     };
   }
 
@@ -76,7 +83,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: post.title,
       description: post.description,
-      images: post.coverUrl ? [{ url: post.coverUrl }] : [],
+      type: 'article',
+      images: [post.coverUrl ?? OG_IMAGE],
     },
   };
 }
@@ -109,7 +117,7 @@ export default async function BlogPostPage({ params }: Props) {
     });
 
     return (
-      <BlogPostLayout headings={headings} category={localPost.category}>
+      <BlogPostLayout headings={headings} category={localPost.category} lang={localPost.language}>
         <header className="mb-10 pb-8 border-b border-border">
           <div className="mb-4 flex flex-wrap gap-2 items-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary font-sans">
@@ -163,7 +171,7 @@ export default async function BlogPostPage({ params }: Props) {
   });
 
   return (
-    <BlogPostLayout headings={headings} category={post.category}>
+    <BlogPostLayout headings={headings} category={post.category} lang={post.language}>
       <header className="mb-10 pb-8 border-b border-border">
         <div className="mb-4 flex flex-wrap gap-2 items-center">
           <span className="text-xs font-semibold uppercase tracking-widest text-primary font-sans">

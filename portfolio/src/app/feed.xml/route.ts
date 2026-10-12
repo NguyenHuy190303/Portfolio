@@ -1,9 +1,10 @@
-import { getPublishedPosts } from '@/lib/notion';
+import { getAllPosts } from '@/lib/posts';
+import { SITE_URL as BASE_URL } from '@/lib/utils';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://portfolio-nguyenhuy190303s-projects.vercel.app';
+export const revalidate = 3600;
 
 export async function GET() {
-  const posts = await getPublishedPosts('en');
+  const posts = await getAllPosts('en');
 
   const items = posts
     .map((post) => `

@@ -16,13 +16,12 @@ Personal portfolio & blog — Next.js 15 app with bilingual content (EN / VI), d
 
 ```bash
 npm run dev      # Turbopack dev server
-npm run build    # buildSearchIndex.ts (Notion) → next build
+npm run build    # buildSearchIndex.ts (local + Notion) → next build
 npm run start    # production server
 npm run lint     # eslint
 ```
 
-> `npm run build` pre-runs `scripts/buildSearchIndex.ts` — requires env vars below.
-> Without them it skips silently and writes an empty `public/search-index.json`.
+> `npm run build` pre-runs `scripts/buildSearchIndex.ts`. Without the Notion env vars it indexes local posts only.
 
 ## Environment Variables
 
@@ -30,12 +29,13 @@ npm run lint     # eslint
 |---|---|---|
 | `NOTION_TOKEN` | for blog / search | Notion integration token |
 | `NOTION_DATABASE_ID` | for blog / search | Published posts database |
+| `NEXT_PUBLIC_BASE_URL` | no | Canonical site URL for metadata, sitemap, robots, RSS. Default in `src/lib/utils.ts` (`SITE_URL`) |
 
 Create `.env.local` locally (gitignored). On Vercel, set via dashboard.
 
 ## Blog Pipeline
 
-Two content sources, merged at runtime:
+Two content sources, merged by `getAllPosts(locale)` in `src/lib/posts.ts` (used by home, blog, sidebar, sitemap, RSS):
 
 1. **Notion** (`src/lib/notion.ts`) — canonical source for published posts. Filtered by `Status = Published` + `Language`. Cached with `unstable_cache`.
 2. **Local MDX** (`src/lib/localPosts.ts`) — files in `content/<category>/*.md`. Frontmatter parsed with `js-yaml`. Used as fallback / offline content.
@@ -71,10 +71,7 @@ All pages live under `src/app/[locale]/`:
 | `/blog` | Blog listing |
 | `/blog/[slug]` | Blog post |
 | `/about` | About |
-| `/projects` | Projects |
-| `/publications` | Publications |
-| `/certificates` | Certificates |
-| `/tags` | Tag listing |
+| `/tags/[tag]` | Posts with a tag |
 
 ## Key Files
 
@@ -82,13 +79,12 @@ All pages live under `src/app/[locale]/`:
 |---|---|
 | `src/lib/notion.ts` | Notion API client + post fetching |
 | `src/lib/localPosts.ts` | Local MDX parsing |
-| `src/lib/mdxOptions.ts` | remark / rehype plugins (math, mermaid, shiki) |
 | `src/lib/remarkMermaid.ts` | Mermaid → SVG (server-side render) |
-| `src/lib/shiki.ts` | Code syntax highlighting |
 | `src/i18n/routing.ts` | next-intl locale config |
 | `src/i18n/request.ts` | Per-request locale resolution |
-| `scripts/buildSearchIndex.ts` | Pre-build: fetch Notion posts → `public/search-index.json` |
-| `next.config.ts` | Cache-Control headers for images, certs, search-index |
+| `src/lib/posts.ts` | `getAllPosts` (local + Notion merge), `usedCategories` |
+| `scripts/buildSearchIndex.ts` | Pre-build: local + Notion posts → `public/search-index.json` |
+| `next.config.ts` | Cache-Control headers for images, search-index |
 
 ## Git & Deploy Workflow
 

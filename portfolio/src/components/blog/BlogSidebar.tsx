@@ -1,14 +1,15 @@
+import { getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
-import type { PostCategory } from '@/types/notion';
-
-const CATEGORIES: PostCategory[] = ['ML/AI', 'DevOps', 'Code Tutorial', 'Personal'];
+import { getAllPosts, usedCategories } from '@/lib/posts';
 
 interface BlogSidebarProps {
   currentCategory?: string;
 }
 
-export function BlogSidebar({ currentCategory }: BlogSidebarProps) {
+export async function BlogSidebar({ currentCategory }: BlogSidebarProps) {
+  const locale = (await getLocale()) as 'en' | 'vi';
+  const categories = usedCategories(await getAllPosts(locale));
   return (
     <nav aria-label="Blog navigation" className="sidebar-nav">
       <div className="mb-6">
@@ -29,7 +30,7 @@ export function BlogSidebar({ currentCategory }: BlogSidebarProps) {
               All posts
             </Link>
           </li>
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <li key={cat}>
               <Link
                 href={`/blog?category=${encodeURIComponent(cat)}`}

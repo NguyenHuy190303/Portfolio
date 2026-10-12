@@ -7,9 +7,10 @@ interface BlogPostLayoutProps {
   children: ReactNode;
   headings: Heading[];
   category?: string;
+  lang?: string;
 }
 
-export function BlogPostLayout({ children, headings, category }: BlogPostLayoutProps) {
+export function BlogPostLayout({ children, headings, category, lang }: BlogPostLayoutProps) {
   return (
     <div className="article-layout">
       {/* Left: Category Nav */}
@@ -19,7 +20,7 @@ export function BlogPostLayout({ children, headings, category }: BlogPostLayoutP
 
       {/* Center: Article content */}
       <main className="min-w-0">
-        <div className="article-content mx-auto">
+        <div className="article-content mx-auto" lang={lang}>
           {children}
         </div>
       </main>

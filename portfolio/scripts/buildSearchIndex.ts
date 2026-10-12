@@ -1,6 +1,7 @@
 import { Client } from '@notionhq/client';
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { getAllLocalPosts } from '../src/lib/localPosts';
 
 interface SearchEntry {
   id: string;
@@ -12,14 +13,13 @@ interface SearchEntry {
   language: string;
 }
 
-async function buildIndex() {
+async function fetchNotionEntries(): Promise<SearchEntry[]> {
   const token = process.env.NOTION_TOKEN;
   const databaseId = process.env.NOTION_DATABASE_ID;
 
   if (!token || !databaseId) {
-    console.log('NOTION_TOKEN or NOTION_DATABASE_ID missing — skipping search index build');
-    writeFileSync(join(process.cwd(), 'public', 'search-index.json'), '[]');
-    return;
+    console.log('NOTION_TOKEN or NOTION_DATABASE_ID missing — indexing local posts only');
+    return [];
   }
 
   const notion = new Client({ auth: token });
@@ -29,7 +29,7 @@ async function buildIndex() {
     filter: { property: 'Status', select: { equals: 'Published' } },
   });
 
-  const entries: SearchEntry[] = response.results
+  return response.results
     .filter((page): page is typeof page & { properties: Record<string, unknown> } => page.object === 'page')
     .map((page) => {
       const props = (page as { properties: Record<string, { type: string; [k: string]: unknown }> }).properties;
@@ -53,6 +53,13 @@ async function buildIndex() {
         language: getSelect(props.Language as { type: string; select?: { name: string } | null }),
       };
     });
+}
+
+async function buildIndex() {
+  const local: SearchEntry[] = getAllLocalPosts().map(({ id, title, slug, description, tags, category, language }) =>
+    ({ id, title, slug, description, tags, category, language }));
+  const localSlugs = new Set(local.map((e) => e.slug));
+  const entries = [...local, ...(await fetchNotionEntries()).filter((e) => !localSlugs.has(e.slug))];
 
   mkdirSync(join(process.cwd(), 'public'), { recursive: true });
   writeFileSync(
