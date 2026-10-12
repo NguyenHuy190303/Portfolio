@@ -7,3 +7,5 @@ export const OG_IMAGE = "/images/avatar.jpg";
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
+
+export const categoryId = (category: string) => category.toLowerCase().replace(/[^a-z0-9]+/g, "-");

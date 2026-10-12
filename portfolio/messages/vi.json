@@ -15,10 +15,6 @@
     "role": "Kỹ sư AI · Trivita AI",
     "bio": "Xây dựng AI y tế tiếng Việt. Pipeline dữ liệu thực tế (EMR → tổng hợp → dataset có version), post-training và đánh giá trên cụm H100 nhiều node on-prem. Mentor lineage quốc tế từ nghiên cứu AI Taiwan."
   },
-  "language": {
-    "english": "English",
-    "vietnamese": "Tiếng Việt"
-  },
   "blog": {
     "title": "Blog",
     "subtitle": "Chia sẻ kiến thức về ML, AI và kỹ thuật.",

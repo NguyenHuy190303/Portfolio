@@ -150,6 +150,15 @@
   }
 }
 
+/* Home art panel: soft gradient under the FlowPanel strokes */
+.flow-panel {
+  background: linear-gradient(160deg, #FDE6D3, #FBEFD9 35%, #DDEFF5 70%, #E6E1F7);
+}
+
+.dark .flow-panel {
+  background: linear-gradient(160deg, #2B211C, #1D1D21 50%, #172229);
+}
+
 /* ============================
    Shiki dual-theme (light/dark class-based)
    ============================ */

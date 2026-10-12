@@ -29,9 +29,9 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="w-full border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="font-semibold text-foreground hover:text-primary transition-colors no-underline">
+      <header className="w-full">
+        <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
+          <Link href="/" className="font-serif text-lg font-semibold text-foreground hover:text-primary transition-colors no-underline">
             Leo
           </Link>
 
@@ -53,7 +53,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setSearchOpen(true)}
               className="hidden md:flex items-center text-muted-foreground hover:text-foreground transition-colors"
@@ -76,7 +76,7 @@ export default function Navbar() {
         {/* Mobile menu */}
         {mobileOpen && (
           <div className="md:hidden border-t border-border">
-            <div className="max-w-3xl mx-auto px-6 py-4 flex flex-col gap-3">
+            <div className="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-3">
               {linkKeys.map((link) => (
                 <Link
                   key={link.href}

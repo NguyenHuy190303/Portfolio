@@ -15,10 +15,6 @@
     "role": "AI Engineer · Trivita AI",
     "bio": "Building medical AI in Vietnamese. Real-world data pipeline (EMR → synthetic → versioned datasets), post-training and evaluation on an on-prem multi-node H100 cluster. Under international mentor lineage from Taiwan AI research."
   },
-  "language": {
-    "english": "English",
-    "vietnamese": "Tiếng Việt"
-  },
   "blog": {
     "title": "Blog",
     "subtitle": "Thoughts on ML, AI, and engineering.",

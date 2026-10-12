@@ -1,6 +1,6 @@
 import { getAllTags } from '@/lib/notion';
 import { getAllPosts } from '@/lib/posts';
-import { PostCard } from '@/components/blog/PostCard';
+import { PostList } from '@/components/blog/PostList';
 import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 
@@ -40,7 +40,7 @@ export default async function TagPage({ params }: TagPageProps) {
         <Link href="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
           ← All posts
         </Link>
-        <h1 className="font-sans font-bold text-4xl text-foreground">
+        <h1 className="font-serif font-semibold text-4xl tracking-tight">
           <span className="text-primary">#</span>{decoded}
         </h1>
         <p className="text-muted-foreground">{filtered.length} post{filtered.length !== 1 ? 's' : ''}</p>
@@ -51,11 +51,7 @@ export default async function TagPage({ params }: TagPageProps) {
           <p className="text-xl font-medium">No posts with this tag</p>
         </div>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
-          {filtered.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
+        <PostList posts={filtered} />
       )}
     </div>
   );

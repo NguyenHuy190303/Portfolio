@@ -1,6 +1,6 @@
 import { getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { cn } from '@/lib/utils';
+import { categoryId, cn } from '@/lib/utils';
 import { getAllPosts, usedCategories } from '@/lib/posts';
 
 interface BlogSidebarProps {
@@ -33,7 +33,7 @@ export async function BlogSidebar({ currentCategory }: BlogSidebarProps) {
           {categories.map((cat) => (
             <li key={cat}>
               <Link
-                href={`/blog?category=${encodeURIComponent(cat)}`}
+                href={`/blog#${categoryId(cat)}`}
                 className={cn(
                   'block px-2 py-1 rounded-md no-underline transition-colors',
                   currentCategory === cat

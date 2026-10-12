@@ -1,8 +1,7 @@
 import HomeIntro from "@/components/HomeIntro";
-import { getAllPosts, usedCategories } from "@/lib/posts";
-import { PostGrid } from "@/components/blog/PostGrid";
-import { CategoryFilter } from "@/components/blog/CategoryFilter";
-import { Suspense } from "react";
+import FlowPanel from "@/components/FlowPanel";
+import { getAllPosts } from "@/lib/posts";
+import { PostList } from "@/components/blog/PostList";
 
 export const revalidate = 3600;
 
@@ -15,18 +14,14 @@ export default async function HomePage({ params }: Props) {
   const posts = await getAllPosts(locale as "en" | "vi");
 
   return (
-    <>
-      <HomeIntro />
-      <div className="max-w-3xl mx-auto px-6 py-8">
-        <Suspense fallback={null}>
-          <CategoryFilter categories={usedCategories(posts)} />
-        </Suspense>
-        <div className="mt-6">
-          <Suspense fallback={null}>
-            <PostGrid posts={posts} />
-          </Suspense>
-        </div>
+    <div className="max-w-5xl mx-auto px-6 py-8 lg:py-14 grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+      <div className="order-2 lg:order-1 min-w-0">
+        <HomeIntro />
+        <PostList posts={posts} grouped />
       </div>
-    </>
+      <aside className="order-1 lg:order-2 lg:sticky lg:top-8 lg:self-start">
+        <FlowPanel className="h-40 sm:h-56 lg:h-[calc(100dvh-8rem)]" />
+      </aside>
+    </div>
   );
 }

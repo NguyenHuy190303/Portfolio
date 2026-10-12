@@ -10,7 +10,10 @@ export async function getAllPosts(locale: 'en' | 'vi'): Promise<PostMetadata[]> 
   const localPosts = getAllLocalPosts();
   const localSlugs = new Set(localPosts.map((p) => p.slug));
   return [...localPosts, ...notionPosts.filter((p) => !localSlugs.has(p.slug))]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a, b) =>
+      new Date(b.date).getTime() - new Date(a.date).getTime() ||
+      (a.lessonNumber ?? 0) - (b.lessonNumber ?? 0) ||
+      a.title.localeCompare(b.title, undefined, { numeric: true }));
 }
 
 export function usedCategories(posts: PostMetadata[]): PostCategory[] {
