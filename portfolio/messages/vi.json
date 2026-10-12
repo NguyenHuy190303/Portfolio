@@ -12,7 +12,7 @@
   },
   "hero": {
     "name": "Leo (Nguyễn Huy)",
-    "role": "Kỹ sư AI/ML · Trivita AI",
+    "role": "Kỹ sư AI · Trivita AI",
     "bio": "Xây dựng AI y tế tiếng Việt. Pipeline dữ liệu thực tế (EMR → tổng hợp → dataset có version), cụm 2×8×H100 on-prem, truy cập NVL72 GB200. Mentor lineage quốc tế từ nghiên cứu AI Taiwan.",
     "title": "Nguyễn Huy",
     "alias": "alias: ",
@@ -23,7 +23,7 @@
     "readBlog": "Đọc blog",
     "contactMe": "Liên hệ",
     "typing": {
-      "1": "Kỹ sư AI/ML",
+      "1": "Kỹ sư AI",
       "2": "Medical AI Builder",
       "3": "Vietnamese NLP",
       "4": "H100 Cluster",

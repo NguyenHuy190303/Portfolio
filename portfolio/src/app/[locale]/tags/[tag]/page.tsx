@@ -1,4 +1,5 @@
-import { getPublishedPosts, getAllTags } from '@/lib/notion';
+import { getAllTags } from '@/lib/notion';
+import { getAllPosts } from '@/lib/posts';
 import { PostCard } from '@/components/blog/PostCard';
 import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
@@ -30,11 +31,11 @@ export default async function TagPage({ params }: TagPageProps) {
   const { locale, tag } = await params;
   const decoded = decodeURIComponent(tag);
 
-  const posts = await getPublishedPosts(locale as 'en' | 'vi');
+  const posts = await getAllPosts(locale as 'en' | 'vi');
   const filtered = posts.filter((p) => p.tags.includes(decoded));
 
   return (
-    <div className="max-w-[1800px] mx-auto px-12 py-12">
+    <div className="max-w-3xl mx-auto px-6 py-10">
       <div className="mb-10 space-y-3">
         <Link href="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
           ← All posts
