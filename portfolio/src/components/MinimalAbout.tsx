@@ -12,7 +12,7 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-const content = {
+export const content = {
   en: {
     bio: "I'm Leo (Nguyễn Huy), an AI engineer at Trivita AI building medical AI in Vietnamese. I own the full data lifecycle — from EMR ingestion through synthetic generation to versioned datasets — and the post-training and evaluation loop on an on-prem multi-node H100 cluster, with partner access to GB200 NVL72. My work sits at the intersection of Vietnamese NLP, real-world healthcare data, and large-scale compute, under international mentor lineage from Taiwan AI research.",
     working: "What I'm working on",
@@ -69,13 +69,13 @@ export default function MinimalAbout({ locale }: { locale: string }) {
   return (
     <div className="max-w-3xl mx-auto px-6 py-12 space-y-10">
       <div>
-        <h1 className="text-4xl font-semibold tracking-tight text-foreground mb-1">Leo (Nguyễn Huy)</h1>
-        <p className="text-muted-foreground text-sm mb-4">AI Engineer · Trivita AI</p>
+        <h1 className="display text-5xl font-light tracking-tight text-foreground mb-3">Leo Nguyen</h1>
+        <p className="caps text-primary mb-6">AI Engineer · Trivita AI</p>
         <p className="text-base leading-relaxed">{c.bio}</p>
       </div>
 
       <div>
-        <h2 className="text-base font-semibold text-foreground mb-3">{c.working}</h2>
+        <h2 className="caps text-primary mb-4">{c.working}</h2>
         <ul className="space-y-2">
           {c.workItems.map((item, i) => (
             <li key={i} className="text-sm leading-relaxed text-muted-foreground pl-4 border-l border-border">
@@ -86,12 +86,12 @@ export default function MinimalAbout({ locale }: { locale: string }) {
       </div>
 
       <div>
-        <h2 className="text-base font-semibold text-foreground mb-2">{c.stack}</h2>
+        <h2 className="caps text-primary mb-4">{c.stack}</h2>
         <p className="text-sm text-muted-foreground">{c.stackText}</p>
       </div>
 
       <div>
-        <h2 className="text-base font-semibold text-foreground mb-3">{c.experience}</h2>
+        <h2 className="caps text-primary mb-4">{c.experience}</h2>
         <ul className="space-y-2">
           {c.experiences.map((exp, i) => (
             <li key={i} className="text-sm flex flex-wrap gap-x-1.5">
@@ -103,7 +103,7 @@ export default function MinimalAbout({ locale }: { locale: string }) {
       </div>
 
       <div>
-        <h2 className="text-base font-semibold text-foreground mb-3">{c.education}</h2>
+        <h2 className="caps text-primary mb-4">{c.education}</h2>
         <ul className="space-y-1">
           {c.educations.map((edu, i) => (
             <li key={i} className="text-sm">
@@ -115,7 +115,7 @@ export default function MinimalAbout({ locale }: { locale: string }) {
       </div>
 
       <div>
-        <h2 className="text-base font-semibold text-foreground mb-3">{c.links}</h2>
+        <h2 className="caps text-primary mb-4">{c.links}</h2>
         <div className="flex items-center gap-4">
           <a
             href="https://github.com/NguyenHuy190303"

@@ -1,16 +1,24 @@
-import { Inter, Source_Serif_4, JetBrains_Mono } from 'next/font/google';
+import { Montserrat, Playfair, Pinyon_Script, JetBrains_Mono } from 'next/font/google';
 
-export const inter = Inter({
+export const montserrat = Montserrat({
   subsets: ['latin', 'vietnamese'],
-  variable: '--font-inter',
+  variable: '--font-montserrat',
   display: 'swap',
 });
 
-export const sourceSerif = Source_Serif_4({
+export const playfair = Playfair({
   subsets: ['latin', 'vietnamese'],
-  variable: '--font-source-serif',
+  variable: '--font-playfair',
   display: 'swap',
-  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  axes: ['opsz'],
+});
+
+export const pinyon = Pinyon_Script({
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-pinyon',
+  display: 'swap',
+  weight: '400',
   preload: false,
 });
 

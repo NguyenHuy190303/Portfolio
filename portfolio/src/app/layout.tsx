@@ -2,20 +2,20 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { OG_IMAGE, SITE_URL } from '@/lib/utils';
 
-const description = 'Nguyen Quoc Huy (Leo) — AI engineer building Vietnamese medical AI. Notes on LLMs, evaluation, post-training and Python.';
+const description = 'Leo Nguyen (Nguyen Quoc Huy) — AI engineer building Vietnamese medical AI. Notes on LLMs, evaluation, post-training and Python.';
 
 export const metadata: Metadata = {
   title: {
     template: '%s | Leo Nguyen',
-    default: 'Nguyen Quoc Huy (Leo) — AI Engineer',
+    default: 'Leo Nguyen — AI Engineer',
   },
   description,
-  authors: [{ name: 'Nguyen Quoc Huy' }],
+  authors: [{ name: 'Leo Nguyen' }],
   metadataBase: new URL(SITE_URL),
   openGraph: {
     type: 'website',
-    siteName: 'Nguyen Quoc Huy (Leo)',
-    title: 'Nguyen Quoc Huy (Leo) — AI Engineer',
+    siteName: 'Leo Nguyen',
+    title: 'Leo Nguyen — AI Engineer',
     description,
     images: [OG_IMAGE],
   },

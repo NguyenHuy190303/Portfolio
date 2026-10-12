@@ -4,7 +4,8 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Navbar from '@/components/Navbar';
 import ScrollToTopButton from '@/components/ScrollToTopButton';
-import { inter, sourceSerif, jetbrainsMono } from '@/app/fonts';
+import Footer from '@/components/Footer';
+import { montserrat, playfair, pinyon, jetbrainsMono } from '@/app/fonts';
 import { routing } from '@/i18n/routing';
 import { Analytics } from '@vercel/analytics/react';
 import '../globals.css';
@@ -34,7 +35,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}
+      className={`${montserrat.variable} ${playfair.variable} ${pinyon.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased" suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
             <main>
               {children}
             </main>
+            <Footer />
             <ScrollToTopButton />
             <Analytics />
           </ThemeProvider>

@@ -40,7 +40,7 @@ export default async function TagPage({ params }: TagPageProps) {
         <Link href="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
           ← All posts
         </Link>
-        <h1 className="font-serif font-semibold text-4xl tracking-tight">
+        <h1 className="display text-5xl">
           <span className="text-primary">#</span>{decoded}
         </h1>
         <p className="text-muted-foreground">{filtered.length} post{filtered.length !== 1 ? 's' : ''}</p>

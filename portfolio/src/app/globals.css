@@ -4,54 +4,58 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================
-   Light mode design tokens
+   "Tobacco" palette. Light roles picked by Leo; dark swaps paper/ink.
+   Derivation + contrast checks: ~/reports/2026-10-12_portfolio-ref/tools/tobacco_tokens.py
    ============================ */
 :root {
-  --background: #FAFAF9;
-  --foreground: #1C1917;
-  --card: #FFFFFF;
-  --card-foreground: #1C1917;
-  --popover: #FFFFFF;
-  --popover-foreground: #1C1917;
-  --primary: #D97706;
-  --primary-foreground: #FFFFFF;
-  --secondary: #F5F5F4;
-  --secondary-foreground: #1C1917;
-  --muted: #F5F5F4;
-  --muted-foreground: #57534E;
-  --accent: #D97706;
-  --accent-foreground: #FFFFFF;
-  --destructive: #EF4444;
+  --background: #FCF6ED;
+  --foreground: #1C1714;
+  --card: #FFFBF6;
+  --card-foreground: #1C1714;
+  --popover: #FFFBF6;
+  --popover-foreground: #1C1714;
+  --primary: #5D310D;
+  --primary-foreground: #FCF6ED;
+  --secondary: #F3EADD;
+  --secondary-foreground: #1C1714;
+  --muted: #F3EADD;
+  --muted-foreground: #615248;
+  --accent: #5D310D;
+  --accent-foreground: #FCF6ED;
+  --destructive: #B42318;
   --destructive-foreground: #FFFFFF;
-  --border: #E7E5E4;
-  --input: #E7E5E4;
-  --ring: #D97706;
+  --border: #D4CEC6;
+  --input: #D4CEC6;
+  --ring: #5D310D;
+  --block: #E5D0B8;
+  --footer: #1C1714;
+  --footer-foreground: #FCF6ED;
   --radius: 0.5rem;
 }
 
-/* ============================
-   Dark mode design tokens
-   ============================ */
 .dark {
-  --background: #171717;
-  --foreground: #E7E5E4;
-  --card: #1C1C1C;
-  --card-foreground: #E7E5E4;
-  --popover: #262626;
-  --popover-foreground: #E7E5E4;
-  --primary: #F59E0B;
-  --primary-foreground: #171717;
-  --secondary: #262626;
-  --secondary-foreground: #E7E5E4;
-  --muted: #262626;
-  --muted-foreground: #A8A29E;
-  --accent: #F59E0B;
-  --accent-foreground: #171717;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
-  --border: #3F3F46;
-  --input: #3F3F46;
-  --ring: #F59E0B;
+  --background: #1C1714;
+  --foreground: #F0EAE1;
+  --card: #241E1A;
+  --card-foreground: #F0EAE1;
+  --popover: #241E1A;
+  --popover-foreground: #F0EAE1;
+  --primary: #E0B48B;
+  --primary-foreground: #1C1714;
+  --secondary: #2C2520;
+  --secondary-foreground: #F0EAE1;
+  --muted: #2C2520;
+  --muted-foreground: #BAAFA4;
+  --accent: #E0B48B;
+  --accent-foreground: #1C1714;
+  --destructive: #F97066;
+  --destructive-foreground: #1C1714;
+  --border: #423D39;
+  --input: #423D39;
+  --ring: #E0B48B;
+  --block: #3D2F22;
+  --footer: #0E0A08;
+  --footer-foreground: #F0EAE1;
 }
 
 /* ============================
@@ -77,13 +81,17 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-block: var(--block);
+  --color-footer: var(--footer);
+  --color-footer-foreground: var(--footer-foreground);
 
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-source-serif), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, "Times New Roman", serif;
+  --font-script: var(--font-pinyon), cursive;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, "JetBrains Mono", monospace;
 
   --animate-fade-in: fade-in 0.5s ease-out forwards;
@@ -119,17 +127,18 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-serif, ui-serif, Georgia, serif);
-    font-size: 1.125rem;
-    line-height: 1.85;
+    font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+    font-size: 1rem;
+    line-height: 1.75;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif, ui-serif, Georgia, serif);
-    font-weight: 700;
-    line-height: 1.3;
+    font-weight: 400;
+    line-height: 1.2;
+    font-variant-numeric: lining-nums;
     color: var(--foreground);
   }
 
@@ -150,13 +159,37 @@
   }
 }
 
-/* Home art panel: soft gradient under the FlowPanel strokes */
-.flow-panel {
-  background: linear-gradient(160deg, #FDE6D3, #FBEFD9 35%, #DDEFF5 70%, #E6E1F7);
-}
+/* Editorial layout from the Dribbble reference Leo picked (shot 27179628) */
+@layer components {
+  .wrap {
+    max-width: 1320px;
+    margin-inline: auto;
+    padding-inline: clamp(20px, 5vw, 72px);
+  }
 
-.dark .flow-panel {
-  background: linear-gradient(160deg, #2B211C, #1D1D21 50%, #172229);
+  .caps {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  /* Light Didone display type; set line-height here, not with a leading-* utility, so the VI rule below can win */
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 400;
+  }
+
+  /* Stacked diacritics (Ế, Ệ) need room at display leading */
+  :lang(vi) .display {
+    line-height: 1.16;
+  }
 }
 
 /* ============================

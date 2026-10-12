@@ -11,9 +11,11 @@
     "blog": "Blog"
   },
   "hero": {
-    "name": "Leo (Nguyễn Huy)",
+    "hello": "xin chào",
+    "headline": "<em>Building</em> MEDICAL AI <em>in</em> VIETNAMESE",
     "role": "AI Engineer · Trivita AI",
-    "bio": "Building medical AI in Vietnamese. Real-world data pipeline (EMR → synthetic → versioned datasets), post-training and evaluation on an on-prem multi-node H100 cluster. Under international mentor lineage from Taiwan AI research."
+    "lede": "Real-world data pipeline (EMR → synthetic → versioned datasets), post-training and evaluation on an on-prem multi-node H100 cluster. Under international mentor lineage from Taiwan AI research.",
+    "cta": "Read the blog"
   },
   "blog": {
     "title": "Blog",
@@ -23,5 +25,14 @@
     "readMore": "Read more",
     "noResults": "No posts found.",
     "onThisPage": "On this page"
+  },
+  "home": {
+    "workTitle": "What I am <em>building</em> right now",
+    "workKicker": "Working on",
+    "writingTitle": "Notes on <em>models</em> & <em>code</em>",
+    "writingKicker": "The blog"
+  },
+  "posts": {
+    "count": "{count, plural, one {# post} other {# posts}}"
   }
 }

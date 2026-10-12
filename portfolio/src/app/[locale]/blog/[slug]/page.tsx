@@ -124,7 +124,7 @@ export default async function BlogPostPage({ params }: Props) {
               {localPost.category}
             </span>
           </div>
-          <h1 className="font-bold text-3xl md:text-4xl leading-tight tracking-tight text-foreground mb-4">
+          <h1 className="display text-4xl leading-[1.15] md:text-5xl md:leading-[1.15] text-foreground mb-4">
             {localPost.title}
           </h1>
           {localPost.description && !localContent.replace(/\*/g, '').includes(localPost.description) && (
@@ -146,7 +146,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </header>
 
-        <div className="prose-content text-[18px] leading-[1.85] text-foreground">
+        <div className="prose-content text-[17px] leading-[1.85] text-foreground">
           <MDXRemote
             source={localContent}
             components={mdxComponents}
@@ -181,7 +181,7 @@ export default async function BlogPostPage({ params }: Props) {
             <span className="text-xs text-muted-foreground font-sans">· Lesson #{post.lessonNumber}</span>
           )}
         </div>
-        <h1 className="font-bold text-3xl md:text-4xl leading-tight tracking-tight text-foreground mb-4">
+        <h1 className="display text-4xl leading-[1.15] md:text-5xl md:leading-[1.15] text-foreground mb-4">
           {post.title}
         </h1>
         {post.description && (
@@ -203,7 +203,7 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </header>
 
-      <div className="prose-content text-[18px] leading-[1.85] text-foreground">
+      <div className="prose-content text-[17px] leading-[1.85] text-foreground">
         {markdown ? (
           <MDXRemote
             source={markdown}

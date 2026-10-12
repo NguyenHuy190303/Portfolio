@@ -11,9 +11,11 @@
     "blog": "Blog"
   },
   "hero": {
-    "name": "Leo (Nguyễn Huy)",
+    "hello": "xin chào",
+    "headline": "<em>Xây dựng</em> AI Y TẾ <em>cho</em> TIẾNG VIỆT",
     "role": "Kỹ sư AI · Trivita AI",
-    "bio": "Xây dựng AI y tế tiếng Việt. Pipeline dữ liệu thực tế (EMR → tổng hợp → dataset có version), post-training và đánh giá trên cụm H100 nhiều node on-prem. Mentor lineage quốc tế từ nghiên cứu AI Taiwan."
+    "lede": "Pipeline dữ liệu thực tế (EMR → tổng hợp → dataset có version), post-training và đánh giá trên cụm H100 nhiều node on-prem. Mentor lineage quốc tế từ nghiên cứu AI Taiwan.",
+    "cta": "Đọc blog"
   },
   "blog": {
     "title": "Blog",
@@ -23,5 +25,14 @@
     "readMore": "Đọc thêm",
     "noResults": "Không tìm thấy bài viết.",
     "onThisPage": "Mục lục"
+  },
+  "home": {
+    "workTitle": "Những gì tôi <em>đang làm</em>",
+    "workKicker": "Đang làm",
+    "writingTitle": "Ghi chép về <em>model</em> & <em>code</em>",
+    "writingKicker": "Blog"
+  },
+  "posts": {
+    "count": "{count} bài"
   }
 }

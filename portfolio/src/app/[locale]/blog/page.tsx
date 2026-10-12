@@ -16,7 +16,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
       <div className="mb-12 space-y-2">
-        <h1 className="font-serif font-semibold text-4xl tracking-tight">{t('title')}</h1>
+        <h1 className="display text-6xl">{t('title')}</h1>
         <p className="text-muted-foreground">{t('subtitle')}</p>
       </div>
       <PostList posts={posts} grouped />

@@ -37,7 +37,7 @@ export function GiscusComments({ slug }: GiscusCommentsProps) {
     <section ref={sectionRef} className="mt-16 pt-8 border-t border-border">
       {mounted && inView && (
         <>
-          <h2 className="text-xl font-sans font-semibold text-foreground mb-6">Comments</h2>
+          <h2 className="caps text-primary mb-6">Comments</h2>
           <Giscus
             key={slug}
             repo={repo}

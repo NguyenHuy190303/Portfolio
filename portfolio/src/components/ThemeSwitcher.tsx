@@ -17,7 +17,7 @@ const ThemeSwitcher = () => {
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="relative flex h-4 w-4 items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+      className="relative flex h-4 w-4 items-center justify-center text-foreground hover:text-primary transition-colors"
       title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
     >
       <Sun className="absolute h-4 w-4 transition-all dark:-rotate-90 dark:scale-0" />
