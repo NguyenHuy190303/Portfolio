@@ -46,7 +46,12 @@ async function _getPostBySlug(slug: string): Promise<PostMetadata | null> {
   try {
     const response = await notion.databases.query({
       database_id: DATABASE_ID,
-      filter: { property: 'Slug', rich_text: { equals: slug } },
+      filter: {
+        and: [
+          { property: 'Slug', rich_text: { equals: slug } },
+          { property: 'Status', select: { equals: 'Published' } },
+        ],
+      },
       page_size: 1,
     });
 
