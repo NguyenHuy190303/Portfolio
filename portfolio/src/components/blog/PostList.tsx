@@ -18,7 +18,7 @@ export function PostList({ posts, grouped = false }: { posts: PostMetadata[]; gr
                 <Link href={`/blog/${post.slug}`} className="group block py-3 no-underline">
                   <span className="block text-foreground transition-colors group-hover:text-primary">{post.title}</span>
                   {post.description && (
-                    <span className="mt-0.5 block truncate text-[0.95rem] text-muted-foreground">{post.description}</span>
+                    <span className="mt-0.5 line-clamp-2 text-[0.95rem] text-muted-foreground sm:line-clamp-1">{post.description}</span>
                   )}
                 </Link>
               </li>

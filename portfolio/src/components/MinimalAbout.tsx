@@ -69,7 +69,7 @@ export default function MinimalAbout({ locale }: { locale: string }) {
   return (
     <div className="max-w-3xl mx-auto px-6 py-12 space-y-10">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground mb-1">Leo (Nguyễn Huy)</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-foreground mb-1">Leo (Nguyễn Huy)</h1>
         <p className="text-muted-foreground text-sm mb-4">AI Engineer · Trivita AI</p>
         <p className="text-base leading-relaxed">{c.bio}</p>
       </div>

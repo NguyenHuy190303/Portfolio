@@ -13,12 +13,12 @@ export const mdxComponents: MDXComponents = {
   ),
   // Heading IDs are added by rehype-slug — these just style them
   h2: ({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 id={id} className="font-sans font-bold text-2xl mt-10 mb-4 scroll-mt-24 border-b border-border pb-2" {...props}>
+    <h2 id={id} className="font-bold text-2xl mt-10 mb-4 scroll-mt-24 border-b border-border pb-2" {...props}>
       {children}
     </h2>
   ),
   h3: ({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 id={id} className="font-sans font-semibold text-xl mt-8 mb-3 scroll-mt-24" {...props}>
+    <h3 id={id} className="font-semibold text-xl mt-8 mb-3 scroll-mt-24" {...props}>
       {children}
     </h3>
   ),

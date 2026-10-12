@@ -124,7 +124,7 @@ export default async function BlogPostPage({ params }: Props) {
               {localPost.category}
             </span>
           </div>
-          <h1 className="font-sans font-bold text-3xl md:text-4xl leading-tight text-foreground mb-4">
+          <h1 className="font-bold text-3xl md:text-4xl leading-tight tracking-tight text-foreground mb-4">
             {localPost.title}
           </h1>
           {localPost.description && !localContent.replace(/\*/g, '').includes(localPost.description) && (
@@ -181,7 +181,7 @@ export default async function BlogPostPage({ params }: Props) {
             <span className="text-xs text-muted-foreground font-sans">· Lesson #{post.lessonNumber}</span>
           )}
         </div>
-        <h1 className="font-sans font-bold text-3xl md:text-4xl leading-tight text-foreground mb-4">
+        <h1 className="font-bold text-3xl md:text-4xl leading-tight tracking-tight text-foreground mb-4">
           {post.title}
         </h1>
         {post.description && (
