@@ -127,7 +127,7 @@ export default async function BlogPostPage({ params }: Props) {
           <h1 className="font-sans font-bold text-3xl md:text-4xl leading-tight text-foreground mb-4">
             {localPost.title}
           </h1>
-          {localPost.description && (
+          {localPost.description && !localContent.replace(/\*/g, '').includes(localPost.description) && (
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
               {localPost.description}
             </p>
