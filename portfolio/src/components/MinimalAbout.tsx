@@ -17,7 +17,7 @@ const content = {
     bio: "I'm Leo (Nguyễn Huy), an AI engineer at Trivita AI building medical AI in Vietnamese. I own the full data lifecycle — from EMR ingestion through synthetic generation to versioned datasets — on a 2×8×H100 on-prem cluster with access to NVL72 GB200. My work sits at the intersection of Vietnamese NLP, real-world healthcare data, and frontier-scale compute, under international mentor lineage from Taiwan AI research.",
     working: "What I'm working on",
     workItems: [
-      "MedVita — Vietnamese medical AI assistant with guardrail system (P1–P5), ICD-10 VN integration, SOCRATES per-department, BV TW Thái Nguyên HIS.",
+      "MedVita — Vietnamese medical AI assistant with guardrail system (P1–P5), ICD-10 VN integration, SOCRATES per-department, integrated with a central hospital's HIS.",
       "Trivita-Eval — internal LLM evaluation platform (FastAPI + Celery + Redis + Langfuse + DeepEval + DeepTeam), G-Eval medical metrics, LLM-as-judge calibration.",
       "Post-Training OS — SFT/DPO feedback loop (eval → targeted data gen → train) running on 2×8×H100, 24–48h iteration cycle.",
     ],
@@ -26,9 +26,9 @@ const content = {
     experience: "Experience",
     experiences: [
       { role: "AI Engineer", org: "Trivita AI", period: "Sep 2025 – present" },
-      { role: "AI Researcher", org: "AIMA", period: "Jun 2024 – present" },
-      { role: "Tech Lead Researcher", org: "VLAI", period: "2023 – 2024" },
-      { role: "Time-Series Research Lead", org: "AI Vietnam", period: "2022 – 2023" },
+      { role: "AI Researcher", org: "AIMA", period: "Jun 2024 – 2025" },
+      { role: "Multi-Agent VQA Research Team Lead", org: "VLAI", period: "2023 – 2024" },
+      { role: "Time-Series Research Team Lead", org: "AI VIET NAM", period: "2022 – 2023" },
     ],
     education: "Education",
     educations: [
@@ -41,7 +41,7 @@ const content = {
     bio: "Tôi là Leo (Nguyễn Huy), kỹ sư AI tại Trivita AI, xây dựng AI y tế tiếng Việt. Tôi cầm toàn bộ vòng đời dữ liệu — từ thu thập EMR, sinh dữ liệu tổng hợp đến dataset có version — trên cụm 2×8×H100 on-prem và có truy cập NVL72 GB200. Công việc của tôi nằm ở giao điểm giữa NLP tiếng Việt, dữ liệu y tế thực tế và compute frontier, dưới mentor lineage quốc tế từ nghiên cứu AI Taiwan.",
     working: "Đang làm gì",
     workItems: [
-      "MedVita — trợ lý AI y tế tiếng Việt với hệ thống guardrail (P1–P5), tích hợp ICD-10 VN, SOCRATES theo chuyên khoa, HIS BV TW Thái Nguyên.",
+      "MedVita — trợ lý AI y tế tiếng Việt với hệ thống guardrail (P1–P5), tích hợp ICD-10 VN, SOCRATES theo chuyên khoa, kết nối HIS của một bệnh viện tuyến trung ương.",
       "Trivita-Eval — nền tảng đánh giá LLM nội bộ (FastAPI + Celery + Redis + Langfuse + DeepEval + DeepTeam), G-Eval y tế, hiệu chỉnh LLM-as-judge.",
       "Post-Training OS — vòng lặp phản hồi SFT/DPO (eval → sinh data → train) chạy trên 2×8×H100, chu kỳ 24–48h.",
     ],
@@ -50,9 +50,9 @@ const content = {
     experience: "Kinh nghiệm",
     experiences: [
       { role: "Kỹ sư AI", org: "Trivita AI", period: "Tháng 9, 2025 – nay" },
-      { role: "Nghiên cứu viên AI", org: "AIMA", period: "Tháng 6, 2024 – nay" },
-      { role: "Trưởng nhóm nghiên cứu kỹ thuật", org: "VLAI", period: "2023 – 2024" },
-      { role: "Trưởng nhóm nghiên cứu chuỗi thời gian", org: "AI Vietnam", period: "2022 – 2023" },
+      { role: "Nghiên cứu viên AI", org: "AIMA", period: "Tháng 6, 2024 – 2025" },
+      { role: "Trưởng nhóm nghiên cứu Multi-Agent VQA", org: "VLAI", period: "2023 – 2024" },
+      { role: "Trưởng nhóm nghiên cứu Time-Series", org: "AI VIET NAM", period: "2022 – 2023" },
     ],
     education: "Học vấn",
     educations: [
