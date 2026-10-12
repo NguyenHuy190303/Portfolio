@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { getAllPosts } from "@/lib/posts";
 import { PostList } from "@/components/blog/PostList";
 import { SocialLinks } from "@/components/SocialLinks";
+import { WorkItems } from "@/components/WorkItems";
 import { content as about } from "@/components/MinimalAbout";
 
 export const revalidate = 3600;
@@ -74,17 +75,8 @@ export default async function HomePage({ params }: Props) {
       <section className="bg-block py-[84px] lg:pt-[120px] lg:pb-[130px]">
         <div className="wrap">
           <SectionHead title={h.rich("workTitle", { em })} kicker={h("workKicker")} />
-          <div className="mt-[52px] grid gap-[clamp(28px,4vw,64px)] lg:mt-[84px] lg:grid-cols-3">
-            {work.map((item, i) => {
-              const [title, ...rest] = item.split(" — ");
-              return (
-                <div key={title} className="border-t border-foreground pt-[26px]">
-                  <div className="font-serif text-[52px] font-light italic leading-none text-primary lining-nums lg:text-[64px]">0{i + 1}</div>
-                  <h3 className="mt-5 mb-3 text-[26px] leading-tight">{title}</h3>
-                  <p className="text-[15px] first-letter:uppercase">{rest.join(" — ")}</p>
-                </div>
-              );
-            })}
+          <div className="mt-[52px] lg:mt-[84px]">
+            <WorkItems items={work} />
           </div>
         </div>
       </section>
