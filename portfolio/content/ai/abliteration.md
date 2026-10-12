@@ -12,6 +12,7 @@ aliases:
   - Weight Projection Safety
 date: 2026-05-14
 status: reference
+description: 'Kỹ thuật loại bỏ vĩnh viễn "refusal direction" khỏi weights của LLM bằng cách project nó ra khỏi các write projection matrices — model vẫn coherent và capable nhưng không còn khả năng từ chối bất kỳ request nào.'
 ---
 
 # Abliteration

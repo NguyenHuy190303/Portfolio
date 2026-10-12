@@ -9,6 +9,7 @@ aliases:
   - LoRA
   - PEFT
   - QLoRA
+description: 'LoRA không train lại toàn bộ model. Nó đóng băng base model và học một delta nhỏ hơn rất nhiều so với full fine-tune.'
 ---
 
 # LoRA & PEFT

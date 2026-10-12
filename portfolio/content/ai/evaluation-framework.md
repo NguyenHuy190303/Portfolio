@@ -7,6 +7,7 @@ tags:
 aliases:
   - Model Editing Evaluation
   - Eval Framework
+description: '"Hoạt động trên 5 test cases" không phải eval. Evaluation Framework là bộ metrics, thresholds, prompts, scripts và reports dùng để chứng minh một model intervention có hiệu quả thật hay chỉ nhìn tốt trên demo.'
 ---
 
 # Evaluation Framework

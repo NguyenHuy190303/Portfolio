@@ -13,6 +13,7 @@ aliases:
   - Activation Addition
 date: 2026-05-14
 status: reference
+description: 'Inject một vector vào hidden states của model tại inference time để điều hướng behavior — không thay đổi weights, reversible ngay lập tức, và có thể apply có điều kiện theo context.'
 ---
 
 # Activation Steering

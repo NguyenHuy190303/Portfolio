@@ -14,6 +14,7 @@ aliases:
   - Activation Patching
 date: 2026-05-14
 status: permanent
+description: 'Hầu hết các kỹ thuật chỉnh sửa model đều có chung một giả định ngầm: "chúng ta không cần hiểu model, chỉ cần tìm chỗ để thay đổi." Mechanistic interpretability từ chối giả định đó.'
 ---
 
 # Neuron, Circuit & Feature Edits

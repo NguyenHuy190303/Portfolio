@@ -9,6 +9,7 @@ aliases:
   - ROME
   - MEMIT
   - Knowledge Editing
+description: 'Knowledge editing giống như sửa một thẻ trong từ điển bên trong model. Nếu model tin rằng "Eiffel Tower nằm ở Rome", ta muốn sửa thành "Eiffel Tower nằm ở Paris" mà không cần fine-tune lại toàn bộ model.'
 ---
 
 # Knowledge Editing — ROME & MEMIT

@@ -7,6 +7,7 @@ tags:
 aliases:
   - LLM Unlearning
   - Forgetting in LLMs
+description: 'Machine unlearning cố làm model "quên" một nhóm thông tin: PII, copyrighted text, hazardous knowledge, hoặc records cần xóa theo yêu cầu compliance.'
 ---
 
 # Machine Unlearning

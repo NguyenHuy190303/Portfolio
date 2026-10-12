@@ -13,6 +13,7 @@ aliases:
   - Weight Space Merging
 date: 2026-05-14
 status: permanent
+description: 'Khi bạn fine-tune một model, thực chất bạn đang dịch chuyển một điểm trong không gian hàng tỷ chiều — từ vị trí base đến vị trí mới mang skill cụ thể.'
 ---
 
 # Task Vectors & Model Merging

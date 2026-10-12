@@ -13,6 +13,7 @@ aliases:
   - Preference Optimization
 date: 2026-05-14
 status: reference
+description: 'Nhóm kỹ thuật dùng để thay đổi broad behavioral preference của language model: helpfulness, refusal đúng ngữ cảnh, tone, và hallucination style.'
 ---
 
 # Preference Learning — DPO & RLHF
