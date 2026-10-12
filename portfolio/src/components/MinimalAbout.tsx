@@ -14,12 +14,12 @@ const LinkedinIcon = () => (
 
 const content = {
   en: {
-    bio: "I'm Leo (Nguyễn Huy), an AI engineer at Trivita AI building medical AI in Vietnamese. I own the full data lifecycle — from EMR ingestion through synthetic generation to versioned datasets — on a 2×8×H100 on-prem cluster with access to NVL72 GB200. My work sits at the intersection of Vietnamese NLP, real-world healthcare data, and frontier-scale compute, under international mentor lineage from Taiwan AI research.",
+    bio: "I'm Leo (Nguyễn Huy), an AI engineer at Trivita AI building medical AI in Vietnamese. I own the full data lifecycle — from EMR ingestion through synthetic generation to versioned datasets — and the post-training and evaluation loop on an on-prem multi-node H100 cluster, with partner access to GB200 NVL72. My work sits at the intersection of Vietnamese NLP, real-world healthcare data, and large-scale compute, under international mentor lineage from Taiwan AI research.",
     working: "What I'm working on",
     workItems: [
-      "MedVita — Vietnamese medical AI assistant with guardrail system (P1–P5), ICD-10 VN integration, SOCRATES per-department, integrated with a central hospital's HIS.",
-      "Trivita-Eval — internal LLM evaluation platform (FastAPI + Celery + Redis + Langfuse + DeepEval + DeepTeam), G-Eval medical metrics, LLM-as-judge calibration.",
-      "Post-Training OS — SFT/DPO feedback loop (eval → targeted data gen → train) running on 2×8×H100, 24–48h iteration cycle.",
+      "MedVita — Vietnamese medical history-taking assistant: ICD-10 VN normalisation, SOCRATES-structured history-taking per department, tiered safety guardrails, integrated with a central hospital's HIS.",
+      "LLM evaluation platform — started the company's self-hosted eval platform (FastAPI, Celery, Redis, Langfuse, DeepEval, DeepTeam): medical G-Eval metrics, LLM-as-judge calibration, red-teaming.",
+      "Post-training loop — eval → targeted data generation → SFT/DPO with LoRA/QLoRA on an on-prem multi-node H100 cluster, day-scale iteration cycles.",
     ],
     stack: "Stack",
     stackText: "Python · FastAPI · vLLM · TGI · TensorRT-LLM · DVC · MinIO · Label Studio · Langfuse · W&B · Docker · Kubernetes · GitHub Actions",
@@ -38,12 +38,12 @@ const content = {
     links: "Links",
   },
   vi: {
-    bio: "Tôi là Leo (Nguyễn Huy), kỹ sư AI tại Trivita AI, xây dựng AI y tế tiếng Việt. Tôi cầm toàn bộ vòng đời dữ liệu — từ thu thập EMR, sinh dữ liệu tổng hợp đến dataset có version — trên cụm 2×8×H100 on-prem và có truy cập NVL72 GB200. Công việc của tôi nằm ở giao điểm giữa NLP tiếng Việt, dữ liệu y tế thực tế và compute frontier, dưới mentor lineage quốc tế từ nghiên cứu AI Taiwan.",
+    bio: "Tôi là Leo (Nguyễn Huy), kỹ sư AI tại Trivita AI, xây dựng AI y tế tiếng Việt. Tôi cầm toàn bộ vòng đời dữ liệu — từ thu thập EMR, sinh dữ liệu tổng hợp đến dataset có version — cùng vòng lặp post-training và đánh giá trên cụm H100 nhiều node on-prem, có truy cập GB200 NVL72 qua đối tác. Công việc của tôi nằm ở giao điểm giữa NLP tiếng Việt, dữ liệu y tế thực tế và compute quy mô lớn, dưới mentor lineage quốc tế từ nghiên cứu AI Taiwan.",
     working: "Đang làm gì",
     workItems: [
-      "MedVita — trợ lý AI y tế tiếng Việt với hệ thống guardrail (P1–P5), tích hợp ICD-10 VN, SOCRATES theo chuyên khoa, kết nối HIS của một bệnh viện tuyến trung ương.",
-      "Trivita-Eval — nền tảng đánh giá LLM nội bộ (FastAPI + Celery + Redis + Langfuse + DeepEval + DeepTeam), G-Eval y tế, hiệu chỉnh LLM-as-judge.",
-      "Post-Training OS — vòng lặp phản hồi SFT/DPO (eval → sinh data → train) chạy trên 2×8×H100, chu kỳ 24–48h.",
+      "MedVita — trợ lý hỏi bệnh sử tiếng Việt: chuẩn hoá ICD-10 VN, hỏi bệnh theo SOCRATES cho từng chuyên khoa, guardrail an toàn nhiều tầng, kết nối HIS của một bệnh viện tuyến trung ương.",
+      "Nền tảng đánh giá LLM — khởi xướng nền tảng eval self-hosted của công ty (FastAPI, Celery, Redis, Langfuse, DeepEval, DeepTeam): metric G-Eval y tế, hiệu chỉnh LLM-as-judge, red-teaming.",
+      "Vòng lặp post-training — eval → sinh data có mục tiêu → SFT/DPO với LoRA/QLoRA trên cụm H100 nhiều node on-prem, chu kỳ tính bằng ngày.",
     ],
     stack: "Stack",
     stackText: "Python · FastAPI · vLLM · TGI · TensorRT-LLM · DVC · MinIO · Label Studio · Langfuse · W&B · Docker · Kubernetes · GitHub Actions",

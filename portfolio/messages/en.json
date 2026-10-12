@@ -13,28 +13,7 @@
   "hero": {
     "name": "Leo (Nguyễn Huy)",
     "role": "AI Engineer · Trivita AI",
-    "bio": "Building medical AI in Vietnamese. Real-world data pipeline (EMR → synthetic → versioned datasets), 2×8×H100 on-prem cluster, access to NVL72 GB200. Under international mentor lineage from Taiwan AI research.",
-    "title": "Huy Nguyen",
-    "alias": "alias: ",
-    "greeting": "Available for opportunities",
-    "description": "Building medical AI in Vietnamese.",
-    "cta": "Read Blog",
-    "viewProjects": "Read Blog",
-    "readBlog": "Read the blog",
-    "contactMe": "Contact Me",
-    "typing": {
-      "1": "AI Engineer",
-      "2": "Medical AI Builder",
-      "3": "Vietnamese NLP",
-      "4": "H100 Cluster",
-      "5": "Real-world Data Pipeline"
-    },
-    "cv": {
-      "button": "DOWNLOAD CV"
-    },
-    "schedule": {
-      "button": "SCHEDULE A CALL"
-    }
+    "bio": "Building medical AI in Vietnamese. Real-world data pipeline (EMR → synthetic → versioned datasets), post-training and evaluation on an on-prem multi-node H100 cluster. Under international mentor lineage from Taiwan AI research."
   },
   "language": {
     "english": "English",
