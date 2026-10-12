@@ -106,7 +106,7 @@ export const getPublishedPosts = unstable_cache(_getPublishedPosts, ['published-
   tags: ['posts'],
 });
 
-export const getPostBySlug = unstable_cache(_getPostBySlug, ['post-by-slug'], {
+export const getPostBySlug = unstable_cache(_getPostBySlug, ['post-by-slug-published'], {
   revalidate: 3600,
   tags: ['posts'],
 });
