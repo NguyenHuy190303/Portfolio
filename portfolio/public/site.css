@@ -338,3 +338,6 @@ html[lang=vi] .contact h2{font-size:clamp(32px,6vw,104px);line-height:1.04}
 .contact-bar p{max-width:560px}
 a.contact-button{text-decoration:none;white-space:nowrap}
 @media (max-width:760px){.contact h2{margin:32px 0 20px}.contact-lead{margin-bottom:28px}}
+
+/* VI: dot-below tone marks (Ợ, Ị) need room before the next display line */
+html[lang=vi] section.domains .domains-heading h2{line-height:1.22}
