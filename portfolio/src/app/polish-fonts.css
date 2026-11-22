@@ -1,0 +1,70 @@
+/* fonts polish for the Next pages (blog, about, footer, navbar)
+   Imported after globals.css and unlayered, so it wins over @layer base and utilities.
+   Families come from fonts.ts (Inter, Newsreader as --font-playfair, JetBrains Mono).
+   Only line-height, tracking and rendering are touched: no colours, sizes, corners or copy. */
+
+html {
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+  font-optical-sizing: auto;
+}
+
+/* Serif accent: tracking tuned for a text serif, not for the heavy sans around it */
+.display em,
+h1 em, h2 em, h3 em {
+  letter-spacing: -0.012em;
+  font-synthesis: none;
+}
+
+/* ---- Vietnamese ----
+   Uppercase display type stacks tone marks (Ế, Ờ, Ự, Ặ) above the cap height. At the
+   English leading of .98 and -.055em tracking (Inter's Display cut is already tight) the marks hit the line above and the
+   horn of Ư is squeezed by its neighbours. */
+:lang(vi) .display {
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  word-spacing: 0.12em;
+}
+:lang(vi) .display em,
+:lang(vi) h1 em,
+:lang(vi) h2 em,
+:lang(vi) h3 em {
+  letter-spacing: -0.01em;
+}
+
+/* Wordmark in the navbar is uppercase at -.08em */
+:lang(vi) header a[class*='tracking-[-0.08em]'] {
+  letter-spacing: -0.05em;
+}
+
+/* Plain headings (blog post sections, about, work items) */
+:lang(vi) h1,
+:lang(vi) h2,
+:lang(vi) h3,
+:lang(vi) h4 {
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+}
+/* .display and utility classes above keep their own, larger leading */
+:lang(vi) h1.display,
+:lang(vi) h2.display {
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+/* Long-form Vietnamese: ~1.7 leading is enough for the stacked marks and keeps paragraphs compact */
+:lang(vi) .prose-content,
+:lang(vi) .prose-content p,
+:lang(vi) .prose-content li,
+:lang(vi) .prose-content blockquote {
+  line-height: 1.72;
+}
+:lang(vi) .prose-content p {
+  text-wrap: pretty;
+  hyphens: manual;
+}
+
+/* Serif lists and titles (post list, about roles): room for lowercase marks */
+:lang(vi) .font-serif {
+  line-height: 1.35;
+}

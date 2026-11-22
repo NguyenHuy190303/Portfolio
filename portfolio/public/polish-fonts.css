@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=JetBrains+Mono:wght@100..800&display=swap');
+
+/* Fonts polish for home.html and home.vi.html. Loaded after their inline <style>.
+   One sans (Inter, with its Display optical size), one serif accent (Newsreader
+   italic, an old-style text serif close to Iowan Old Style / Baskerville) and one
+   mono (JetBrains Mono). All three ship a vietnamese subset, so tone marks come
+   from the real font and are never synthesised or taken from a fallback.
+   Colours, sizes, layout and text are untouched; only family, leading and tracking. */
+
+:root {
+  --sans: Inter, 'Inter Display', 'Helvetica Neue', Arial, sans-serif;
+  --serif: Newsreader, 'Iowan Old Style', Baskerville, 'Palatino Linotype', Georgia, serif;
+  --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+html {
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+  font-optical-sizing: auto;
+}
+body { font-feature-settings: 'kern', 'calt'; }
+
+/* Serif italic accent words: the inline CSS hard-codes Georgia on these */
+.hero h1 em,
+.method-left h2 i,
+.domain-card-copy h3 em,
+.v4-decision-head em,
+.v4-feedback h2 > span,
+.v4-trust h2 em,
+.v4-contract-header h3 em {
+  font-family: var(--serif) !important;
+  font-synthesis: none;
+}
+
+/* ---- Vietnamese ----
+   Uppercase display type stacks tone marks (Ế, Ờ, Ự, Ặ) above the cap height. At the
+   English leading (.83 to .91) and -.09em tracking the marks hit the line above and
+   the horn of Ư / Ơ is squeezed by its neighbours. Same specificity as the inline
+   html[lang=vi] rules, and later in the cascade. */
+
+/* giant display lines (were -.083 to -.098em, lh .83 to .91) */
+html[lang=vi] .section-heading h2,
+html[lang=vi] .notes .section-heading h2,
+html[lang=vi] .method-left h2,
+html[lang=vi] .contact h2,
+html[lang=vi] .domains-heading h2,
+html[lang=vi] .operating-heading h2,
+html[lang=vi] .v4-strategy h2,
+html[lang=vi] .v4-feedback h2,
+html[lang=vi] .v4-bottlenecks h2,
+html[lang=vi] .v4-trust h2,
+html[lang=vi] .drawer-body h2,
+html[lang=vi] .v4-trust-contrast h3,
+html[lang=vi] .v4-contract-header h3,
+html[lang=vi] .v4-decision-head h3,
+html[lang=vi] .v4-loop-core strong,
+html[lang=vi] .proof b {
+  line-height: 1.14;
+  letter-spacing: -.025em;
+}
+/* big headings (were -.06 to -.075em, lh 1.0 to 1.08) */
+html[lang=vi] .manifesto h2,
+html[lang=vi] .project-info h3,
+html[lang=vi] .domain-card-copy h3,
+html[lang=vi] .note-card h3,
+html[lang=vi] .ops-panel-copy h3,
+html[lang=vi] .ops-core strong,
+html[lang=vi] .v4-gtm-text h3,
+html[lang=vi] .v4-feedback-detail h3,
+html[lang=vi] .v4-bn-heading h3,
+html[lang=vi] .v4-decision-body h4,
+html[lang=vi] .v4-contract-main h4 {
+  line-height: 1.16;
+  letter-spacing: -.03em;
+}
+/* small headings and step titles */
+html[lang=vi] .principle h3,
+html[lang=vi] .drawer-copy h3,
+html[lang=vi] .ops-tab-main b,
+html[lang=vi] .v4-bn-step b,
+html[lang=vi] .v4-release-stage b {
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+/* serif accents: a text serif does not want heavy-sans tracking */
+html[lang=vi] .hero h1 em,
+html[lang=vi] .method-left h2 i,
+html[lang=vi] .domain-card-copy h3 em,
+html[lang=vi] .v4-decision-head em,
+html[lang=vi] .v4-feedback h2 > span,
+html[lang=vi] .v4-trust h2 em,
+html[lang=vi] .v4-contract-header h3 em {
+  letter-spacing: -.015em;
+}
+
+/* "CONTRACT" at 57px with looser tracking is 16px wider than its 287px column at 390px */
+@media (max-width: 600px) {
+  html[lang=vi] .v4-contract-header h3 { font-size: 55px; letter-spacing: -.04em; }
+}
+
+/* Hero headline: three stacked blocks. The first two carry the stacked marks (the dot
+   under Ạ meets the hat of Ổ one line down) so they get 1.14; the third line is plain
+   lowercase and keeps the English leading. The h1 margins give back the extra height so
+   the hero (fixed 820 to 900px) still holds its buttons. */
+html[lang=vi] .hero h1 {
+  letter-spacing: -.025em;
+  margin-top: 33px;
+  margin-bottom: 18px;
+}
+html[lang=vi] .hero h1 .block { line-height: 1.14; }
+html[lang=vi] .hero h1 .block.bottom { line-height: .9; }
+html[lang=vi] .hero h1 em { letter-spacing: -.01em; }

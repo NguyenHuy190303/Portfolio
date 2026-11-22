@@ -1,0 +1,208 @@
+/* Corner polish: soft asymmetric corners ("bo goc") for the static homepages.
+   Loaded after the inline <style> of home.html and home.vi.html.
+   Shape language: big panels very uneven (large/small alternating), small items
+   4px 24px 4px 20px, controls morph to the mirrored shape on hover.
+   Colours, spacing, fonts and copy are untouched. */
+
+:root {
+  --pc-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* ---- Controls ------------------------------------------------------- */
+.nav .nav-cta {
+  border-radius: 4px 21px 4px 17px;
+  transition: border-radius .45s var(--pc-ease), background .2s, color .2s, border-color .2s;
+}
+.nav .nav-cta:hover { border-radius: 21px 4px 17px 4px; }
+
+.nav .nav-lang {
+  border-radius: 3px 11px 3px 9px;
+  transition: border-radius .4s var(--pc-ease), background .2s;
+}
+.nav .nav-lang:hover { border-radius: 11px 3px 9px 3px; }
+
+.button,
+.contact-button,
+.notes-all {
+  border-radius: 4px 25px 4px 20px;
+  transition: border-radius .45s var(--pc-ease), transform .3s cubic-bezier(.2, .9, .2, 1), background .3s, color .3s, border-color .3s;
+}
+.button:hover,
+.contact-button:hover,
+.notes-all:hover { border-radius: 25px 4px 20px 4px; }
+
+.mobile-nav-toggle { border-radius: 4px 20px 4px 16px; }
+.mobile-nav-menu { border-radius: 0 0 0 36px; }
+
+.mode-panel {
+  border-radius: 4px 22px 4px 18px;
+}
+.mode-panel button {
+  border-radius: 3px 14px 3px 11px;
+  transition: border-radius .4s var(--pc-ease), color .2s, background .2s;
+}
+.mode-panel button:hover,
+.mode-panel button.active { border-radius: 14px 3px 11px 3px; }
+
+/* ---- Chips, filters, tags ------------------------------------------ */
+.chip {
+  border-radius: 3px 14px 3px 11px;
+  transition: border-radius .4s var(--pc-ease);
+}
+.chip:hover { border-radius: 14px 3px 11px 3px; }
+
+.filter-row button {
+  border-radius: 3px 15px 3px 12px;
+  transition: border-radius .4s var(--pc-ease), background .2s, color .2s;
+}
+.filter-row button:hover,
+.filter-row button.active { border-radius: 15px 3px 12px 3px; }
+
+.domain-tagline span { border-radius: 3px 12px 3px 10px; }
+.ent-node,
+.ops-orbit-label { border-radius: 3px 14px 3px 11px; }
+.care-pipeline div:not(.care-arrow) { border-radius: 3px 14px 3px 11px; }
+.v4-release-stage { border-radius: 4px 22px 4px 18px; }
+.v4-decision-switch button {
+  border-radius: 3px 14px 3px 11px;
+  transition: border-radius .4s var(--pc-ease), background .3s, color .3s;
+}
+.v4-decision-switch button:hover,
+.v4-decision-switch button.active { border-radius: 14px 3px 11px 3px; }
+.v4-feedback-stepper button {
+  border-radius: 3px 15px 3px 12px;
+  transition: border-radius .4s var(--pc-ease), background .2s, color .2s;
+}
+.v4-feedback-stepper button:hover,
+.v4-feedback-stepper button.active { border-radius: 15px 3px 12px 3px; }
+.drawer-actions button {
+  border-radius: 4px 20px 4px 16px;
+  transition: border-radius .45s var(--pc-ease), background .2s, color .2s;
+}
+.drawer-actions button:hover { border-radius: 20px 4px 16px 4px; }
+.drawer-copy .aside-note { border-radius: 0 18px 0 14px; }
+
+/* ---- Cards and panels ----------------------------------------------- */
+/* Case / project rows: the visual becomes the big uneven panel */
+.project-graphic {
+  border-radius: 6px 82px 8px 60px;
+  transition: border-radius .65s var(--pc-ease);
+}
+.project-row:hover .project-graphic { border-radius: 16px 70px 8px 76px; }
+
+/* Domain cards */
+.domain-card {
+  border-radius: 6px 64px 8px 48px;
+  overflow: hidden;
+  transition: transform .55s cubic-bezier(.2, .8, .2, 1), box-shadow .55s, border-radius .65s var(--pc-ease);
+}
+.domain-card:hover,
+.domain-card:focus-visible { border-radius: 14px 54px 8px 62px; }
+.domain-illustration,
+.care-illustration { border-radius: 4px 40px 4px 30px; }
+.care-app-main { border-radius: 4px 28px 4px 22px; }
+.care-confirm { border-radius: 0; }
+
+/* Consoles, labs and big boxed grids (overflow clips their square children) */
+.ops-layout {
+  border-radius: 6px 70px 8px 56px;
+  overflow: hidden;
+}
+.v4-gtm-console,
+.v4-decision-studio {
+  border-radius: 6px 62px 8px 48px;
+  overflow: hidden;
+}
+.v4-gtm-display { border-radius: 4px 40px 4px 30px; }
+.v4-decision-body { border-radius: 4px 32px 4px 24px; }
+.v4-feedback-surface {
+  border-radius: 6px 70px 8px 54px;
+  overflow: hidden;
+}
+.v4-bn-grid {
+  border-radius: 6px 70px 8px 56px;
+  overflow: hidden;
+}
+.v4-trust-contrast {
+  border-radius: 6px 70px 8px 56px;
+  overflow: hidden;
+}
+.v4-contract-lab {
+  border-radius: 6px 64px 8px 50px;
+  overflow: hidden;
+}
+
+/* Writing / note cards: rows are ruled lines, so the soft shape appears on hover */
+.note-card { transition: padding-left .25s, background .25s, border-radius .55s var(--pc-ease); }
+.note-card:hover { border-radius: 3px 30px 3px 22px; }
+.note-card:nth-child(even):hover { border-radius: 30px 3px 22px 3px; }
+
+/* Drawer (project details) */
+.drawer { border-radius: 56px 0 0 0; }
+.drawer-top { border-radius: 56px 0 0 0; }
+
+/* Sections that read as dark/feature blocks keep full-bleed edges; the
+   closing contact block gets one soft corner. It overlaps the padding of the
+   notes section above so the corner reveals that section's own colour. */
+.contact {
+  border-radius: 80px 0 0 0;
+  margin-top: -80px;
+  z-index: 1;
+}
+.footer { position: relative; z-index: 2; }
+
+/* ---- Tablet / mobile: smaller radii --------------------------------- */
+@media (max-width: 820px) {
+  .project-graphic { border-radius: 4px 52px 6px 40px; }
+  .project-row:hover .project-graphic { border-radius: 4px 52px 6px 40px; }
+  .domain-card,
+  .domain-card:hover,
+  .domain-card:focus-visible { border-radius: 4px 44px 6px 34px; }
+  .domain-illustration,
+  .care-illustration { border-radius: 4px 28px 4px 22px; }
+  .ops-layout,
+  .v4-feedback-surface,
+  .v4-bn-grid,
+  .v4-trust-contrast { border-radius: 4px 46px 6px 36px; }
+  .v4-gtm-console,
+  .v4-decision-studio,
+  .v4-contract-lab { border-radius: 4px 44px 6px 34px; }
+  .v4-gtm-display { border-radius: 4px 28px 4px 22px; }
+  .v4-decision-body { border-radius: 4px 24px 4px 18px; }
+  .care-app-main { border-radius: 4px 22px 4px 16px; }
+  .drawer,
+  .drawer-top { border-radius: 36px 0 0 0; }
+  .contact { border-radius: 48px 0 0 0; margin-top: -48px; }
+  .button,
+  .contact-button,
+  .notes-all { border-radius: 3px 18px 3px 14px; }
+  .button:hover,
+  .contact-button:hover,
+  .notes-all:hover { border-radius: 18px 3px 14px 3px; }
+  .nav .nav-cta { border-radius: 3px 15px 3px 12px; }
+  .nav .nav-cta:hover { border-radius: 15px 3px 12px 3px; }
+  .mode-panel { border-radius: 3px 16px 3px 13px; }
+}
+@media (max-width: 540px) {
+  .project-graphic,
+  .project-row:hover .project-graphic { border-radius: 4px 40px 5px 32px; }
+  .domain-card,
+  .domain-card:hover,
+  .domain-card:focus-visible { border-radius: 4px 34px 5px 28px; }
+  .ops-layout,
+  .v4-feedback-surface,
+  .v4-bn-grid,
+  .v4-trust-contrast,
+  .v4-gtm-console,
+  .v4-decision-studio,
+  .v4-contract-lab { border-radius: 4px 34px 5px 28px; }
+  .contact { border-radius: 36px 0 0 0; margin-top: -36px; }
+}
+
+/* ---- Motion preference ---------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .nav .nav-cta, .nav .nav-lang, .button, .contact-button, .notes-all,
+  .mode-panel button, .chip, .filter-row button, .v4-decision-switch button,
+  .v4-feedback-stepper button, .drawer-actions button, .project-graphic,
+  .domain-card, .note-card { transition-property: transform, background, color, border-color, box-shadow, padding-left; }
+}

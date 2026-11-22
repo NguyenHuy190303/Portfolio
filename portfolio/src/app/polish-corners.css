@@ -1,0 +1,134 @@
+/* Corner polish for the Next pages (blog, post, about, tags, navbar, footer, search).
+   Soft asymmetric corners ("bo goc"). Imported after globals.css and unlayered, so it
+   wins over the Tailwind utility classes (rounded-*) without !important.
+   No colours, spacing, fonts or text are changed here, except that the band overlap
+   below trades margin for padding one-for-one so the visible rhythm stays the same. */
+
+:root {
+  --pc-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* ---- Controls ------------------------------------------------------- */
+/* Navbar "contact" pill -> uneven corners that morph on hover */
+header a.rounded-full {
+  border-radius: 4px 21px 4px 17px;
+  transition: border-radius .45s var(--pc-ease), color .15s, background-color .15s, border-color .15s;
+}
+header a.rounded-full:hover { border-radius: 21px 4px 17px 4px; }
+
+/* Post tags */
+.rounded-full {
+  border-radius: 3px 14px 3px 11px;
+}
+
+/* Small controls: sidebar links, copy button, kbd, inline code */
+.rounded-md {
+  border-radius: 3px 10px 3px 8px;
+  transition-property: color, background-color, border-color, border-radius;
+  transition-duration: .3s;
+  transition-timing-function: var(--pc-ease);
+}
+.rounded-md:hover { border-radius: 10px 3px 8px 3px; }
+kbd.rounded { border-radius: 2px 8px 2px 6px; }
+code.rounded { border-radius: 2px 8px 2px 6px; }
+
+/* Floating scroll-to-top button */
+button.fixed.right-6.bottom-6 {
+  border-radius: 4px 16px 4px 13px;
+  transition: border-radius .45s var(--pc-ease), opacity .3s, transform .3s, background-color .3s;
+}
+button.fixed.right-6.bottom-6:hover { border-radius: 16px 4px 13px 4px; }
+
+/* ---- Cards and panels ----------------------------------------------- */
+/* Code blocks, diagrams, embeds, callouts (all use rounded-xl) */
+.rounded-xl {
+  border-radius: 4px 28px 4px 20px;
+}
+/* Callout: coloured left rule, so keep the left side gentle */
+.rounded-xl.border-l-4 {
+  border-radius: 3px 26px 3px 18px;
+}
+.callout {
+  border-radius: 3px 26px 3px 18px;
+}
+
+/* Search modal panel (the ESC kbd and input row stay clear of the 36px corner) */
+.rounded-2xl {
+  border-radius: 6px 36px 8px 28px;
+}
+
+/* About: avatar arch becomes a tall uneven panel (was a symmetric arch) */
+.rounded-t-full {
+  border-radius: 120px 8px 96px 8px;
+}
+
+/* About: stack chips (plain bordered list items) */
+.tone-band2 li.border.border-foreground {
+  border-radius: 3px 14px 3px 11px;
+}
+
+/* Blog post header band */
+header.tone-band1 {
+  border-radius: 6px 64px 8px 48px;
+}
+
+/* ---- Page bands and footer ------------------------------------------ */
+/* Each band after the first gets a soft top-left curve that reveals the band
+   above it. The 80px overlap (negative margin) is given back as padding, so
+   the content does not move. */
+main > section.tone-band1,
+main > section.tone-band2 {
+  position: relative;
+  border-radius: 80px 0 0 0;
+  margin-top: -80px;
+  padding-top: calc(5rem + 80px);
+}
+@media (min-width: 1024px) {
+  main > section.tone-band1,
+  main > section.tone-band2 {
+    padding-top: calc(7rem + 80px);
+  }
+}
+
+/* Footer: soft top-left curve over whatever is above it */
+footer.bg-footer {
+  position: relative;
+  border-radius: 72px 0 0 0;
+}
+/* When the page ends with a band, overlap it so the curve reveals that band */
+main:has(> section:last-child) + footer.bg-footer {
+  margin-top: -72px;
+  padding-top: calc(5rem + 72px);
+}
+
+/* ---- Tablet / mobile: smaller radii --------------------------------- */
+@media (max-width: 820px) {
+  .rounded-xl { border-radius: 3px 22px 3px 16px; }
+  .rounded-xl.border-l-4,
+  .callout { border-radius: 3px 20px 3px 14px; }
+  .rounded-2xl { border-radius: 4px 30px 6px 24px; }
+  .rounded-t-full { border-radius: 88px 6px 72px 6px; }
+  header.tone-band1 { border-radius: 4px 40px 6px 30px; }
+  main > section.tone-band1,
+  main > section.tone-band2 {
+    border-radius: 48px 0 0 0;
+    margin-top: -48px;
+    padding-top: calc(5rem + 48px);
+  }
+  footer.bg-footer { border-radius: 48px 0 0 0; }
+  main:has(> section:last-child) + footer.bg-footer {
+    margin-top: -48px;
+    padding-top: calc(5rem + 48px);
+  }
+  header a.rounded-full { border-radius: 3px 15px 3px 12px; }
+  header a.rounded-full:hover { border-radius: 15px 3px 12px 3px; }
+}
+
+/* ---- Motion preference ---------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  header a.rounded-full,
+  .rounded-md,
+  button.fixed.right-6.bottom-6 {
+    transition-property: color, background-color, border-color, opacity, transform;
+  }
+}

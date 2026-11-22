@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './polish-fonts.css';
+import './polish-corners.css';
 import { OG_IMAGE, SITE_URL } from '@/lib/utils';
 
 const description = 'Leo Nguyen (Nguyen Quoc Huy), AI Lead at Trivita AI in Vietnam. AI agents, evaluation and reliability, medical AI and GPU serving. Technical notes on LLMs, evaluation and Python.';
