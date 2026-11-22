@@ -11,7 +11,15 @@
     "blog": "Blog",
     "connect": "Liên hệ",
     "product": "Sản phẩm",
-    "systems": "Hệ thống"
+    "systems": "Hệ thống",
+    "strategy": "GTM & Vận hành",
+    "feedback": "Phản hồi",
+    "reliability": "Độ tin cậy",
+    "writing": "Bài viết",
+    "menu": "Menu",
+    "closeMenu": "Đóng",
+    "search": "Tìm kiếm",
+    "primary": "Điều hướng chính"
   },
   "blog": {
     "title": "Blog",

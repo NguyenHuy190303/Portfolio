@@ -12,16 +12,16 @@ const ThemeSwitcher = () => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return <span className="h-4 w-4" />;
+  if (!mounted) return <span className="nav-tab nav-tab--icon" aria-hidden="true" />;
 
   return (
     <button
+      type="button"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="relative flex h-4 w-4 items-center justify-center text-foreground hover:text-primary transition-colors"
+      className="nav-tab nav-tab--icon"
       title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
     >
-      <Sun className="absolute h-4 w-4 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      {theme === "dark" ? <Moon aria-hidden="true" /> : <Sun aria-hidden="true" />}
       <span className="sr-only">Toggle theme</span>
     </button>
   );
