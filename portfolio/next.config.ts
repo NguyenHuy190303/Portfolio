@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
       beforeFiles: [
         { source: '/en', destination: '/home.html' },
         { source: '/vi', destination: '/home.vi.html' },
+        ...['projects', 'strategy', 'feedback', 'reliability'].flatMap((page) => [
+          { source: `/en/${page}`, destination: `/${page}.html` },
+          { source: `/vi/${page}`, destination: `/${page}.vi.html` },
+        ]),
       ],
       afterFiles: [],
       fallback: [],
