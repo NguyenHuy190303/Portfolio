@@ -11,7 +11,15 @@
     "blog": "Blog",
     "connect": "Connect",
     "product": "Product",
-    "systems": "Systems"
+    "systems": "Systems",
+    "strategy": "Strategy",
+    "feedback": "Feedback",
+    "reliability": "Reliability",
+    "writing": "Writing",
+    "menu": "Menu",
+    "closeMenu": "Close",
+    "search": "Search",
+    "primary": "Primary"
   },
   "blog": {
     "title": "Blog",

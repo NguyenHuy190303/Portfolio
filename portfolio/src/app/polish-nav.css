@@ -1,0 +1,203 @@
+/* Sticky header + bordered tab buttons for the Next pages (Navbar.tsx).
+   Imported after polish-corners.css, unlayered, so it wins over Tailwind utilities.
+   Colours come from the semantic tokens (--background, --foreground, --primary),
+   so light, dark and re-scoped tone bands all work. Desktop = one row from
+   --nav-bp (1240px, keep in sync with the matchMedia in Navbar.tsx); below it
+   the tabs collapse into a MENU button with a panel of 52px rows. */
+
+:root {
+  --nav-h: 68px;
+  --nav-line: color-mix(in srgb, var(--foreground) 38%, var(--background));
+  --nav-corner: 4px 18px 4px 14px;
+  --nav-corner-hover: 18px 4px 14px 4px;
+  --nav-ease: cubic-bezier(.22, 1, .36, 1);
+}
+@media (max-width: 1239px) {
+  :root { --nav-h: 64px; }
+}
+
+/* ---- Header ---------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--nav-h);
+  background: color-mix(in srgb, var(--background) 95%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 24%, var(--background));
+  color: var(--foreground);
+}
+.site-header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 100%;
+  max-width: 1760px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 2.2vw, 40px);
+}
+.site-brand {
+  flex: none;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--foreground);
+}
+.site-brand span { color: var(--primary); }
+
+/* ---- Tab buttons ------------------------------------------------------ */
+.nav-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--nav-line);
+  border-radius: var(--nav-corner);
+  background: transparent;
+  color: var(--foreground);
+  font-family: var(--font-sans, inherit);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-radius .45s var(--nav-ease), color .15s, background-color .15s, border-color .15s;
+}
+.nav-tab:hover {
+  border-radius: var(--nav-corner-hover);
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.nav-tab[aria-current="page"] {
+  border-color: var(--foreground);
+  background: var(--foreground);
+  color: var(--background);
+}
+.nav-tab[aria-current="page"]:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.nav-tab:focus-visible,
+.nav-seg__btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.nav-tab svg { width: 18px; height: 18px; flex: none; }
+.nav-tab--icon { width: 44px; padding: 0; }
+.nav-tab--cta {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 700;
+}
+.nav-tab--cta:hover {
+  border-color: var(--foreground);
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Language: two-button segmented control */
+.nav-seg {
+  display: inline-flex;
+  min-height: 44px;
+  border: 1px solid var(--nav-line);
+  border-radius: var(--nav-corner);
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: .06em;
+}
+.nav-seg__btn {
+  min-width: 44px;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: color .15s, background-color .15s;
+}
+.nav-seg__btn + .nav-seg__btn { border-left: 1px solid var(--nav-line); }
+.nav-seg__btn:hover:not(:disabled) { background: var(--primary); color: var(--primary-foreground); }
+.nav-seg__btn:disabled { background: var(--foreground); color: var(--background); cursor: default; }
+
+/* ---- Desktop row vs. mobile menu ------------------------------------- */
+.nav-desktop { display: none; align-items: center; gap: 8px; }
+.nav-menu-btn { display: inline-flex; padding-inline: 18px; }
+.nav-panel { display: none; }
+
+@media (min-width: 1240px) {
+  .nav-desktop { display: flex; }
+  .nav-menu-btn, .nav-panel { display: none !important; }
+}
+@media (min-width: 1240px) and (max-width: 1439px) {
+  .nav-desktop { gap: 6px; }
+  .nav-desktop .nav-tab { padding-inline: 12px; }
+  .nav-desktop .nav-tab--icon { padding-inline: 0; }
+}
+@media (min-width: 1440px) {
+  .nav-desktop { gap: 10px; }
+  .nav-desktop .nav-tab { padding-inline: 20px; }
+  .nav-desktop .nav-tab--icon { padding-inline: 0; }
+}
+
+.nav-panel[hidden] { display: none; }
+.nav-panel:not([hidden]) {
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: calc(100dvh - var(--nav-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--background);
+  border-bottom: 1px solid var(--nav-line);
+  padding: 12px clamp(16px, 4vw, 40px) 20px;
+  box-shadow: 0 18px 30px -18px color-mix(in srgb, var(--foreground) 40%, transparent);
+}
+.nav-panel ul {
+  display: grid;
+  gap: 10px;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 640px;
+  list-style: none;
+}
+.nav-row {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 18px;
+  font-size: 16px;
+}
+.nav-row.nav-tab--cta { justify-content: center; }
+.nav-panel__tools { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; }
+.nav-panel__tools .nav-tab--icon,
+.nav-panel__tools .nav-seg { min-height: 52px; }
+.nav-panel__tools .nav-tab--icon { width: 52px; }
+.nav-panel__tools .nav-seg__btn { min-width: 52px; font-size: 15px; }
+
+/* ---- Offsets for content under the sticky header ---------------------- */
+.sidebar-nav,
+.toc-sidebar {
+  top: calc(var(--nav-h) + 1.5rem);
+  max-height: calc(100vh - var(--nav-h) - 3rem);
+}
+:target { scroll-margin-top: calc(var(--nav-h) + 16px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-tab, .nav-seg__btn { transition: none; }
+  .nav-tab:hover { border-radius: var(--nav-corner); }
+}
