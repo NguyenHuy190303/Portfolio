@@ -16,6 +16,7 @@ export const content = {
     stackText: "Python · FastAPI · LangGraph · Langfuse · DeepEval · vLLM · Triton · TensorRT-LLM · PyTorch · Kafka · LiveKit · PostgreSQL · MLflow · DVC · MinIO · Label Studio · Docker · Kubernetes · Helm · ArgoCD · Prometheus · Grafana · Sentry · GitHub Actions",
     experience: "Experience",
     experiences: [
+      { role: "AI Researcher", org: "Meddies", period: "Dec 2025 – present" },
       { role: "AI Engineer → AI Lead", org: "Trivita AI", period: "Sep 2025 – present" },
       { role: "AI Researcher", org: "AIMA", period: "Jun 2024 – 2025" },
       { role: "Multi-Agent VQA Research Team Lead", org: "VLAI", period: "2023 – 2024" },
@@ -40,6 +41,7 @@ export const content = {
     stackText: "Python · FastAPI · LangGraph · Langfuse · DeepEval · vLLM · Triton · TensorRT-LLM · PyTorch · Kafka · LiveKit · PostgreSQL · MLflow · DVC · MinIO · Label Studio · Docker · Kubernetes · Helm · ArgoCD · Prometheus · Grafana · Sentry · GitHub Actions",
     experience: "Kinh nghiệm",
     experiences: [
+      { role: "Nghiên cứu viên AI", org: "Meddies", period: "12/2025 – nay" },
       { role: "Kỹ sư AI → AI Lead", org: "Trivita AI", period: "09/2025 – nay" },
       { role: "Nghiên cứu viên AI", org: "AIMA", period: "06/2024 – 2025" },
       { role: "Trưởng nhóm nghiên cứu Multi-Agent VQA", org: "VLAI", period: "2023 – 2024" },
