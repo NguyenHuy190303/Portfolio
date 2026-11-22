@@ -34,14 +34,14 @@ export const content = {
     workItems: [
       "Đánh giá & độ tin cậy của agent — khởi xướng nền tảng đánh giá LLM và agent self-hosted của công ty (nay do ba kỹ sư phát triển), bộ test agent 65 ca, metric G-Eval y tế và LLM-as-judge, red-teaming và tracing bằng Langfuse.",
       "MedVita & dữ liệu y tế — trợ lý hỏi bệnh sử tiếng Việt với chuẩn hoá ICD-10 VN và guardrail an toàn nhiều tầng, cùng pipeline từ EMR đến dataset có version và vòng post-training SFT/DPO trên 2×8×H100.",
-      "Serving & nền tảng — dịch vụ giám sát thi thời gian thực (thông lượng 5.6×, load test 3 giờ không restart), kho dữ liệu giọng nói tiếng Việt 6.448 giờ và registry dataset giúp tái lập mọi lần huấn luyện.",
+      "Serving & nền tảng — dịch vụ giám sát thi thời gian thực (throughput 5.6×, load test 3 giờ không restart lần nào), kho dữ liệu giọng nói tiếng Việt 6.448 giờ và registry dataset giúp tái lập mọi lần huấn luyện.",
     ],
     stack: "Stack",
     stackText: "Python · FastAPI · LangGraph · Langfuse · DeepEval · vLLM · Triton · TensorRT-LLM · PyTorch · Kafka · LiveKit · PostgreSQL · MLflow · DVC · MinIO · Label Studio · Docker · Kubernetes · Helm · ArgoCD · Prometheus · Grafana · Sentry · GitHub Actions",
     experience: "Kinh nghiệm",
     experiences: [
-      { role: "Kỹ sư AI → AI Lead", org: "Trivita AI", period: "Tháng 9, 2025 – nay" },
-      { role: "Nghiên cứu viên AI", org: "AIMA", period: "Tháng 6, 2024 – 2025" },
+      { role: "Kỹ sư AI → AI Lead", org: "Trivita AI", period: "09/2025 – nay" },
+      { role: "Nghiên cứu viên AI", org: "AIMA", period: "06/2024 – 2025" },
       { role: "Trưởng nhóm nghiên cứu Multi-Agent VQA", org: "VLAI", period: "2023 – 2024" },
       { role: "Trưởng nhóm nghiên cứu Time-Series", org: "AI VIET NAM", period: "2022 – 2023" },
     ],
