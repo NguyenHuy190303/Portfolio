@@ -338,3 +338,7 @@ html[lang=vi] .contact h2{font-size:clamp(32px,6vw,104px);line-height:1.04}
 .contact-bar p{max-width:560px}
 a.contact-button{text-decoration:none;white-space:nowrap}
 @media (max-width:760px){.contact h2{margin:32px 0 20px}.contact-lead{margin-bottom:28px}}
+
+/* Manifesto: the two questions that frame the headline */
+.manifesto-copy{max-width:520px}
+.manifesto-copy p.manifesto-q{max-width:520px;font-size:clamp(19px,1.7vw,25px);line-height:1.4;font-weight:600;letter-spacing:-.01em;color:var(--ink);margin:0 0 20px}
