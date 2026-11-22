@@ -53,3 +53,6 @@ html{scroll-padding-top:var(--hdr-h,56px)}
   .operating.ops-pinned .ops-axis-foot{margin-top:clamp(8px,1.6vh,16px);padding-top:clamp(6px,1.2vh,12px)}
   .operating.ops-pinned .ops-footer{margin-top:0}
 }
+
+/* scroll.js drives scrolling itself on desktop: native snapping and CSS smooth scrolling would fight it */
+html.js-slide-scroll{scroll-snap-type:none!important;scroll-behavior:auto!important}

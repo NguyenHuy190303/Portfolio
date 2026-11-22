@@ -7,7 +7,7 @@
    without !important. */
 @media (min-width:1101px) and (min-height:540px){
   #engineering{
-    padding:var(--slide-pad) 0 80px;overflow:clip; /* 80px: .contact overlaps it by -80px (polish-corners.css) */
+    padding:var(--slide-pad) 0;overflow:clip;
     scroll-margin-top:0;
   }
   #engineering>.section-inner{

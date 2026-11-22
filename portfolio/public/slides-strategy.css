@@ -80,7 +80,7 @@
 
   /* ---- / 009 HOW I WORK: heading + intro across the top, the seven principles as a 5-column grid ---- */
   /* .contact (polish-corners.css) pulls itself up 80px over this section for its rounded corner: keep the content above it */
-  #approach{min-height:var(--slide-h);padding-block:var(--slide-pad) calc(var(--slide-pad) + 80px);display:flex;flex-direction:column;justify-content:center}
+  #approach{min-height:var(--slide-h);padding-block:var(--slide-pad);display:flex;flex-direction:column;justify-content:center}
   #approach>.section-inner{display:flex;flex-direction:column;gap:clamp(8px,1.6vh,18px)}
   #approach .method-layout{margin:0;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:clamp(16px,1.6vw,30px);row-gap:clamp(10px,calc(14px + (100vh - 720px)*.05),44px)}
   #approach .method-left{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:5%;align-items:end;min-width:0}

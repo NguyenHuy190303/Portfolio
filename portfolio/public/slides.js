@@ -23,7 +23,8 @@
   tabs.forEach((t,i)=>t.addEventListener('click',e=>{
     if(!e.isTrusted||!pinned())return;                          // a real click moves scroll to that step
     const {top,total}=geom();
-    scrollTo({top:scrollY+top+((i+.5)/tabs.length)*total,behavior:'smooth'});
+    const y=scrollY+top+((i+.5)/tabs.length)*total;
+    if(window.slideScrollTo)window.slideScrollTo(y);else scrollTo({top:y,behavior:'smooth'});
   }));
   addEventListener('scroll',queue,{passive:true});
   addEventListener('resize',queue);

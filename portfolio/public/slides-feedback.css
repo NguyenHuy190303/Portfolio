@@ -15,7 +15,7 @@
   #learning .section-label,#bottlenecks .section-label{flex:none}
   /* polish-corners.css pulls .contact up by 80px over the section before it; pad that
      section by the same amount so its visible slide is still exactly --slide-h */
-  #bottlenecks{min-height:calc(var(--slide-h) + 80px);padding-bottom:calc(var(--slide-pad) + 80px)}
+  #bottlenecks{min-height:var(--slide-h)}
 
   /* ================= #learning ================= */
   #learning .v4-feedback-heading{margin:0;gap:4%;grid-template-columns:1fr minmax(0,.9fr);align-items:center;flex:none}
