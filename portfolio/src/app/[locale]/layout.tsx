@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import Navbar from '@/components/Navbar';
 import ScrollToTopButton from '@/components/ScrollToTopButton';
 import Footer from '@/components/Footer';
-import { montserrat, playfair, pinyon, jetbrainsMono } from '@/app/fonts';
+import { inter, playfair, jetbrainsMono } from '@/app/fonts';
 import { routing } from '@/i18n/routing';
 import { Analytics } from '@vercel/analytics/react';
 import '../globals.css';
@@ -35,7 +35,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${montserrat.variable} ${playfair.variable} ${pinyon.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased" suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
@@ -43,7 +43,7 @@ export default async function LocaleLayout({
             attribute="class"
             defaultTheme="light"
             enableSystem
-            disableTransitionOnChange
+                        disableTransitionOnChange
           >
             <Navbar />
             <main>

@@ -4,49 +4,51 @@ import { WorkItems } from "@/components/WorkItems";
 
 export const content = {
   en: {
-    bio: "I'm Leo (Nguyễn Huy), an AI engineer at Trivita AI building medical AI in Vietnamese. I own the full data lifecycle — from EMR ingestion through synthetic generation to versioned datasets — and the post-training and evaluation loop on an on-prem multi-node H100 cluster, with partner access to GB200 NVL72. My work sits at the intersection of Vietnamese NLP, real-world healthcare data, and large-scale compute, under international mentor lineage from Taiwan AI research.",
-    working: "What I'm working on",
+    role: "AI Lead · Trivita AI",
+    bio: "I'm Leo (Nguyễn Huy), AI Lead at Trivita AI in Vietnam. I started as a software engineer and moved into AI, so I fix problems at the layer where they live instead of reaching for a bigger model. My strongest area is designing AI agents, evaluating them and keeping them reliable: I started the company's LLM evaluation platform, own a real-time exam-proctoring service, and built the Vietnamese medical data and post-training pipeline behind MedVita on an on-prem multi-node H100 cluster. I also coordinate across product, QC, software and AI teams, and mentor the engineers around me.",
+    working: "What I do",
     workItems: [
-      "MedVita — Vietnamese medical history-taking assistant: ICD-10 VN normalisation, SOCRATES-structured history-taking per department, tiered safety guardrails, integrated with a central hospital's HIS.",
-      "LLM evaluation platform — started the company's self-hosted eval platform (FastAPI, Celery, Redis, Langfuse, DeepEval, DeepTeam): medical G-Eval metrics, LLM-as-judge calibration, red-teaming.",
-      "Post-training loop — eval → targeted data generation → SFT/DPO with LoRA/QLoRA on an on-prem multi-node H100 cluster, day-scale iteration cycles.",
+      "Agent evaluation & reliability — started the company's self-hosted LLM and agent evaluation platform (now developed by three engineers), a 65-case agent test suite, medical G-Eval and LLM-as-judge metrics, red-teaming and Langfuse tracing.",
+      "MedVita & medical data — Vietnamese medical history-taking assistant with ICD-10 VN normalisation and tiered safety guardrails, plus the EMR-to-versioned-dataset pipeline and an SFT/DPO post-training loop on 2×8×H100.",
+      "Serving & platforms — real-time proctoring service (5.6× throughput, 3-hour load test with zero restarts), a 6,448-hour Vietnamese speech corpus and a dataset registry that makes any training run reproducible.",
     ],
     stack: "Stack",
-    stackText: "Python · FastAPI · vLLM · TGI · TensorRT-LLM · DVC · MinIO · Label Studio · Langfuse · W&B · Docker · Kubernetes · GitHub Actions",
+    stackText: "Python · FastAPI · LangGraph · Langfuse · DeepEval · vLLM · Triton · TensorRT-LLM · PyTorch · Kafka · LiveKit · PostgreSQL · MLflow · DVC · MinIO · Label Studio · Docker · Kubernetes · Helm · ArgoCD · Prometheus · Grafana · Sentry · GitHub Actions",
     experience: "Experience",
     experiences: [
-      { role: "AI Engineer", org: "Trivita AI", period: "Sep 2025 – present" },
+      { role: "AI Engineer → AI Lead", org: "Trivita AI", period: "Sep 2025 – present" },
       { role: "AI Researcher", org: "AIMA", period: "Jun 2024 – 2025" },
       { role: "Multi-Agent VQA Research Team Lead", org: "VLAI", period: "2023 – 2024" },
       { role: "Time-Series Research Team Lead", org: "AI VIET NAM", period: "2022 – 2023" },
     ],
     education: "Education",
     educations: [
-      { degree: "B.Sc. Information Technology", school: "VAMK, Finland" },
-      { degree: "Professional AI Training", school: "AIO 2024" },
+      { degree: "B.Sc. Information Technology", school: "VAMK, Finland · 2021 – 2025" },
+      { degree: "AIO 2024 certificate: GenAI & LLMs, CV & NLP, DL & ML", school: "AI VIET NAM" },
     ],
   },
   vi: {
-    bio: "Tôi là Leo (Nguyễn Huy), kỹ sư AI tại Trivita AI, xây dựng AI y tế tiếng Việt. Tôi cầm toàn bộ vòng đời dữ liệu — từ thu thập EMR, sinh dữ liệu tổng hợp đến dataset có version — cùng vòng lặp post-training và đánh giá trên cụm H100 nhiều node on-prem, có truy cập GB200 NVL72 qua đối tác. Công việc của tôi nằm ở giao điểm giữa NLP tiếng Việt, dữ liệu y tế thực tế và compute quy mô lớn, dưới mentor lineage quốc tế từ nghiên cứu AI Taiwan.",
-    working: "Đang làm gì",
+    role: "AI Lead · Trivita AI",
+    bio: "Tôi là Leo (Nguyễn Huy), AI Lead tại Trivita AI (Việt Nam). Tôi bắt đầu là kỹ sư phần mềm rồi chuyển sang AI, nên tôi sửa vấn đề ở đúng tầng có lỗi thay vì mặc định dùng model lớn hơn. Mảng mạnh nhất của tôi là thiết kế AI agent, đánh giá và giữ cho chúng đáng tin cậy: tôi khởi xướng nền tảng đánh giá LLM của công ty, là owner của dịch vụ giám sát thi thời gian thực, và xây pipeline dữ liệu y tế tiếng Việt cùng vòng post-training phía sau MedVita trên cụm H100 nhiều node on-prem. Tôi cũng điều phối giữa các nhóm product, QC, phần mềm và AI, và kèm cặp các kỹ sư xung quanh.",
+    working: "Tôi làm gì",
     workItems: [
-      "MedVita — trợ lý hỏi bệnh sử tiếng Việt: chuẩn hoá ICD-10 VN, hỏi bệnh theo SOCRATES cho từng chuyên khoa, guardrail an toàn nhiều tầng, kết nối HIS của một bệnh viện tuyến trung ương.",
-      "Nền tảng đánh giá LLM — khởi xướng nền tảng eval self-hosted của công ty (FastAPI, Celery, Redis, Langfuse, DeepEval, DeepTeam): metric G-Eval y tế, hiệu chỉnh LLM-as-judge, red-teaming.",
-      "Vòng lặp post-training — eval → sinh data có mục tiêu → SFT/DPO với LoRA/QLoRA trên cụm H100 nhiều node on-prem, chu kỳ tính bằng ngày.",
+      "Đánh giá & độ tin cậy của agent — khởi xướng nền tảng đánh giá LLM và agent self-hosted của công ty (nay do ba kỹ sư phát triển), bộ test agent 65 ca, metric G-Eval y tế và LLM-as-judge, red-teaming và tracing bằng Langfuse.",
+      "MedVita & dữ liệu y tế — trợ lý hỏi bệnh sử tiếng Việt với chuẩn hoá ICD-10 VN và guardrail an toàn nhiều tầng, cùng pipeline từ EMR đến dataset có version và vòng post-training SFT/DPO trên 2×8×H100.",
+      "Serving & nền tảng — dịch vụ giám sát thi thời gian thực (thông lượng 5.6×, load test 3 giờ không restart), kho dữ liệu giọng nói tiếng Việt 6.448 giờ và registry dataset giúp tái lập mọi lần huấn luyện.",
     ],
     stack: "Stack",
-    stackText: "Python · FastAPI · vLLM · TGI · TensorRT-LLM · DVC · MinIO · Label Studio · Langfuse · W&B · Docker · Kubernetes · GitHub Actions",
+    stackText: "Python · FastAPI · LangGraph · Langfuse · DeepEval · vLLM · Triton · TensorRT-LLM · PyTorch · Kafka · LiveKit · PostgreSQL · MLflow · DVC · MinIO · Label Studio · Docker · Kubernetes · Helm · ArgoCD · Prometheus · Grafana · Sentry · GitHub Actions",
     experience: "Kinh nghiệm",
     experiences: [
-      { role: "Kỹ sư AI", org: "Trivita AI", period: "Tháng 9, 2025 – nay" },
+      { role: "Kỹ sư AI → AI Lead", org: "Trivita AI", period: "Tháng 9, 2025 – nay" },
       { role: "Nghiên cứu viên AI", org: "AIMA", period: "Tháng 6, 2024 – 2025" },
       { role: "Trưởng nhóm nghiên cứu Multi-Agent VQA", org: "VLAI", period: "2023 – 2024" },
       { role: "Trưởng nhóm nghiên cứu Time-Series", org: "AI VIET NAM", period: "2022 – 2023" },
     ],
     education: "Học vấn",
     educations: [
-      { degree: "Cử nhân Công nghệ Thông tin", school: "VAMK, Phần Lan" },
-      { degree: "Đào tạo AI chuyên nghiệp", school: "AIO 2024" },
+      { degree: "Cử nhân Công nghệ Thông tin", school: "VAMK, Phần Lan · 2021 – 2025" },
+      { degree: "Chứng chỉ AIO 2024: GenAI & LLMs, CV & NLP, DL & ML", school: "AI VIET NAM" },
     ],
   },
 };
@@ -62,7 +64,7 @@ export default function MinimalAbout({ locale }: { locale: string }) {
             <h1 className="display mb-6 text-[clamp(56px,8vw,96px)]">
               Leo <em>Nguyen</em>
             </h1>
-            <p className="caps mb-8 text-primary">AI Engineer · Trivita AI</p>
+            <p className="caps mb-8 text-primary">{c.role}</p>
             <p className="max-w-[38em] text-[17px] leading-[1.8]">{c.bio}</p>
             <SocialLinks className="mt-10" />
           </div>

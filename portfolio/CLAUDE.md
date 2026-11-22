@@ -67,11 +67,15 @@ All pages live under `src/app/[locale]/`:
 
 | Route | Page |
 |---|---|
-| `/` | Home |
+| `/` | Home: static documents `public/home.html` (`/en`) and `public/home.vi.html` (`/vi`), served by `rewrites()` in `next.config.ts` (no React page) |
 | `/blog` | Blog listing |
 | `/blog/[slug]` | Blog post |
 | `/about` | About |
 | `/tags/[tag]` | Posts with a tag |
+
+## Home page
+
+`public/home.html` is a self-contained page (own CSS/JS, WebGL hero). Edit it directly; its "Open thinking" cards are filled client-side from `/search-index.json` (generated at build). `home.vi.html` is the Vietnamese copy of the same document; when editing `home.html`, mirror the change in `home.vi.html` (the two share markup, CSS and JS; only text differs). Site links are localised by a small script. Blog, about and tags use the Next layout and the navy / copper / paper tokens in `globals.css`. Do not add draft or placeholder content to the page.
 
 ## Key Files
 

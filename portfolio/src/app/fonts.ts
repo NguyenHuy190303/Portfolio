@@ -1,8 +1,8 @@
-import { Montserrat, Playfair, Pinyon_Script, JetBrains_Mono } from 'next/font/google';
+import { Inter, Playfair, JetBrains_Mono } from 'next/font/google';
 
-export const montserrat = Montserrat({
+export const inter = Inter({
   subsets: ['latin', 'vietnamese'],
-  variable: '--font-montserrat',
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -14,16 +14,8 @@ export const playfair = Playfair({
   axes: ['opsz'],
 });
 
-export const pinyon = Pinyon_Script({
-  subsets: ['latin', 'vietnamese'],
-  variable: '--font-pinyon',
-  display: 'swap',
-  weight: '400',
-  preload: false,
-});
-
 export const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
+  subsets: ['latin', 'vietnamese'],
   variable: '--font-jetbrains-mono',
   display: 'swap',
   preload: false,
