@@ -1,0 +1,55 @@
+/* Slide layout (desktop): every section is meant to read as one screen, not a long white scroll.
+   Shared tokens + rules here; each page adds its own slides-<page>.css after this file.
+   Header scale is owned by site-nav.css (--hdr-h). */
+:root{
+  --slide-h:calc(100svh - var(--hdr-h,56px));
+  --slide-pad:clamp(18px,3.6vh,48px);
+  --h1-slide:clamp(28px,min(4.4vw,8vh),64px);
+  --h2-slide:clamp(26px,min(3.9vw,7vh),56px);
+  --body-slide:clamp(13px,min(1.05vw,1.9vh),16px);
+}
+html{scroll-padding-top:var(--hdr-h,56px)}
+@media (min-width:1101px) and (min-height:540px){
+  html{scroll-snap-type:y proximity}   /* header offset comes only from html scroll-padding-top; section margins stay 0 so they never double it */
+  main>section{scroll-snap-align:start;scroll-margin-top:0}
+  /* one display scale for every section heading */
+  main section:not(#_) h1:not(#_){font-size:var(--h1-slide);line-height:1.04;letter-spacing:-.05em}
+  main section:not(#_) h2:not(#_){font-size:var(--h2-slide);line-height:1.06;letter-spacing:-.045em}
+  html[lang=vi] main section:not(#_) h2:not(#_),html[lang=vi] main section:not(#_) h1:not(#_){line-height:1.14}
+  main section:not(#_) h2:not(#_) br{display:none}
+  main section:not(#_) h2:not(#_) span,main section:not(#_) h2:not(#_) em{white-space:normal}
+  /* page title strip */
+  .page-head{min-height:0;padding-block:calc(var(--hdr-h,56px) + var(--slide-pad)) calc(var(--slide-pad)*.6)}
+  /* contact is the last slide */
+  .contact{min-height:var(--slide-h);display:flex;flex-direction:column;justify-content:center;padding-block:var(--slide-pad)}
+  .contact .section-inner{display:flex;flex-direction:column;gap:clamp(10px,2.2vh,24px)}
+  .contact h2{margin:0}
+  .contact-lead{margin:0}
+  .contact-bar{padding-top:clamp(12px,2.4vh,22px)}
+  .contact-button{padding:clamp(12px,2.2vh,18px) 24px;min-width:240px}
+}
+
+/* Operating section: pinned board, scrolling steps through the four tabs */
+@media (min-width:1101px) and (min-height:560px) and (prefers-reduced-motion:no-preference){
+  .operating.ops-pinned{overflow:clip;padding:0;height:calc(var(--slide-h) + 3*46svh)}
+  .operating.ops-pinned::before{display:none}
+  .operating.ops-pinned>.section-inner{position:sticky;top:var(--hdr-h,56px);height:var(--slide-h);display:flex;flex-direction:column;justify-content:center;gap:clamp(8px,1.6vh,16px);padding-block:clamp(10px,2vh,22px)}
+  .operating.ops-pinned .operating-heading{margin:0;gap:32px;align-items:flex-end}
+  .operating.ops-pinned .operating-heading h2{margin:6px 0 0}
+  .operating.ops-pinned .operating-heading>p{font-size:var(--body-slide);max-width:440px;margin:0;line-height:1.55}
+  .operating.ops-pinned .ops-layout{flex:1;min-height:0;grid-template-columns:36% 64%}
+  .operating.ops-pinned .ops-tab{min-height:0;padding:clamp(8px,1.6vh,20px) 20px;grid-template-columns:34px 1fr 24px}
+  .operating.ops-pinned .ops-tab-main{gap:3px}
+  .operating.ops-pinned .ops-tab-main b{font-size:clamp(15px,2.3vh,20px)}
+  .operating.ops-pinned .ops-tab-main small{font-size:clamp(11px,1.6vh,13px)}
+  .operating.ops-pinned .ops-panel{min-height:0}
+  .operating.ops-pinned .ops-panel-art{height:auto;flex:1.25;min-height:0;margin:34px 0 0}
+  .operating.ops-pinned .ops-panel-art{display:block}
+  .operating.ops-pinned .ops-orbit{position:absolute;inset:0;width:100%;height:100%;max-width:none}
+  .operating.ops-pinned .ops-core strong{font-size:clamp(28px,5.4vh,46px)}
+  .operating.ops-pinned .ops-panel-copy{flex:1;padding:clamp(10px,2vh,22px) 28px;display:flex;flex-direction:column;justify-content:center}
+  .operating.ops-pinned .ops-panel-copy h3{font-size:clamp(18px,3.4vh,30px);margin:6px 0 8px;max-width:none}
+  .operating.ops-pinned .ops-panel-copy p{font-size:clamp(12px,1.9vh,14px);line-height:1.55}
+  .operating.ops-pinned .ops-axis-foot{margin-top:clamp(8px,1.6vh,16px);padding-top:clamp(6px,1.2vh,12px)}
+  .operating.ops-pinned .ops-footer{margin-top:0}
+}

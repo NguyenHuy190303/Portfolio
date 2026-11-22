@@ -1,0 +1,73 @@
+/* Feedback page as slides (desktop): #learning and #bottlenecks are one screen each.
+   Builds on slides.css tokens (--slide-h, --slide-pad, --body-slide). Below the
+   breakpoint the site.css responsive layout is untouched. Every rule is prefixed with
+   the section id so it beats site.css and polish-fonts.css without !important. */
+@media (min-width:1101px) and (min-height:540px){
+  /* ---- shared slide frame ---- */
+  #learning,#bottlenecks{
+    min-height:var(--slide-h);padding:var(--slide-pad) 0;
+    display:flex;flex-direction:column;
+    scroll-margin-top:0;
+  }
+  #learning>.section-inner,#bottlenecks>.section-inner{
+    flex:1;min-height:0;display:flex;flex-direction:column;gap:clamp(8px,1.8vh,20px);
+  }
+  #learning .section-label,#bottlenecks .section-label{flex:none}
+  /* polish-corners.css pulls .contact up by 80px over the section before it; pad that
+     section by the same amount so its visible slide is still exactly --slide-h */
+  #bottlenecks{min-height:calc(var(--slide-h) + 80px);padding-bottom:calc(var(--slide-pad) + 80px)}
+
+  /* ================= #learning ================= */
+  #learning .v4-feedback-heading{margin:0;gap:4%;grid-template-columns:1fr minmax(0,.9fr);align-items:center;flex:none}
+  #learning .v4-feedback-heading p{font-size:var(--body-slide);line-height:1.5;margin:0;max-width:560px}
+  #learning .v4-feedback-surface{flex:1;min-height:0;display:flex;flex-direction:column}
+  #learning .v4-feedback-topline,#learning .v4-feedback-bottom{padding:clamp(7px,1.4vh,14px) clamp(16px,1.8vw,26px);flex:none}
+  #learning .v4-feedback-layout{flex:1;min-height:0;grid-template-columns:44% 56%}
+  /* loop illustration: sized by the box height so the ring is never cropped */
+  #learning .v4-feedback-art{min-height:0}
+  #learning .v4-feedback-svg{inset:4% 0;width:100%;height:92%;aspect-ratio:auto}
+  #learning .v4-loop-core{width:auto;max-width:46%;gap:clamp(5px,1vh,10px)}
+  #learning .v4-loop-core strong{font-size:clamp(24px,min(2.9vw,5.6vh),52px)}
+  #learning .v4-loop-core small,#learning .v4-loop-core span{font-size:10px}
+  #learning .v4-loop-core span{max-width:20ch}
+  #learning .v4-loop-core small{max-width:22ch;line-height:1.4}
+  #learning .v4-loop-orbit-label{font-size:10px}
+  #learning .v4-loop-orbit-label.label-a{top:12%;left:12%}
+  #learning .v4-loop-orbit-label.label-b{right:4%;top:50%}
+  #learning .v4-loop-orbit-label.label-c{bottom:11%;left:12%}
+  /* controller */
+  #learning .v4-feedback-controller{padding:clamp(12px,2.4vh,28px) clamp(18px,2.4vw,36px);justify-content:center;gap:clamp(10px,2vh,22px)}
+  #learning .v4-feedback-stepper{margin:0;gap:6px}
+  #learning .v4-feedback-stepper button{padding:clamp(6px,1.1vh,10px) 11px}
+  #learning .v4-feedback-detail{margin:0}
+  #learning .v4-feedback-detail h3{font-size:clamp(22px,min(2.6vw,4.8vh),46px);line-height:1.05;margin:clamp(6px,1.2vh,14px) 0 clamp(6px,1.2vh,12px)}
+  html[lang=vi] #learning .v4-feedback-detail h3{line-height:1.16}
+  #learning .v4-feedback-detail p{font-size:clamp(12.5px,1.9vh,16px);line-height:1.55}
+  #learning .v4-feedback-proof{margin-top:clamp(10px,2vh,22px);padding-top:clamp(8px,1.5vh,16px);gap:6px}
+  #learning .v4-feedback-proof b{font-size:clamp(12px,1.8vh,15px);line-height:1.5}
+
+  /* ================= #bottlenecks ================= */
+  /* slides.css hides h2 <br>; the span is followed by a <br> with no space, so add one */
+  #bottlenecks .v4-bottleneck-header h2 span::after{content:' '}
+  #bottlenecks .v4-bottleneck-header{margin:0;gap:5%;grid-template-columns:1fr minmax(0,.62fr);align-items:center;flex:none}
+  #bottlenecks .v4-bottleneck-header p{font-size:var(--body-slide);line-height:1.55;margin:0;max-width:520px}
+  #bottlenecks .v4-bn-grid{flex:1;min-height:0;grid-template-columns:31% 69%}
+  #bottlenecks .v4-bn-step{min-height:0;padding:clamp(5px,1.1vh,14px) clamp(14px,1.5vw,22px);column-gap:10px;grid-template-columns:30px 1fr 18px}
+  #bottlenecks .v4-bn-step b{font-size:clamp(14px,min(1.25vw,2.3vh),19px);line-height:1.15}
+  html[lang=vi] #bottlenecks .v4-bn-step b{line-height:1.25}
+  #bottlenecks .v4-bn-step small{margin-top:3px}
+  #bottlenecks .v4-bn-step i{font-size:17px}
+  #bottlenecks .v4-bn-board-top{padding:clamp(7px,1.4vh,14px) clamp(16px,1.8vw,26px)}
+  #bottlenecks .v4-bn-meter{height:clamp(16px,3.4vh,40px)}
+  /* heading + tactics sit centred between the meter and the footer line */
+  #bottlenecks .v4-bn-heading{margin-top:auto;padding:clamp(8px,1.8vh,22px) clamp(16px,2vw,30px) clamp(6px,1.2vh,14px)}
+  #bottlenecks .v4-bn-heading h3{font-size:clamp(22px,min(3vw,5.2vh),52px);line-height:1.05;margin:clamp(5px,1vh,12px) 0 0;max-width:none}
+  html[lang=vi] #bottlenecks .v4-bn-heading h3{line-height:1.16}
+  #bottlenecks .v4-bn-tactics{margin:0 clamp(16px,2vw,30px) clamp(8px,1.6vh,18px)}
+  #bottlenecks .v4-bn-tactics>div{min-height:0;padding:clamp(7px,1.4vh,16px) clamp(12px,1.2vw,18px)}
+  #bottlenecks .v4-bn-tactics p{font-size:clamp(12px,1.75vh,14.5px);line-height:1.5;margin-top:clamp(4px,.8vh,8px)}
+  /* active step: site.css v5 positional !important colours (steps 2-6) paint the number
+     and caption light-on-copper; restore the dark ink .active intends */
+  #bottlenecks#bottlenecks .v4-bn-step.active>span,#bottlenecks#bottlenecks .v4-bn-step.active>small{color:#3b2c21!important}
+  #bottlenecks .v4-bn-end{padding:clamp(7px,1.4vh,14px) clamp(16px,2vw,30px)}
+}

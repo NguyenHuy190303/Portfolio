@@ -1,0 +1,100 @@
+/* Strategy page as slides (desktop only): #strategy and #approach each fit one screen under the header.
+   Builds on the tokens in slides.css; #operating is owned by slides.css and is not touched here.
+   Rules are scoped with ids, so they outrank the html[lang=vi] leading in polish-fonts.css:
+   every display line-height set here has an explicit VI value >= 1.14. */
+@media (min-width:1101px) and (min-height:540px){
+
+  /* ---- page title strip ---- */
+  /* the header is position:fixed; slides.css's compact padding dropped the --hdr-h offset, hiding the eyebrow under it */
+  .page-strategy .page-head{padding-top:calc(var(--hdr-h,56px) + var(--slide-pad))}
+  .page-strategy .page-head h1{margin-top:clamp(8px,1.4vh,16px);max-width:none}
+  .page-strategy .page-head-intro{margin-top:clamp(8px,1.4vh,16px);max-width:min(100%,1080px);font-size:var(--body-slide);line-height:1.55}
+
+  /* ---- / 003 GO-TO-MARKET: heading + intro row, then the two panels side by side ---- */
+  /* type grows with viewport height above 720px (values at 720 unchanged), so tall screens are not a sparse slide */
+  #strategy,#approach{--txt:clamp(13px,calc(13px + (100vh - 720px)*.009),16px);--micro:clamp(10px,calc(10px + (100vh - 720px)*.004),12px)}
+  #strategy{--dot:clamp(28px,4.6vh,42px);--fpad:clamp(8px,1.6vh,18px);
+    min-height:var(--slide-h);padding-block:var(--slide-pad);display:flex;flex-direction:column;justify-content:center}
+  #strategy>.section-inner{flex:1 0 auto;display:flex;flex-direction:column;gap:clamp(8px,1.6vh,18px)}
+  /* the panels take the free height, so switching a GTM stage or a build/buy choice re-flows inside them
+     instead of moving the heading or the bottom strip */
+  #strategy .v4-strategy-head{padding:0;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:4%;align-items:end}
+  #strategy .v4-strategy-head h2{margin:0}
+  /* slides.css hides the <br>s, and the span and em have no space between them; keep the last phrase on one line */
+  #strategy .v4-strategy-head h2>span::after{content:' '}
+  main #strategy .v4-strategy-head h2:not(#_) em{white-space:nowrap}
+  #strategy .v4-strategy-intro{max-width:none;padding:0;justify-self:stretch}
+  #strategy .v4-strategy-intro>p{font-size:var(--body-slide);line-height:1.45;margin:6px 0 0}
+  #strategy .v4-inline-link{padding:3px 0;margin-top:6px}
+  #strategy .v4-strategy-grid{flex:1 0 auto;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+  #strategy .v4-console-top{padding:clamp(6px,1.1vh,14px) 40px clamp(6px,1.1vh,14px) 18px;font-size:var(--micro)} /* 40px clears the 62px top-right corner */
+
+  /* GTM console */
+  #strategy .v4-gtm-flow{padding:var(--fpad) 18px clamp(6px,1.2vh,14px)}
+  #strategy .v4-gtm-flow:before{top:calc(var(--fpad) + var(--dot)/2);left:36px;right:36px}
+  #strategy .v4-gtm-step{gap:6px;font-size:var(--micro)}
+  #strategy .v4-gtm-step small{width:var(--dot);height:var(--dot);font-size:12px}
+  #strategy .v4-gtm-step.active small{box-shadow:0 0 0 4px rgba(248,236,216,.1)}
+  #strategy .v4-gtm-display{margin:0 18px var(--fpad);min-height:0;flex:1;grid-template-columns:23% 77%}
+  #strategy .v4-gtm-ping{height:100%;min-height:110px}
+  #strategy .v4-gtm-ping>span{font-size:clamp(40px,7.6vh,76px)}
+  #strategy .v4-ping-ring{width:clamp(60px,8.4vh,100px);height:clamp(60px,8.4vh,100px)}
+  #strategy .v4-gtm-text{padding:clamp(10px,2vh,24px) 20px clamp(10px,2vh,24px) 0}
+  #strategy .v4-gtm-text h3{font-size:clamp(18px,calc(21.6px + (100vh - 720px)*.04),40px);line-height:1.1;letter-spacing:-.04em;margin:6px 0 8px}
+  #strategy .v4-gtm-text>p{font-size:var(--txt);line-height:1.5;margin:0 0 10px}
+  #strategy .v4-gtm-answer{padding-top:8px;gap:4px}
+  #strategy .v4-gtm-answer small{font-size:var(--micro);color:#a9b4c3} /* 4.15:1 -> 5.4:1 on the console */
+  #strategy .v4-gtm-answer b,#strategy .v4-decision-bottom span{font-size:clamp(12px,calc(12px + (100vh - 720px)*.008),15px)}
+  #strategy .v4-gtm-foot{padding:clamp(6px,1.1vh,14px) 18px;font-size:var(--micro)}
+
+  /* decision studio */
+  /* the four stacked lines stay (the <br>s carry the word breaks), with the note beside them */
+  #strategy .v4-decision-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:end;padding:clamp(8px,1.6vh,22px) 22px clamp(8px,1.4vh,14px)}
+  #strategy .v4-decision-head h3{font-size:clamp(16px,calc(18px + (100vh - 720px)*.035),34px);line-height:1.02;letter-spacing:-.045em}
+  #strategy .v4-decision-head p{max-width:none;font-size:var(--txt);line-height:1.5;margin:0}
+  /* at this size the serif accent is no longer large text; site.css pins it to #974C12 with a positional !important rule (4.1:1 here) */
+  #strategy .v4-decision-studio .v4-decision-head h3 em:not(#_){color:#82400e!important}
+  #strategy .v4-decision-switch{padding:0 22px clamp(8px,1.4vh,14px);gap:4px}
+  #strategy .v4-decision-switch button{font-size:var(--micro);line-height:1.25;white-space:normal;padding:6px 4px;min-height:clamp(30px,4.6vh,40px)}
+  #strategy .v4-decision-body{margin:0 22px var(--fpad);padding:clamp(8px,1.4vh,18px) 18px}
+  #strategy .v4-decision-verb #v4ChoiceGlyph{font-size:18px;line-height:1}
+  #strategy .v4-decision-body h4{font-size:clamp(16px,calc(18px + (100vh - 720px)*.03),32px);line-height:1.1;margin:4px 0 6px}
+  #strategy .v4-decision-body>p{font-size:var(--txt);line-height:1.5;margin:0 0 8px}
+  #strategy .v4-decision-bottom{padding-top:8px;gap:4px}
+  #strategy .v4-decision-bottom small{font-size:var(--micro)}
+  #strategy .v4-strategy-bottom{margin-top:0;padding-top:clamp(6px,1.2vh,14px)}
+
+  /* site.css recolours steps 02-05 and choices 2-4 by position with !important, which also hits their active
+     state: dark-on-lime / dark-on-navy, i.e. the selected label disappears. Restore the active and hover colours. */
+  #strategy .v4-gtm-step.active small:not(#_){color:#20344f!important}
+  #strategy .v4-decision-switch button.active:not(#_),
+  #strategy .v4-decision-switch button:hover:not(#_){color:#e7ecf2!important}
+  /* item 1 misses those positional colours and sits at 4.1:1 when inactive; give it the colour items 2-5 already get */
+  #strategy .v4-gtm-step:not(.active) small{color:#afc0d6}
+  #strategy .v4-decision-switch button:not(.active):not(:hover){color:#3f4958}
+
+  html[lang=vi] #strategy .v4-gtm-text h3,
+  html[lang=vi] #strategy .v4-decision-body h4{line-height:1.16}
+  html[lang=vi] #strategy .v4-gtm-text h3{letter-spacing:-.03em}
+  html[lang=vi] #strategy .v4-decision-head h3{line-height:1.14;letter-spacing:-.025em}
+
+  /* ---- / 009 HOW I WORK: heading + intro across the top, the seven principles as a 5-column grid ---- */
+  /* .contact (polish-corners.css) pulls itself up 80px over this section for its rounded corner: keep the content above it */
+  #approach{min-height:var(--slide-h);padding-block:var(--slide-pad) calc(var(--slide-pad) + 80px);display:flex;flex-direction:column;justify-content:center}
+  #approach>.section-inner{display:flex;flex-direction:column;gap:clamp(8px,1.6vh,18px)}
+  #approach .method-layout{margin:0;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:clamp(16px,1.6vw,30px);row-gap:clamp(10px,calc(14px + (100vh - 720px)*.05),44px)}
+  #approach .method-left{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:5%;align-items:end;min-width:0}
+  #approach .method-left h2{margin:0;text-wrap:balance}
+  #approach .method-left p{margin:0;max-width:none;font-size:var(--body-slide);line-height:1.55}
+  #approach .method-right{display:contents}
+  #approach .principle{min-width:0;grid-template-columns:1fr auto;grid-template-areas:"pn sym" "body body";gap:clamp(4px,.8vh,8px) 8px;
+    padding:clamp(8px,1.4vh,20px) 0 0;border-bottom:0;border-top:1px solid #a0aab9;align-content:start}
+  #approach .principle:nth-of-type(4){grid-column:span 2}
+  #approach .principle:nth-of-type(7){grid-column:span 3}
+  #approach .principle .pn{grid-area:pn;padding:0;font-size:clamp(11px,calc(11px + (100vh - 720px)*.003),12px)}
+  #approach .principle .symbol{grid-area:sym;font-size:16px;line-height:1;padding:0}
+  #approach .principle>div:not(.pn){grid-area:body;min-width:0}
+  #approach .principle h3{font-size:clamp(15px,calc(17.3px + (100vh - 720px)*.022),26px);line-height:1.2;letter-spacing:-.03em;margin:0 0 clamp(4px,.8vh,8px)}
+  #approach .principle p{font-size:var(--txt);line-height:1.5;max-width:none;color:#4f5f76} /* #64748b was 4.0:1 */
+  html[lang=vi] #approach .principle h3{line-height:1.25;letter-spacing:-.02em}
+}

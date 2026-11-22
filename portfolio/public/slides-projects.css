@@ -1,0 +1,110 @@
+/* Projects page as slides (desktop only). Builds on slides.css tokens:
+   --slide-h, --slide-pad, --h2-slide, --body-slide. Layout and scale only; colours stay in site.css.
+   Slides: #domains = heading + two cards; #work = heading + case 1, then one slide per case. */
+@media (min-width:1101px) and (min-height:540px){
+  /* ---------- #domains: heading, intro and both cards on one screen ---------- */
+  section.domains{min-height:var(--slide-h);box-sizing:border-box;padding-block:clamp(10px,1.7vh,32px);display:flex;flex-direction:column;justify-content:center}
+  section.domains .section-inner{display:flex;flex-direction:column;gap:clamp(7px,1.2vh,16px)}
+  section.domains .domains-heading{margin:0;gap:clamp(20px,3vw,48px);align-items:flex-end}
+  section.domains .domains-heading h2{flex:1 1 auto;min-width:0}
+  section.domains .domains-intro{flex:0 1 430px;width:auto;min-width:320px;padding-top:clamp(6px,1vh,12px)}
+  section.domains .domains-intro p{font-size:var(--body-slide);line-height:1.45;margin:clamp(3px,.6vh,10px) 0 0}
+  section.domains .domain-grid{gap:clamp(10px,1.2vw,16px)}
+  section.domains .domain-card{min-height:0}
+  section.domains .domain-card-top{padding:clamp(5px,1vh,14px) clamp(14px,1.4vw,22px);font-size:10px;line-height:1.5}
+  section.domains .domain-card-top span:last-child{margin-right:22px} /* clear the 64px rounded top-right corner */
+  /* illustration: height follows the viewport, inner mock UI is re-spaced, not shrunk below its own type */
+  section.domains .domain-illustration{height:clamp(170px,29vh,320px);min-height:0;margin:clamp(6px,1vh,14px) clamp(12px,1.4vw,22px) 0}
+  section.domains .care-illustration{padding:clamp(24px,3.4vh,36px) clamp(16px,2vw,28px) clamp(22px,3vh,36px)}
+  section.domains .care-app-top{top:clamp(7px,1.2vh,13px)}
+  section.domains .visual-caption{bottom:clamp(6px,1vh,11px)}
+  section.domains .care-app-main{padding:clamp(6px,1vh,16px) clamp(12px,1.4vw,18px);max-width:560px}
+  section.domains .care-waveform{height:clamp(24px,3.4vh,60px);--wf-k:.32} /* tallest bar 73px x k <= height */
+  section.domains .care-waveform i{height:calc(var(--h) * var(--wf-k))}
+  section.domains .care-pipeline{margin-top:clamp(4px,.8vh,12px);gap:6px;grid-template-columns:1fr 18px 1fr}
+  section.domains .care-pipeline div:not(.care-arrow){padding:clamp(3px,.55vh,11px) 10px}
+  section.domains .care-pipeline small{margin-bottom:clamp(1px,.4vh,6px)}
+  section.domains .care-pipeline span{line-height:1.3}
+  section.domains .care-pipeline b{margin-bottom:2px}
+  section.domains .care-confirm{margin-top:clamp(4px,.8vh,12px);padding-top:clamp(4px,.7vh,10px)}
+  section.domains .care-confirm small{margin-bottom:2px}
+  section.domains .ent-core{width:clamp(170px,14vw,210px);height:clamp(92px,13vh,137px)}
+  section.domains .ent-core strong{font-size:clamp(19px,2.6vh,24px);margin:clamp(4px,.8vh,11px) 0}
+  section.domains .ent-node{padding:clamp(6px,1vh,11px) 11px}
+  section.domains .ent-n1,section.domains .ent-n2{top:10%}
+  section.domains .ent-n3,section.domains .ent-n4{bottom:16%}
+  /* mock-UI micro labels: none below 10px on desktop */
+  section.domains .care-app-top,section.domains .care-app-right,section.domains .care-audio-head span,section.domains .care-audio-head strong,
+  section.domains .care-pipeline small,section.domains .care-confirm small,section.domains .visual-caption,
+  section.domains .ent-node,section.domains .ent-core>span,section.domains .ent-core small{font-size:10px}
+  section.domains .care-pipeline span{font-size:10.5px}
+  section.domains .care-confirm b{font-size:12px}
+  section.domains .care-pipeline small,section.domains .care-pipeline b,section.domains .care-confirm small,section.domains .care-confirm b{line-height:1.25}
+  section.domains .care-illustration{align-items:start}
+  /* card copy */
+  section.domains .domain-card-copy{padding:clamp(8px,1.6vh,24px) clamp(14px,1.6vw,26px) clamp(10px,1.8vh,26px)}
+  section.domains .domain-card-copy h3{font-size:clamp(22px,min(2.2vw,3.6vh),44px);line-height:1.04;margin:0 0 clamp(5px,.9vh,12px)}
+  html[lang=vi] section.domains .domain-card-copy h3{line-height:1.16}
+  section.domains .domain-card-copy p{font-size:var(--body-slide);line-height:1.5;max-width:none;margin:0 0 clamp(6px,1.2vh,18px)}
+  section.domains .domain-tagline{gap:6px}
+  section.domains .domain-tagline span{font-size:10px;padding:clamp(4px,.7vh,8px) 9px}
+  section.domains .domain-visit{margin-top:clamp(6px,1.1vh,18px);padding-top:clamp(5px,.9vh,12px)}
+  section.domains .domain-visit span{font-size:18px;line-height:1}
+  section.domains .domain-footnote{font-size:10px;margin:0}
+
+  /* ---------- #work: compact heading shares the first slide with case 1 ---------- */
+  section.work{
+    --wk-hh:clamp(64px,10vh,120px);                                   /* heading row */
+    --wk-head:calc(var(--slide-pad) + 15px + var(--wk-hh));            /* pad + label + heading */
+    padding:var(--slide-pad) 0 0}
+  section.work .section-label{line-height:15px;height:15px}
+  section.work .section-heading{height:var(--wk-hh);box-sizing:border-box;margin:0;align-items:center;gap:clamp(20px,3vw,48px)}
+  section.work .section-heading .side{max-width:460px;margin:0;font-size:12px;line-height:1.55}
+  section.work .project-row{
+    --row-h:var(--slide-h);
+    min-height:var(--row-h);box-sizing:border-box;padding:var(--slide-pad) 0;
+    grid-template-columns:56% 44%;align-items:center;
+    scroll-snap-align:start;scroll-margin-top:0}
+  /* case 1 sits under the heading: its snap point lines up with the section's */
+  section.work .project-row:first-of-type{--row-h:calc(var(--slide-h) - var(--wk-head));padding-top:clamp(10px,1.8vh,20px);scroll-margin-top:var(--wk-head)}
+  section.work .project-row:last-of-type{border-bottom:1px solid #485c78}
+  section.work .project-graphic{min-height:0;width:100%;aspect-ratio:16/10;max-height:calc(var(--row-h) - 2*var(--slide-pad) - 2px);align-self:center}
+  section.work .project-row:first-of-type .project-graphic{max-height:calc(var(--row-h) - var(--slide-pad) - clamp(10px,1.8vh,20px) - 2px)} /* -2px: row borders */
+  section.work .project-info{padding:0 1vw 0 clamp(26px,3.6vw,64px);justify-content:center}
+  section.work .project-number{margin-bottom:clamp(10px,2.2vh,26px)}
+  section.work .project-info h3{font-size:clamp(26px,min(3vw,5.4vh),56px);line-height:1.06;margin:0 0 clamp(10px,1.8vh,22px)}
+  html[lang=vi] section.work .project-info h3{line-height:1.16}
+  section.work .project-info p{font-size:var(--body-slide);line-height:1.6;max-width:500px;margin:0 0 clamp(10px,1.8vh,22px)}
+  section.work .chip-list{gap:6px}
+  section.work .chip{font-size:10px;padding:clamp(5px,.9vh,9px) 11px}
+  section.work .view-project{margin-top:clamp(12px,2.2vh,28px);padding:clamp(8px,1.4vh,18px) 0 0}
+  section.work .view-project .go{width:clamp(32px,4.4vh,42px);height:clamp(32px,4.4vh,42px);font-size:18px}
+  section.work .active-signal,section.work .record-dot,section.work .eval-node small,section.work .graphic-foot span,section.work .knowledge-pin{font-size:10px}
+  section.work .graphic-index{top:clamp(14px,2.2vh,26px)}
+  section.work .active-signal{top:clamp(40px,6vh,58px)}
+  section.work .speaker-lanes{bottom:clamp(40px,7vh,74px)}
+  section.work .eval-output{bottom:clamp(36px,7vh,82px)}
+}
+/* taller screens: waveform bars keep more of their original amplitude */
+@media (min-width:1101px) and (min-height:900px){
+  section.domains .care-waveform{height:clamp(44px,4.4vh,60px);--wf-k:.6}
+}
+/* short laptop screens (540-660px tall): squeeze the domains slide a little more */
+@media (min-width:1101px) and (min-height:540px) and (max-height:660px){
+  section.domains .domain-illustration{height:176px}
+  section.domains .care-illustration{padding-top:20px;padding-bottom:19px}
+  section.domains .care-app-top{top:5px}
+  section.domains .visual-caption{bottom:4px}
+  section.domains .care-audio-head{line-height:1.2}
+  section.domains .care-app-main{padding-block:3px}
+  section.domains .section-inner{gap:6px}
+  section.domains .domain-card-copy h3{margin-bottom:3px}
+  section.domains .care-pipeline,section.domains .care-confirm{margin-top:3px}
+  section.domains .care-confirm{padding-top:3px}
+  section.domains .care-waveform{height:21px;--wf-k:.27}
+  section.domains .care-pipeline div:not(.care-arrow){padding-block:3px}
+  section.domains .domain-card-top{padding-block:4px}
+  section.domains .domain-card-copy{padding-block:6px 8px}
+  section.domains .domain-card-copy p{line-height:1.42;margin-bottom:5px}
+  section.domains .domain-visit{margin-top:4px;padding-top:4px}
+}

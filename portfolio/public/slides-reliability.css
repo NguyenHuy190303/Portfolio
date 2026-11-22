@@ -1,0 +1,75 @@
+/* Reliability page as slides (desktop). #engineering is two slide-sized blocks:
+   1) label + heading + the prototype/trustworthy contrast, 2) the release-contract lab.
+   The section is exactly two slides tall: the first block fills slide-h minus the top
+   pad, the lab gets the second slide with --slide-pad above and below and its own snap
+   point. Builds on slides.css tokens; below the breakpoint site.css is untouched.
+   Rules are prefixed with #engineering so they beat site.css and polish-fonts.css
+   without !important. */
+@media (min-width:1101px) and (min-height:540px){
+  #engineering{
+    padding:var(--slide-pad) 0 80px;overflow:clip; /* 80px: .contact overlaps it by -80px (polish-corners.css) */
+    scroll-margin-top:0;
+  }
+  #engineering>.section-inner{
+    display:flex;flex-direction:column;
+    min-height:calc(2*var(--slide-h) - var(--slide-pad));
+  }
+  #engineering .section-label{flex:none;margin-bottom:clamp(8px,1.8vh,20px)}
+
+  /* ---- slide 1: heading + contrast ---- */
+  /* slides.css hides h2 <br>; </em><br> has no space after it */
+  #engineering .v4-trust-heading h2 em::after{content:' '}
+  #engineering .v4-trust-heading{margin:0 0 clamp(10px,2vh,24px);gap:5%;grid-template-columns:1.2fr minmax(0,.8fr);align-items:center;flex:none}
+  #engineering .v4-trust-heading p{font-size:var(--body-slide);line-height:1.55;margin:0;max-width:560px}
+  #engineering .v4-trust-contrast{flex:1;min-height:0;margin-bottom:var(--slide-pad)}
+  #engineering .v4-contrast-left,#engineering .v4-contrast-right{padding:clamp(14px,2.6vh,30px) clamp(20px,2.6vw,44px) clamp(12px,2vh,20px)}
+  #engineering .v4-trust-contrast h3{font-size:clamp(26px,min(3.4vw,5.8vh),60px);line-height:.92;margin:clamp(10px,2.2vh,26px) 0 clamp(10px,2vh,20px)}
+  html[lang=vi] #engineering .v4-trust-contrast h3{line-height:1.14}
+  #engineering .v4-noise-code{font-size:clamp(12px,1.75vh,14px);line-height:1.55;padding-top:clamp(8px,1.6vh,16px)}
+  #engineering .v4-proof-stack{margin:0 0 clamp(10px,2vh,24px)}
+  #engineering .v4-proof-stack>div{padding:clamp(5px,1.6vh - 4px,14px) 0;grid-template-columns:110px 1fr 18px}
+  #engineering .v4-proof-stack b{font-size:clamp(11px,1.4vh,13px)}
+  #engineering .v4-proof-stack span{font-size:clamp(10px,1.3vh,12px);line-height:1.4}
+  /* spare height splits above the title and above the footer line: content sits centred */
+  #engineering .v4-trust-contrast h3{margin-top:auto}
+  #engineering .v4-contrast-foot{padding-top:clamp(8px,1.6vh,18px)}
+  #engineering .v4-contrast-tag{margin-bottom:clamp(6px,2.6vh - 8px,26px)}
+
+  /* ---- slide 2: the release-contract lab ---- */
+  #engineering .v4-contract-lab{
+    margin:var(--slide-pad) 0;flex:none;
+    min-height:calc(var(--slide-h) - 2*var(--slide-pad));
+    display:flex;flex-direction:column;
+    /* html already has scroll-padding-top = header (slides.css), so only the pad here;
+       adding the header again lands the slide 56px low (measured) */
+    scroll-snap-align:start;scroll-margin-top:var(--slide-pad);
+  }
+  #engineering .v4-contract-header{padding:clamp(12px,2.6vh,32px) clamp(20px,2.8vw,44px) clamp(10px,2vh,24px);align-items:center;flex:none}
+  #engineering .v4-contract-header h3{font-size:clamp(26px,min(3.2vw,5.6vh),54px);line-height:.92;margin:clamp(6px,1.2vh,14px) 0 0}
+  html[lang=vi] #engineering .v4-contract-header h3{font-size:clamp(26px,min(3.2vw,5.6vh),54px);line-height:1.14}
+  #engineering .v4-contract-header h3 br{display:none}
+  #engineering .v4-contract-header h3 em::before{content:' '}
+  #engineering .v4-contract-header p{font-size:13px;line-height:1.55;max-width:400px;margin:0}
+  #engineering .v4-contract-tabs{flex:none}
+  #engineering .v4-contract-tabs button{padding:clamp(8px,1.6vh,18px) 8px}
+  /* tabs 2-5 carry a site.css v5 positional !important grey that also hits the active
+     (navy) tab; restore the lime the .active/:hover rule intends */
+  #engineering#engineering .v4-contract-tabs button.active,#engineering#engineering .v4-contract-tabs button:hover{color:var(--lime)!important}
+  #engineering .v4-contract-panel{flex:1;min-height:0}
+  #engineering .v4-contract-main{padding:clamp(14px,2.6vh,34px) clamp(20px,3vw,48px);justify-content:center}
+  #engineering .v4-contract-main h4{font-size:clamp(20px,min(2.6vw,4.8vh),46px);line-height:1.12;margin:clamp(6px,1.2vh,14px) 0 clamp(6px,1.2vh,12px)}
+  html[lang=vi] #engineering .v4-contract-main h4{line-height:1.16}
+  #engineering .v4-contract-main>p{font-size:clamp(12.5px,1.9vh,14px);line-height:1.55;margin:0 0 clamp(10px,2vh,18px)}
+  #engineering .v4-contract-artifact{margin-top:clamp(12px,4vh,48px);padding-top:clamp(8px,1.6vh,16px);gap:6px}
+  #engineering .v4-contract-artifact b{font-size:clamp(13px,1.9vh,15px)}
+  #engineering .v4-contract-aside{padding:clamp(14px,2.6vh,32px) clamp(18px,2vw,28px);display:flex;flex-direction:column;justify-content:center}
+  #engineering .v4-release-line{margin:clamp(10px,2vh,22px) 0}
+  #engineering .v4-release-stage{min-height:0;padding:clamp(10px,1.8vh,16px) 12px}
+  #engineering .v4-release-stage b{font-size:clamp(18px,3vh,24px);margin:6px 0 6px}
+  #engineering .v4-release-stage p{font-size:clamp(12px,1.7vh,13.5px)}
+  #engineering .v4-contract-aside>p{font-size:clamp(12px,1.75vh,14px)}
+  #engineering .v4-case-link{align-self:flex-start}
+  #engineering .v4-contract-aside>p{margin:0 0 clamp(8px,1.6vh,16px)}
+  #engineering .v4-case-link{padding:clamp(6px,1.2vh,11px) 0}
+  #engineering .v4-contract-foot{padding:clamp(8px,1.6vh,18px) clamp(18px,2vw,28px);flex:none}
+}

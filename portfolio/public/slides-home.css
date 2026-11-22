@@ -1,0 +1,59 @@
+/* Landing page (home.html, home.vi.html) as slides on desktop.
+   Builds on the tokens and generic heading scale in slides.css; loaded right after it.
+   hero = one viewport (it sits under the fixed header), proof = compact strip that snaps
+   with the hero bottom, manifesto / next-steps / contact = one --slide-h each.
+   Selectors use main section.x:not(#_) where they must beat slides.css or the
+   html[lang=vi] rules in polish-fonts.css. */
+@media (min-width:1101px) and (min-height:540px){
+
+  /* ---- Hero: exactly one screen, display h1 scaled to the height ------------------- */
+  .hero{height:100svh;min-height:0}
+  .hero-inner{padding-top:calc(var(--hdr-h,56px) + clamp(6px,2vh,22px))}
+  .hero-copy{padding-bottom:clamp(48px,8vh,72px)}
+  main section.hero:not(#_) h1:not(#_){
+    font-size:clamp(48px,min(6.4vw,9.4vh),112px);
+    line-height:.94;
+    margin:clamp(12px,3vh,34px) 0 clamp(12px,2.6vh,28px);
+  }
+  /* VI: .block keeps its 1.14 leading from polish-fonts (tone marks); only the size and margins move */
+  .hero-statement{margin-top:0}
+  .hero-statement p{font-size:clamp(13px,min(1.13vw,2.05vh),17px);line-height:1.6}
+  .vertical-rule{height:clamp(48px,8vh,74px)}
+  .hero-cta{margin-top:clamp(16px,3.4vh,42px)}
+  .hero .button{min-height:clamp(44px,6.4vh,54px)}
+  .hero-bottom{height:clamp(48px,8vh,72px)}
+  .mode-descr{font-size:10px}
+  /* .hero-stage keeps its site.css geometry: the WebGL knot is sized by the canvas HEIGHT
+     (vertical FOV), so a narrower stage would cut the knot at the canvas sides. */
+
+  /* ---- Proof: compact strip; snaps by its bottom so it shares a screen with the hero bottom */
+  main>section.proof{scroll-snap-align:end}
+  .proof-inner>div{padding:clamp(16px,3.2vh,36px) 24px clamp(18px,3.6vh,40px) 0}
+  .proof-inner>div+div{padding-left:24px}
+  .pf-tag{margin-bottom:clamp(8px,1.4vh,16px)}
+  .proof b{font-size:clamp(36px,min(4.2vw,7.4vh),72px)}
+  .proof p{margin-top:clamp(8px,1.2vh,14px)}
+
+  /* ---- Manifesto: one slide -------------------------------------------------------- */
+  .manifesto{min-height:var(--slide-h);display:flex;flex-direction:column;justify-content:center;padding-block:var(--slide-pad)}
+  .manifesto>.section-inner{margin-block:0}
+  main section.manifesto:not(#_) h2:not(#_){margin:0}
+  /* slides.css hides the <br>s; the markup has no space between </span><br><em>, so add one */
+  main section.manifesto:not(#_) h2:not(#_) em::before{content:" "}
+  .manifesto-bottom{margin-top:clamp(20px,4.6vh,56px);padding-top:clamp(14px,2.4vh,27px);gap:40px}
+  .manifesto-bottom p{font-size:var(--body-slide);line-height:1.6}
+  .mini-stat .l{font-size:10px}
+
+  /* ---- Next steps: one slide. .contact (polish-corners) overlaps the last 80px of this
+     section with its rounded corner, so that strip is reserved in the bottom padding. */
+  .next-steps{min-height:var(--slide-h);display:flex;flex-direction:column;justify-content:center;padding:var(--slide-pad) 0 calc(var(--slide-pad) + 80px)}
+  .next-steps>.section-inner{margin-block:0}
+  main section.next-steps:not(#_) .next-title:not(#_){margin:clamp(6px,1.6vh,20px) 0 0}
+  .entry-grid{margin-top:clamp(14px,3vh,36px)}
+  .entry-card{min-height:0;padding:clamp(14px,2.6vh,28px) clamp(16px,1.6vw,26px) clamp(12px,2.2vh,24px)}
+  .entry-card h3{margin-top:clamp(8px,1.8vh,20px);font-size:clamp(20px,min(1.9vw,3.6vh),32px)}
+  html[lang=vi] .entry-card h3{line-height:1.16}
+  .entry-card p{margin-top:clamp(6px,1.3vh,14px);font-size:var(--body-slide);line-height:1.5}
+  .entry-go{padding-top:clamp(10px,2.4vh,26px)}
+  .entry-arrow{width:clamp(38px,5.4vh,52px);height:clamp(38px,5.4vh,52px)}
+}
