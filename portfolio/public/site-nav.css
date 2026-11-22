@@ -4,7 +4,11 @@
    (.site-*), so the old .topbar / .nav / .mobile-nav-* rules in site.css no longer apply. */
 
 :root {
-  --hdr-h: 76px;
+  --hdr-h: 56px;
+  --ctl-h: 36px;
+  --ctl-fs: 13px;
+  --ctl-corner: 4px 14px 4px 11px;
+  --ctl-corner-hover: 14px 4px 11px 4px;
   --hdr-line: rgba(248, 236, 216, .35);
   --hdr-ease: cubic-bezier(.22, 1, .36, 1);
 }
@@ -15,37 +19,37 @@ html { scroll-padding-top: calc(var(--hdr-h) + 16px); }
   position: fixed; top: 0; left: 0; right: 0; z-index: 90;
   height: var(--hdr-h);
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  padding: 0 clamp(20px, 3vw, 56px);
+  padding: 0 clamp(16px, 2.6vw, 48px);
   background: rgba(19, 38, 67, .94);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(248, 236, 216, .16);
 }
 .site-brand {
   flex: none; display: flex; align-items: flex-start; gap: 6px;
-  font: 900 30px/1 var(--sans); letter-spacing: -.07em; color: var(--white);
+  font: 900 24px/1 var(--sans); letter-spacing: -.07em; color: var(--white);
 }
 .site-brand i { font-style: normal; color: var(--orange); }
-.site-brand sup { font: 600 10px/1 var(--mono); letter-spacing: 0; margin-top: 3px; }
+.site-brand sup { font: 600 9px/1 var(--mono); letter-spacing: 0; margin-top: 2px; }
 
 .site-nav { display: flex; align-items: center; gap: 8px; min-width: 0; }
 
 .site-tab,
 .site-cta,
 .site-lang {
-  min-height: 44px;
+  min-height: var(--ctl-h);
   border: 1px solid var(--hdr-line);
-  border-radius: 4px 18px 4px 14px;
-  font: 650 14px/1.1 var(--sans); letter-spacing: .06em; text-transform: uppercase;
+  border-radius: var(--ctl-corner);
+  font: 650 var(--ctl-fs)/1.1 var(--sans); letter-spacing: .05em; text-transform: uppercase;
   white-space: nowrap;
 }
 .site-tab {
   display: inline-flex; align-items: center;
-  padding: 10px 16px; color: var(--white);
+  padding: 6px 14px; color: var(--white);
   transition: border-radius .45s var(--hdr-ease), background .2s, color .2s, border-color .2s;
 }
 .site-tab:hover {
   background: rgba(211, 128, 63, .22); border-color: var(--orange);
-  border-radius: 18px 4px 14px 4px;
+  border-radius: var(--ctl-corner-hover);
 }
 .site-tab[aria-current="page"] {
   background: var(--lime); border-color: var(--lime); color: #172a45;
@@ -53,19 +57,19 @@ html { scroll-padding-top: calc(var(--hdr-h) + 16px); }
 .site-tab[aria-current="page"]:hover { border-color: var(--orange); }
 
 .site-lang { display: inline-flex; align-items: stretch; overflow: hidden; margin-left: 4px; }
-.site-lang > * { display: inline-flex; align-items: center; padding: 0 12px; font: inherit; }
+.site-lang > * { display: inline-flex; align-items: center; padding: 0 11px; font: inherit; }
 .site-lang .is-current { background: rgba(248, 236, 216, .16); color: var(--lime); }
 .site-lang a { color: #c9d3e0; transition: background .2s, color .2s; }
 .site-lang a:hover { background: var(--orange); color: #162944; }
 
 .site-cta {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 10px 20px; margin-left: 4px;
+  padding: 6px 16px; margin-left: 4px;
   background: var(--orange); border-color: var(--orange); color: #162944;
   font-weight: 800;
   transition: border-radius .45s var(--hdr-ease), background .2s, border-color .2s;
 }
-.site-cta:hover { background: var(--lime); border-color: var(--lime); border-radius: 18px 4px 14px 4px; }
+.site-cta:hover { background: var(--lime); border-color: var(--lime); border-radius: var(--ctl-corner-hover); }
 
 .site-header a:focus-visible,
 .site-header button:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
@@ -73,25 +77,32 @@ html { scroll-padding-top: calc(var(--hdr-h) + 16px); }
 /* Mobile / narrow: one big MENU button, panel with large bordered rows */
 .site-menu-toggle, .site-menu { display: none; }
 .site-menu-toggle {
-  min-height: 44px; padding: 0 16px; gap: 12px; align-items: center;
+  min-height: 40px; padding: 0 14px; gap: 10px; align-items: center;
   background: transparent; color: var(--white);
-  border: 1px solid rgba(248, 236, 216, .55); border-radius: 4px 18px 4px 14px;
-  font: 700 14px/1 var(--sans); letter-spacing: .08em;
+  border: 1px solid rgba(248, 236, 216, .55); border-radius: var(--ctl-corner);
+  font: 700 13px/1 var(--sans); letter-spacing: .07em;
 }
-.site-menu-toggle > span { font-size: 20px; line-height: 0; color: var(--lime); transition: transform .25s; }
+.site-menu-toggle > span { font-size: 18px; line-height: 0; color: var(--lime); transition: transform .25s; }
 .site-menu-toggle[aria-expanded="true"] { background: var(--lime); color: #172a45; border-color: var(--lime); }
 .site-menu-toggle[aria-expanded="true"] > span { transform: rotate(45deg); color: #172a45; }
 
 @media (max-width: 1360px) {
   .site-nav { gap: 6px; }
-  .site-tab { padding: 10px 12px; }
-  .site-lang > * { padding: 0 10px; }
-  .site-cta { padding: 10px 16px; }
+  .site-tab { padding: 6px 11px; }
+  .site-lang > * { padding: 0 9px; }
+  .site-cta { padding: 6px 14px; }
+}
+
+@media (min-width: 1700px) {
+  :root { --hdr-h: 60px; --ctl-h: 38px; --ctl-fs: 14px; }
+  .site-brand { font-size: 26px; }
+  .site-tab { padding: 6px 16px; }
+  .site-cta { padding: 6px 18px; }
 }
 
 @media (max-width: 1100px) {
-  :root { --hdr-h: 64px; }
-  .site-brand { font-size: 27px; }
+  :root { --hdr-h: 56px; }
+  .site-brand { font-size: 24px; }
   .site-nav .site-tab, .site-nav .site-lang { display: none; }
   .site-nav { margin-left: auto; }
   .site-menu-toggle { display: inline-flex; }
@@ -105,10 +116,10 @@ html { scroll-padding-top: calc(var(--hdr-h) + 16px); }
   }
   .site-menu[hidden] { display: none !important; }
   .site-menu > a {
-    min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 12px 16px; color: var(--white);
-    border: 1px solid var(--hdr-line); border-radius: 4px 18px 4px 14px;
-    font: 650 15px/1.25 var(--sans); letter-spacing: .05em; text-transform: uppercase;
+    min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; color: var(--white);
+    border: 1px solid var(--hdr-line); border-radius: var(--ctl-corner);
+    font: 650 14px/1.25 var(--sans); letter-spacing: .05em; text-transform: uppercase;
     transition: background .2s, border-color .2s;
   }
   .site-menu > a:hover { background: rgba(211, 128, 63, .22); border-color: var(--orange); }
@@ -116,10 +127,11 @@ html { scroll-padding-top: calc(var(--hdr-h) + 16px); }
   .site-menu > .site-menu-cta { background: var(--orange); border-color: var(--orange); color: #162944; font-weight: 800; }
 }
 @media (max-width: 600px) {
-  .site-header { padding: 0 16px; gap: 10px; }
-  .site-brand { font-size: 25px; }
-  .site-cta { padding: 10px 12px; font-size: 13px; letter-spacing: .04em; }
-  .site-menu-toggle { padding: 0 12px; font-size: 13px; gap: 9px; }
+  :root { --hdr-h: 52px; --ctl-h: 34px; --ctl-fs: 12px; }
+  .site-header { padding: 0 14px; gap: 8px; }
+  .site-brand { font-size: 22px; }
+  .site-cta { padding: 6px 11px; letter-spacing: .04em; }
+  .site-menu-toggle { min-height: 36px; padding: 0 11px; font-size: 12px; gap: 8px; }
   .site-menu { grid-template-columns: 1fr; }
 }
 @media (max-width: 360px) {

@@ -6,14 +6,19 @@
    the tabs collapse into a MENU button with a panel of 52px rows. */
 
 :root {
-  --nav-h: 68px;
+  --nav-h: 56px;
+  --nav-ctl: 36px;
+  --nav-fs: 13px;
   --nav-line: color-mix(in srgb, var(--foreground) 38%, var(--background));
-  --nav-corner: 4px 18px 4px 14px;
-  --nav-corner-hover: 18px 4px 14px 4px;
+  --nav-corner: 4px 14px 4px 11px;
+  --nav-corner-hover: 14px 4px 11px 4px;
   --nav-ease: cubic-bezier(.22, 1, .36, 1);
 }
-@media (max-width: 1239px) {
-  :root { --nav-h: 64px; }
+@media (min-width: 1700px) {
+  :root { --nav-h: 60px; --nav-ctl: 38px; --nav-fs: 14px; }
+}
+@media (max-width: 600px) {
+  :root { --nav-h: 52px; --nav-ctl: 34px; --nav-fs: 12px; }
 }
 
 /* ---- Header ---------------------------------------------------------- */
@@ -40,7 +45,7 @@
 }
 .site-brand {
   flex: none;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.08em;
@@ -56,17 +61,17 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 10px 16px;
+  min-height: var(--nav-ctl);
+  padding: 6px 14px;
   border: 1px solid var(--nav-line);
   border-radius: var(--nav-corner);
   background: transparent;
   color: var(--foreground);
   font-family: var(--font-sans, inherit);
-  font-size: 14px;
+  font-size: var(--nav-fs);
   font-weight: 650;
   line-height: 1.1;
-  letter-spacing: .06em;
+  letter-spacing: .05em;
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
@@ -94,8 +99,8 @@
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
-.nav-tab svg { width: 18px; height: 18px; flex: none; }
-.nav-tab--icon { width: 44px; padding: 0; }
+.nav-tab svg { width: 16px; height: 16px; flex: none; }
+.nav-tab--icon { width: var(--nav-ctl); padding: 0; }
 .nav-tab--cta {
   border-color: var(--primary);
   background: var(--primary);
@@ -111,17 +116,17 @@
 /* Language: two-button segmented control */
 .nav-seg {
   display: inline-flex;
-  min-height: 44px;
+  min-height: var(--nav-ctl);
   border: 1px solid var(--nav-line);
   border-radius: var(--nav-corner);
   overflow: hidden;
-  font-size: 14px;
+  font-size: var(--nav-fs);
   font-weight: 650;
-  letter-spacing: .06em;
+  letter-spacing: .05em;
 }
 .nav-seg__btn {
-  min-width: 44px;
-  padding: 0 10px;
+  min-width: var(--nav-ctl);
+  padding: 0 9px;
   background: transparent;
   color: var(--foreground);
   cursor: pointer;
@@ -133,7 +138,7 @@
 
 /* ---- Desktop row vs. mobile menu ------------------------------------- */
 .nav-desktop { display: none; align-items: center; gap: 8px; }
-.nav-menu-btn { display: inline-flex; padding-inline: 18px; }
+.nav-menu-btn { display: inline-flex; padding-inline: 14px; min-height: 40px; }
 .nav-panel { display: none; }
 
 @media (min-width: 1240px) {
@@ -142,12 +147,16 @@
 }
 @media (min-width: 1240px) and (max-width: 1439px) {
   .nav-desktop { gap: 6px; }
-  .nav-desktop .nav-tab { padding-inline: 12px; }
+  .nav-desktop .nav-tab { padding-inline: 11px; }
   .nav-desktop .nav-tab--icon { padding-inline: 0; }
 }
 @media (min-width: 1440px) {
+  .nav-desktop { gap: 8px; }
+  .nav-desktop .nav-tab { padding-inline: 14px; }
+}
+@media (min-width: 1700px) {
   .nav-desktop { gap: 10px; }
-  .nav-desktop .nav-tab { padding-inline: 20px; }
+  .nav-desktop .nav-tab { padding-inline: 16px; }
   .nav-desktop .nav-tab--icon { padding-inline: 0; }
 }
 
@@ -178,16 +187,16 @@
   display: flex;
   justify-content: flex-start;
   width: 100%;
-  min-height: 52px;
-  padding: 12px 18px;
-  font-size: 16px;
+  min-height: 48px;
+  padding: 10px 16px;
+  font-size: 14px;
 }
 .nav-row.nav-tab--cta { justify-content: center; }
 .nav-panel__tools { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; }
 .nav-panel__tools .nav-tab--icon,
-.nav-panel__tools .nav-seg { min-height: 52px; }
-.nav-panel__tools .nav-tab--icon { width: 52px; }
-.nav-panel__tools .nav-seg__btn { min-width: 52px; font-size: 15px; }
+.nav-panel__tools .nav-seg { min-height: 48px; }
+.nav-panel__tools .nav-tab--icon { width: 48px; }
+.nav-panel__tools .nav-seg__btn { min-width: 48px; font-size: 14px; }
 
 /* ---- Offsets for content under the sticky header ---------------------- */
 .sidebar-nav,
