@@ -13,30 +13,30 @@ aliases:
   - Weight Space Merging
 date: 2026-05-14
 status: permanent
-description: 'Khi bạn fine-tune một model, thực chất bạn đang dịch chuyển một điểm trong không gian hàng tỷ chiều — từ vị trí base đến vị trí mới mang skill cụ thể.'
+description: 'Fine-tune một model thực chất là dịch chuyển một điểm trong không gian hàng tỷ chiều, từ vị trí base đến một vị trí mới mang skill cụ thể.'
 ---
 
 # Task Vectors & Model Merging
 
-> **Tóm tắt:** Task vectors xem fine-tuning như một phép toán trong weight space. Bằng cách trừ base model khỏi fine-tuned model, ta thu được một *delta* mang theo toàn bộ skill — có thể scale, cộng, trừ, hoặc kết hợp với delta khác mà không cần train lại. Nhưng delta đồng thời mang theo cả capability lẫn safety regression: merge không cẩn thận có thể tạo ra model đa năng nhưng nguy hiểm hơn.
+> **Tóm tắt:** Task vectors xem fine-tuning như một phép toán trong weight space. Lấy fine-tuned model trừ base model, ta được một *delta* mang toàn bộ skill, có thể scale, cộng, trừ, hoặc kết hợp với delta khác mà không cần train lại. Nhưng delta mang theo cả capability lẫn safety regression: merge không cẩn thận có thể ra một model đa năng nhưng nguy hiểm hơn.
 
 ---
 
 ## Plain English
 
-Khi bạn fine-tune một model, thực chất bạn đang *dịch chuyển* một điểm trong không gian hàng tỷ chiều — từ vị trí base đến vị trí mới mang skill cụ thể. Task vector chính là vector dịch chuyển đó: $\tau = \theta_{\text{fine-tuned}} - \theta_{\text{base}}$.
+Fine-tune một model thực chất là *dịch chuyển* một điểm trong không gian hàng tỷ chiều, từ vị trí base đến một vị trí mới mang skill cụ thể. Task vector chính là vector dịch chuyển đó: $\tau = \theta_{\text{fine-tuned}} - \theta_{\text{base}}$.
 
 Điều thú vị: bạn có thể *cộng nhiều vector* vào base model cùng lúc. Muốn model vừa giỏi code vừa giỏi math? Lấy $\tau_{\text{code}}$ và $\tau_{\text{math}}$, nhân với hệ số $\lambda$, rồi cộng vào base. Không cần dữ liệu, không cần GPU hours để retrain từ đầu.
 
 Thực tế phức tạp hơn: các delta thường *xung đột* nhau ở các weight cụ thể — delta này muốn tăng một tham số, delta kia muốn giảm. Các phương pháp như TIES (xử lý sign conflict), DARE (drop ngẫu nhiên delta nhỏ), và SafeMERGE (ưu tiên bảo vệ safety-critical weights) ra đời để xử lý vấn đề này.
 
-Nguy hiểm ít được nhắc đến: fine-tune domain (vd: y tế, pháp lý) có thể *silently undo* safety alignment. Merge một safety model và một domain model không đảm bảo output an toàn — phải eval explicit.
+Mối nguy ít ai nhắc tới: fine-tune domain (vd: y tế, pháp lý) có thể *silently undo* safety alignment. Merge một safety model và một domain model không đảm bảo output an toàn — phải eval trực tiếp.
 
 ---
 
 ## Mental Model
 
-> **Analogy:** Hãy tưởng tượng base model là một tờ giấy trắng. Mỗi fine-tune để lại một *dấu mực* khác màu lên tờ giấy đó — màu xanh là code skill, màu đỏ là safety alignment, màu vàng là domain knowledge. Model merging giống pha nhiều tờ giấy có dấu mực vào nhau. Nếu các dấu mực nằm ở chỗ khác nhau, kết quả đẹp. Nếu chúng chồng lên nhau, màu trộn lẫn và có thể ra màu bùn — hoặc tệ hơn, màu đỏ (safety) bị màu khác lấn át hoàn toàn.
+> **Analogy:** Hãy tưởng tượng base model là một tờ giấy trắng. Mỗi fine-tune để lại một *dấu mực* khác màu lên tờ giấy đó — màu xanh là code skill, màu đỏ là safety alignment, màu vàng là domain knowledge. Model merging giống như chồng nhiều tờ giấy có dấu mực lên nhau. Nếu các dấu mực nằm ở chỗ khác nhau, kết quả đẹp. Nếu chúng chồng lên nhau, màu trộn lẫn và có thể ra màu bùn — hoặc tệ hơn, màu đỏ (safety) bị màu khác lấn át hoàn toàn.
 
 **Các điểm cốt lõi cần nhớ:**
 
@@ -64,7 +64,7 @@ $$
 \theta_{\text{new}} = \theta_{\text{base}} + \sum_{i} \lambda_i \cdot \tau_i
 $$
 
-$\lambda_i \in [0, 1]$ là scaling coefficient — điều chỉnh mức độ đóng góp của từng task. Alpha sweep là quá trình thử nhiều $\lambda$ combinations để tìm điểm tối ưu trên utility-safety tradeoff.
+$\lambda_i \in [0, 1]$ là scaling coefficient — điều chỉnh mức độ đóng góp của từng task. Alpha sweep là thử nhiều tổ hợp $\lambda$ để tìm điểm tối ưu trên utility-safety tradeoff.
 
 ### TIES-Merging
 
@@ -82,7 +82,7 @@ $$
 \text{3. Merge: } \tau_{\text{TIES}}^{(k)} = \frac{\sum_i \tau_i^{(k)} \cdot \mathbf{1}\!\left[\text{sign}(\tau_i^{(k)}) = \hat{s}^{(k)}\right]}{\left|\{i : \text{sign}(\tau_i^{(k)}) = \hat{s}^{(k)}\}\right|}
 $$
 
-Chỉ giữ $\rho$ fraction (top by magnitude) tham số khi merge — giảm noise từ small updates.
+Khi merge, chỉ giữ tỷ lệ $\rho$ tham số có magnitude lớn nhất — giảm noise từ các update nhỏ.
 
 ### DARE (Drop And REscale)
 
@@ -90,7 +90,7 @@ $$
 \tilde{\tau}_i^{(k)} = \frac{\delta_i^{(k)} \cdot m_i^{(k)}}{1 - p}, \quad m_i^{(k)} \sim \text{Bernoulli}(1 - p)
 $$
 
-Drop ngẫu nhiên $p$ fraction của delta, rescale phần còn lại để giữ expectation. Mục tiêu: giảm interference khi merge nhiều model cùng lúc.
+Drop ngẫu nhiên tỷ lệ $p$ của delta, rescale phần còn lại để giữ expectation. Mục tiêu: giảm interference khi merge nhiều model cùng lúc.
 
 ### SafeMERGE
 
@@ -141,13 +141,13 @@ Với mỗi fine-tuned model, tính delta so với base: $\tau_i = \theta_{\text
 - *SafeMERGE*: bắt buộc khi có safety model trong danh sách merge.
 
 **Bước 3 — Alpha sweep**
-Thử grid of $\lambda_i$ values (vd: $\{0.3, 0.5, 0.7, 1.0\}$ per task). Với mỗi combination, eval trên utility benchmark + safety eval. Plot Pareto frontier utility vs safety.
+Thử grid các giá trị $\lambda_i$ (vd: $\{0.3, 0.5, 0.7, 1.0\}$ per task). Với mỗi combination, eval trên utility benchmark + safety eval. Plot Pareto frontier utility vs safety.
 
 **Bước 4 — Eval matrix**
 Chạy eval trên: (a) base model, (b) từng source fine-tuned model, (c) từng candidate merge. Không chỉ nhìn vào average — breakdown theo task, domain, language.
 
 **Bước 5 — Chọn merge config**
-Chọn config tối thiểu hóa interference (không có task nào bị drop quá $5\%$ so với individual), tối đa hóa utility tổng, và duy trì safety refusal $\geq$ baseline.
+Chọn config ít interference nhất (không có task nào bị drop quá $5\%$ so với individual), utility tổng cao nhất, và giữ safety refusal $\geq$ baseline.
 
 **Bước 6 — Lưu artifacts và rollback plan**
 Lưu: source checkpoints (pinned), merge config file (lambdas + strategy), alpha sweep report, safety retain eval. Rollback = deploy lại source checkpoint tương ứng.
@@ -320,7 +320,7 @@ def alpha_sweep(
 | TIES (density=0.2) | 77.3% | +4.2% |
 | TIES (density=0.5) | 75.8% | +2.7% |
 
-Sign conflict resolution là yếu tố quan trọng nhất khi merge số lượng lớn task.
+Sign conflict resolution là yếu tố quan trọng nhất khi merge nhiều task.
 
 ### DARE — Yu et al. (2024)
 
@@ -354,7 +354,7 @@ Drop 90% delta → chỉ mất 10–20% accuracy, nhưng cho phép merge nhiều
 
 > [!danger] Không dùng khi
 > - Source models **không cùng base architecture, tokenizer, hoặc vocab** — delta không tương thích.
-> - **Không biết** delta nào trong fine-tune mang unsafe behavior — merge mù là gamble.
+> - **Không biết** delta nào trong fine-tune mang unsafe behavior — merge mù là đánh cược.
 > - **Không có source checkpoints** — mất khả năng rollback và audit.
 > - Cần performance cực cao trên một task duy nhất — individual fine-tune vẫn tốt hơn.
 > - Domain data có thể chứa adversarial fine-tuning (model đã bị intentionally misaligned).
@@ -406,6 +406,6 @@ Phải lưu đầy đủ trước khi deploy:
 - Yu et al. (2024). *Language Models are Super Mario: Absorbing Abilities from Homologous Models as a Free Lunch (DARE)*. [arXiv:2311.03099](https://arxiv.org/abs/2311.03099)
 - SafeMERGE. IBM Research, 2024.
 - [[Knowledge Editing - ROME & MEMIT]] — causal tracing approach, contrast với weight-space arithmetic
-- [[LoRA & PEFT]] — delta cũng là một loại task vector khi LoRA adapter được merged vào base
+- [[LoRA & PEFT]] — delta cũng là một loại task vector khi LoRA adapter được merge vào base
 - [[Activation Steering]] — can thiệp representation thay vì weight space
 - [[LLM Model Editing - MOC]] — map toàn bộ các kỹ thuật

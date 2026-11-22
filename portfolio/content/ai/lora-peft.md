@@ -37,7 +37,7 @@ Analogy: Base model là máy chính. Adapter là module gắn ngoài để đổ
 
 ## Cơ chế (Mechanism)
 
-Với một linear layer có weight \(W_0 \in \mathbb{R}^{d \times k}\), LoRA thay vì update toàn bộ \(W_0\), học:
+Với một linear layer có weight \(W_0 \in \mathbb{R}^{d \times k}\), LoRA không update toàn bộ \(W_0\) mà học:
 
 $$
 W_{\text{new}} = W_0 + \Delta W = W_0 + BA
@@ -257,7 +257,7 @@ def route_adapter(model: PeftModel, adapter_name: str):
 
 ## Benchmarks
 
-Representative numbers từ LoRA và QLoRA papers:
+Số liệu tiêu biểu từ LoRA và QLoRA papers:
 
 | Method | Trainable params | Memory | GLUE / quality | Nhận xét |
 |---|---:|---:|---:|---|

@@ -13,19 +13,19 @@ aliases:
   - Activation Addition
 date: 2026-05-14
 status: reference
-description: 'Inject một vector vào hidden states của model tại inference time để điều hướng behavior — không thay đổi weights, reversible ngay lập tức, và có thể apply có điều kiện theo context.'
+description: 'Inject một vector vào hidden states của model lúc inference để điều hướng behavior. Không đổi weights, reversible ngay lập tức, và có thể chỉ apply khi context thỏa điều kiện.'
 ---
 
 # Activation Steering
 
-Inject một vector vào hidden states của model tại inference time để điều hướng behavior — không thay đổi weights, reversible ngay lập tức, và có thể apply có điều kiện theo context.
+Inject một vector vào hidden states của model lúc inference để điều hướng behavior. Không đổi weights, reversible ngay lập tức, và có thể chỉ apply khi context thỏa điều kiện.
 
 > [!warning] Side-effects là rủi ro chính
-> Steering vector hoạt động trên không gian representation liên tục — một "concept lever" thường entangled với nhiều behaviors khác. Alpha quá cao gây incoherent output. Luôn eval side-effects trên benign prompts trước khi deploy bất kỳ steering nào.
+> Steering vector hoạt động trên không gian representation liên tục — một "concept lever" thường entangled với nhiều behaviors khác. Alpha quá cao làm output incoherent. Luôn eval side-effects trên benign prompts trước khi deploy bất kỳ steering nào.
 
 ## Plain English
 
-Thay vì thay đổi weights của model vĩnh viễn (như [[Abliteration]]), activation steering hoạt động hoàn toàn lúc inference. Hãy hình dung: model đang "nghĩ" bằng cách truyền thông tin qua residual stream — một vector lớn thay đổi dần dần qua mỗi layer. Activation steering **thêm vào vector đó** một nudge nhỏ theo hướng mình muốn, ở đúng layer, đúng lúc.
+Thay vì thay đổi weights của model vĩnh viễn (như [[Abliteration]]), activation steering hoạt động hoàn toàn lúc inference. Có thể hình dung model "nghĩ" bằng cách truyền thông tin qua residual stream, một vector lớn thay đổi dần qua từng layer. Activation steering **thêm vào vector đó** một nudge nhỏ theo hướng mình muốn, ở đúng layer, đúng lúc.
 
 Ví dụ muốn model honest hơn: tìm direction trong latent space encode "honesty" bằng cách so sánh activations khi model trả lời thành thật vs khi nói dối. Sau đó inject direction đó vào residual stream trong mỗi forward pass — model bị "nudge" về phía honest behavior.
 
@@ -36,11 +36,11 @@ Ví dụ muốn model honest hơn: tìm direction trong latent space encode "hon
 **Analogy:** Hidden activations là bảng điều khiển trạng thái bên trong model — mỗi vị trí trong không gian đó đại diện cho một "trạng thái tư duy" của model. Mỗi concept (honest/deceptive, helpful/harmful, confident/uncertain, verbose/concise) có một "cần gạt" trong không gian đó. Steering là đẩy nhẹ cần gạt đó theo hướng mình muốn trong khi model đang chạy. Nhưng các cần gạt không độc lập — đẩy "honest" mạnh quá có thể kéo theo "blunt" hoặc "verbose".
 
 **Bullets:**
-- **Concept vector lấy từ contrast pairs**: activations của "concept on" minus activations của "concept off", lấy mean difference → direction trong latent space
+- **Concept vector lấy từ contrast pairs**: activations của "concept on" trừ đi activations của "concept off", lấy mean difference → direction trong latent space
 - **Runtime steering**: inject $\alpha \cdot \hat{v}$ vào residual stream tại layer $l$ mỗi forward pass — dừng bất cứ lúc nào bằng cách remove hook
 - **Conditional steering an toàn hơn global**: chỉ inject khi prompt classifier detect điều kiện cụ thể (vd: chỉ steer "safety" khi detect adversarial pattern) — giảm false positive side-effects
 - **Side-effects là rủi ro chính**: concept vectors thường không orthogonal với capability space — $\alpha$ quá lớn có thể làm model incoherent hoặc thay đổi behavior theo chiều không mong muốn
-- **Layers giữa hiệu quả nhất**: empirically, layers 50–70% depth của model encode semantic concepts tốt hơn early layers (syntax) và late layers (output formatting)
+- **Layers giữa hiệu quả nhất**: theo thực nghiệm, layers ở 50–70% depth của model encode semantic concepts tốt hơn early layers (syntax) và late layers (output formatting)
 
 ## Cơ Chế (Mechanism)
 
@@ -73,7 +73,7 @@ Có thể apply cho nhiều layers đồng thời, thường với cùng $\alpha
 
 ### Điều Chỉnh $\alpha$
 
-Không có formula chính xác cho $\alpha$ — phụ thuộc vào model size, layer, và concept. Rule of thumb:
+Không có công thức chính xác cho $\alpha$; giá trị tùy vào model size, layer và concept. Rule of thumb:
 - Bắt đầu với $\alpha \in [5, 20]$ cho model 7–13B
 - Tăng dần, monitor perplexity trên retain set
 - Dừng khi perplexity tăng > 10% so với baseline
@@ -107,17 +107,17 @@ graph LR
 
 ## How It Works
 
-**Bước-by-bước để implement activation steering trong production-like setting:**
+**Các bước implement activation steering trong setting gần với production:**
 
-1. **Define concept rõ ràng** — steering chỉ hiệu quả nếu concept được encode tuyến tính trong latent space. "Honesty" rõ hơn "being generally better". Viết ra behavior muốn thay đổi cụ thể.
+1. **Define concept rõ ràng** — steering chỉ hiệu quả nếu concept được encode tuyến tính trong latent space. "Honesty" rõ hơn "being generally better". Viết cụ thể ra behavior muốn thay đổi.
 
-2. **Tạo contrast pairs** — cần ~30–100 cặp $(x^+, x^-)$ cân bằng. Cả hai phải cùng topic/domain, chỉ khác concept muốn steer. Diversity trong pairs quan trọng hơn số lượng.
+2. **Tạo contrast pairs** — cần ~30–100 cặp $(x^+, x^-)$ cân bằng. Cả hai phải cùng topic/domain, chỉ khác concept muốn steer. Pairs đa dạng quan trọng hơn số lượng.
 
 3. **Chọn layer target** — thường là middle-to-late layers (50–70% depth). Với 32-layer model: layer 14–24. Có thể sweep qua từng layer và đo causal effect (flip output direction?) để chọn chính xác.
 
 4. **Collect activations** — forward pass qua cả hai sets, lấy last-token hidden states. Không cần gradient.
 
-5. **Tính steering vector** — mean diff, normalize. Đơn giản nhưng surprisingly effective vì linear representation hypothesis hold cho semantic concepts.
+5. **Tính steering vector** — mean diff, normalize. Đơn giản nhưng hiệu quả bất ngờ, vì linear representation hypothesis đúng với semantic concepts.
 
 6. **Register forward hook** — hook vào layer target, add $\alpha \cdot \hat{v}$ vào output. Dùng context manager để đảm bảo hook luôn được remove sau mỗi generation.
 
@@ -372,7 +372,7 @@ Từ **Turner et al. (2023)** — Activation Addition (GPT-2 và GPT-J):
 | Honesty vector cross-model | Transfer rate ~60% giữa models cùng architecture | Layer alignment cần thiết cho cross-model transfer |
 
 > [!info] Giới hạn của benchmarks
-> Kết quả trên phụ thuộc nhiều vào chất lượng contrast pairs và alpha tuning. Numbers từ paper không nhất thiết reproduce trực tiếp trên model/task khác. Luôn eval trên task-specific data.
+> Kết quả trên phụ thuộc nhiều vào chất lượng contrast pairs và alpha tuning. Số liệu trong paper chưa chắc reproduce được trên model/task khác. Luôn eval trên task-specific data.
 
 ## Khi Nào Dùng / Khi Nào Không
 
@@ -384,7 +384,7 @@ Từ **Turner et al. (2023)** — Activation Addition (GPT-2 và GPT-J):
 - **Rapid prototyping** — test hypothesis về model behavior nhanh trước khi đầu tư vào data collection
 
 **KHÔNG dùng khi:**
-- **Cần thay đổi permanent và consistent** — dùng DPO/SFT thay; steering không baked vào weights
+- **Cần thay đổi permanent và consistent** — dùng DPO/SFT thì hơn; steering không nằm trong weights
 - **Model không có linear representation của concept** — nếu mean diff vector yếu (norm ≈ 0), concept không encode tuyến tính, steering sẽ không hiệu quả
 - **Alpha cần quá lớn để có effect** — signal yếu → concept không được encode rõ ở layer đó → tìm layer khác hoặc dùng phương pháp khác
 - **Production safety-critical application** — không có convergence guarantees, side-effects khó predict hoàn toàn
@@ -417,7 +417,7 @@ Sau khi implement activation steering, cần tạo và lưu:
 - **Layer/scale config** (`steering_config.json`): layer indices, alpha per layer, conditional trigger nếu có — versionable config để thay đổi mà không cần code change
 - **Conditional detector card** (`detector_card.md`): nếu dùng conditional steering, document classifier/rule dùng để trigger injection, precision/recall, failure cases
 - **Side-effect eval set** (`side_effect_evals.jsonl`): 200+ benign prompts không liên quan đến concept được steer — chạy trước mỗi lần update alpha hoặc vector
-- **Kill switch runbook** (`kill_switch_runbook.md`): bước-by-bước để disable steering nhanh khi phát hiện drift — feature flag location, rollback procedure, escalation path
+- **Kill switch runbook** (`kill_switch_runbook.md`): các bước disable steering nhanh khi phát hiện drift — feature flag location, rollback procedure, escalation path
 
 ## References
 
@@ -427,4 +427,4 @@ Sau khi implement activation steering, cần tạo và lưu:
 - Li, K., et al. (2023). *Emergent Linear Representations in World Models of Self-Supervised Sequence Models*. arXiv:[2309.00941](https://arxiv.org/abs/2309.00941)
 - [[Abliteration]] — variant: project direction ra khỏi weights vĩnh viễn thay vì inject lúc inference
 - [[Evaluation Framework]] — đo causal effect và side-effects của steering
-- [[Preference Learning - DPO & RLHF]] — alternative: baked behavioral change vào weights qua training
+- [[Preference Learning - DPO & RLHF]] — alternative: đưa behavioral change vào weights qua training

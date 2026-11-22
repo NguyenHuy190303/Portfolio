@@ -7,7 +7,7 @@ tags:
 aliases:
   - Model Editing Evaluation
   - Eval Framework
-description: '"Hoạt động trên 5 test cases" không phải eval. Evaluation Framework là bộ metrics, thresholds, prompts, scripts và reports dùng để chứng minh một model intervention có hiệu quả thật hay chỉ nhìn tốt trên demo.'
+description: '"Chạy được trên 5 test cases" chưa phải là eval. Evaluation Framework là bộ metrics, thresholds, prompts, scripts và reports để chứng minh một model intervention hiệu quả thật, hay chỉ đẹp trên demo.'
 ---
 
 # Evaluation Framework
@@ -16,11 +16,11 @@ description: '"Hoạt động trên 5 test cases" không phải eval. Evaluation
 
 ## Plain English
 
-"Hoạt động trên 5 test cases" không phải eval. Evaluation Framework là bộ metrics, thresholds, prompts, scripts và reports dùng để chứng minh một model intervention có hiệu quả thật hay chỉ nhìn tốt trên demo.
+"Chạy được trên 5 test cases" chưa phải là eval. Evaluation Framework là bộ metrics, thresholds, prompts, scripts và reports để chứng minh một model intervention hiệu quả thật, hay chỉ đẹp trên demo.
 
 Mỗi kỹ thuật model editing cần đo ít nhất bốn chiều: model đã quên hoặc sửa đúng thứ cần sửa chưa, model còn giữ capability cũ không, safety có bị drift không, và intervention có lan ra ngoài scope không.
 
-Eval phải dùng held-out set. Nếu dùng chính prompt training để đo, kết quả rất dễ misleading.
+Eval phải dùng held-out set. Nếu dùng chính prompt training để đo, kết quả rất dễ gây hiểu sai.
 
 ## Mental Model
 
@@ -74,7 +74,7 @@ $$
 
 ### 1. Forget Quality (FQ)
 
-Forget quality đo model còn leak dữ liệu hoặc behavior cần quên không.
+Forget quality đo xem model còn leak dữ liệu hoặc behavior cần quên hay không.
 
 | Metric | Ý nghĩa | Target thường dùng |
 |---|---|---:|
@@ -85,7 +85,7 @@ Forget quality đo model còn leak dữ liệu hoặc behavior cần quên khôn
 
 ### 2. Model Utility (MU)
 
-Model utility đo capability còn giữ được không.
+Model utility đo xem capability còn giữ được không.
 
 | Metric | Dataset / test | Target thường dùng |
 |---|---|---:|
@@ -107,7 +107,7 @@ Safety eval không chỉ đo refusal trên harmful prompts. Nó phải đo cả 
 
 ### 4. Locality / Specificity
 
-Locality đo intervention có lan sang ngoài scope không.
+Locality đo xem intervention có lan ra ngoài scope không.
 
 | Metric | Test | Failure |
 |---|---|---|
@@ -361,7 +361,7 @@ def run_full_eval(
 
 ## Benchmarks
 
-Reference table để calibrate expectation giữa các method. Số cụ thể thay đổi theo model, dataset và evaluator.
+Bảng tham khảo để có kỳ vọng hợp lý khi so các method. Số cụ thể thay đổi theo model, dataset và evaluator.
 
 | Method | FQ | MU | Refusal | Specificity | Ghi chú |
 |---|---:|---:|---:|---:|---|
@@ -407,7 +407,7 @@ Reference table để calibrate expectation giữa các method. Số cụ thể 
 ## Artifacts
 
 - Eval harness code version-controlled.
-- Threshold document được đồng ý trước intervention.
+- Threshold document đã được chốt trước intervention.
 - Baseline numbers trước intervention.
 - Post-intervention report với pass/fail.
 - Adversarial test set: paraphrase, multi-turn, indirect, roleplay.

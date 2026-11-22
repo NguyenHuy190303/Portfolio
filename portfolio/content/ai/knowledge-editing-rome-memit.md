@@ -9,24 +9,24 @@ aliases:
   - ROME
   - MEMIT
   - Knowledge Editing
-description: 'Knowledge editing giống như sửa một thẻ trong từ điển bên trong model. Nếu model tin rằng "Eiffel Tower nằm ở Rome", ta muốn sửa thành "Eiffel Tower nằm ở Paris" mà không cần fine-tune lại toàn bộ model.'
+description: 'Knowledge editing giống như sửa một thẻ trong từ điển bên trong model. Nếu model đang tin "Eiffel Tower nằm ở Rome", ta muốn sửa thành "Eiffel Tower nằm ở Paris" mà không cần fine-tune lại toàn bộ model.'
 ---
 
 # Knowledge Editing — ROME & MEMIT
 
-> Sửa một fact cụ thể trực tiếp trong weights của LLM, với mục tiêu đổi target fact mà vẫn giữ locality, generality và capability lân cận.
+> Sửa thẳng một fact cụ thể trong weights của LLM: đổi được target fact mà vẫn giữ locality, generality và capability lân cận.
 
 ## Plain English
 
-Knowledge editing giống như sửa một thẻ trong từ điển bên trong model. Nếu model tin rằng "Eiffel Tower nằm ở Rome", ta muốn sửa thành "Eiffel Tower nằm ở Paris" mà không cần fine-tune lại toàn bộ model.
+Knowledge editing giống như sửa một thẻ trong từ điển bên trong model. Nếu model đang tin "Eiffel Tower nằm ở Rome", ta muốn sửa thành "Eiffel Tower nằm ở Paris" mà không cần fine-tune lại toàn bộ model.
 
-Điểm khó không phải chỉ là làm model trả lời đúng một câu hỏi target. Điểm khó là sửa đúng nhưng không làm hỏng các facts gần đó: Eiffel Tower cao bao nhiêu, Paris là thủ đô nước nào, Rome thuộc quốc gia nào, hoặc các câu hỏi paraphrase cùng nghĩa.
+Cái khó không chỉ là làm model trả lời đúng một câu hỏi target, mà là sửa đúng mà không làm hỏng các facts gần đó: Eiffel Tower cao bao nhiêu, Paris là thủ đô nước nào, Rome thuộc quốc gia nào, hoặc các câu hỏi paraphrase cùng nghĩa.
 
-ROME tập trung vào một edit hẹp: sửa một fact tại một vị trí causal trong MLP weights. MEMIT mở rộng ý tưởng đó cho batch lớn, có thể edit hàng nghìn facts bằng cách phân phối update qua nhiều layers.
+ROME tập trung vào một edit hẹp: sửa một fact tại một vị trí causal trong MLP weights. MEMIT mở rộng ý tưởng đó cho batch lớn, có thể edit hàng nghìn facts bằng cách rải update qua nhiều layers.
 
 ## Mental Model
 
-Analogy: Model là một thư viện tri thức khổng lồ. Một fact giống như một thẻ mục lục có liên kết đến nhiều thẻ khác. ROME là sửa thủ công một thẻ quan trọng; MEMIT là batch update nhiều thẻ cùng lúc với kiểm soát để thư viện không bị xáo trộn.
+Analogy: Model là một thư viện tri thức khổng lồ. Một fact giống như một thẻ mục lục có liên kết đến nhiều thẻ khác. ROME là sửa thủ công một thẻ quan trọng; MEMIT là batch update nhiều thẻ cùng lúc, có kiểm soát để thư viện không bị xáo trộn.
 
 - **Efficacy**: prompt target sau edit phải trả lời object mới.
 - **Generality**: paraphrase, template khác, hoặc cách hỏi khác vẫn phải trả lời object mới.
@@ -249,7 +249,7 @@ def memit_style_closed_form_update(
 
 ## Benchmarks
 
-Các số dưới đây là benchmark representative từ ROME/MEMIT papers và thường được dùng để hiểu trade-off, không nên copy thành SLA production nếu dataset/model khác.
+Các số dưới đây là benchmark tiêu biểu từ ROME/MEMIT papers, thường dùng để hiểu trade-off. Nếu dataset/model khác thì đừng copy chúng thành SLA production.
 
 | Metric | ROME | MEMIT | Fine-tune |
 |---|---:|---:|---:|

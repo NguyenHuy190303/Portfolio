@@ -28,7 +28,7 @@ SFT (Supervised Fine-Tuning) cho model xem đáp án mẫu và học bắt chư�
 
 RLHF (Reinforcement Learning from Human Feedback) đưa vào một reward model làm giám khảo: model sinh câu trả lời, giám khảo cho điểm, PPO optimizer cập nhật policy. Mạnh nhưng phức tạp — dễ xảy ra reward hacking khi model tìm được cách "gian lận" để maximize điểm mà không thực sự tốt hơn.
 
-DPO (Direct Preference Optimization) bỏ qua reward model hoàn toàn. Thay vào đó, nó học trực tiếp từ **cặp câu trả lời** — một câu được chọn ($y_w$, "chosen") và một câu bị từ chối ($y_l$, "rejected") — với supervised loss đơn giản hơn PPO rất nhiều. Kết quả tương đương RLHF nhưng stable hơn và dùng ít memory hơn.
+DPO (Direct Preference Optimization) bỏ hẳn reward model và học trực tiếp từ **cặp câu trả lời** — một câu được chọn ($y_w$, "chosen") và một câu bị từ chối ($y_l$, "rejected") — với supervised loss đơn giản hơn PPO rất nhiều. Kết quả tương đương RLHF nhưng stable hơn và dùng ít memory hơn.
 
 Nhóm kỹ thuật này không sửa fact. Nó thay đổi **xu hướng hành vi**: model sẽ từ chối loại prompt nào, nên helpful đến mức nào, tone nên như thế nào, khi nào nên nói "tôi không chắc".
 

@@ -101,7 +101,7 @@ graph LR
 2. Define \(D_r\): general instruction data, domain tasks, multilingual prompts, safety prompts, coding/math samples.
 3. Create holdout attack set: paraphrase, multi-turn, indirect prompts, partial-context extraction, decoding variants.
 4. Run baseline eval trước intervention: leakage, ROUGE-L, MIA, PPL, MMLU, safety.
-5. Choose method: GradDiff cho stability; KL-retain nếu muốn preserve distribution gần original model.
+5. Choose method: GradDiff cho stability; KL-retain nếu muốn giữ distribution gần original model.
 6. Grid search \(\lambda\), learning rate, epochs. Một starting point thường là \(\lambda \in \{0.1, 0.5, 1.0, 2.0\}\), LR thấp như \(1e^{-5}\), 3-10 epochs.
 7. Evaluate forget quality: exact leakage, semantic leakage, extraction robustness, MIA.
 8. Evaluate retain quality: perplexity tăng < 10%, MMLU/task accuracy giảm < 2%, product tasks pass.
@@ -257,7 +257,7 @@ def extraction_eval(model, tokenizer, prompts: list[str], references: list[str],
 
 ## Benchmarks
 
-Representative TOFU-style results từ Maini et al. 2024:
+Kết quả tiêu biểu theo kiểu TOFU từ Maini et al. 2024:
 
 | Method | Forget Quality | Model Utility | ROUGE-L on forget set | Nhận xét |
 |---|---:|---:|---:|---|

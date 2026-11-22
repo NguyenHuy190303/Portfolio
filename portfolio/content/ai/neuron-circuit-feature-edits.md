@@ -14,22 +14,22 @@ aliases:
   - Activation Patching
 date: 2026-05-14
 status: permanent
-description: 'Hầu hết các kỹ thuật chỉnh sửa model đều có chung một giả định ngầm: "chúng ta không cần hiểu model, chỉ cần tìm chỗ để thay đổi." Mechanistic interpretability từ chối giả định đó.'
+description: 'Hầu hết các kỹ thuật chỉnh sửa model đều có chung một giả định ngầm: "chúng ta không cần hiểu model, chỉ cần tìm chỗ để thay đổi." Mechanistic interpretability bác bỏ giả định đó.'
 ---
 
 # Neuron, Circuit & Feature Edits
 
-> **Tóm tắt:** Nhóm kỹ thuật này cố gắng *hiểu cơ chế* gây ra hành vi trước khi can thiệp — ngược với ROME hay activation steering vốn target black-box. Workflow gồm ba bước: (1) dùng activation patching để tìm nodes nhân quả, (2) tùy chọn dùng Sparse Autoencoder để tách features dễ diễn giải, (3) ablate/steer chính xác rồi verify side-effects. Chậm và tốn công hơn, nhưng khi làm đúng, đây là phương pháp phẫu thuật chính xác nhất hiện có.
+> **Tóm tắt:** Nhóm kỹ thuật này cố *hiểu cơ chế* gây ra hành vi rồi mới can thiệp, khác với ROME hay activation steering vốn coi model là black-box. Workflow gồm ba bước: (1) dùng activation patching để tìm nodes nhân quả, (2) tùy chọn dùng Sparse Autoencoder để tách features dễ diễn giải, (3) ablate/steer chính xác rồi verify side-effects. Chậm và tốn công hơn, nhưng làm đúng thì đây là cách can thiệp chính xác nhất hiện có.
 
 ---
 
 ## Plain English
 
-Hầu hết các kỹ thuật chỉnh sửa model đều có chung một giả định ngầm: "chúng ta không cần hiểu model, chỉ cần tìm chỗ để thay đổi." Mechanistic interpretability từ chối giả định đó.
+Hầu hết các kỹ thuật chỉnh sửa model đều có chung một giả định ngầm: "chúng ta không cần hiểu model, chỉ cần tìm chỗ để thay đổi." Mechanistic interpretability bác bỏ giả định đó.
 
-Thay vào đó, câu hỏi là: *attention head nào, MLP layer nào, neuron nào thực sự gây ra hành vi X?* Và quan trọng hơn: liệu đó có phải là nguyên nhân thật sự (causal), hay chỉ là tương quan (correlation)?
+Thay vào đó, câu hỏi là: *attention head nào, MLP layer nào, neuron nào thực sự gây ra hành vi X?* Và quan trọng hơn: đó là nguyên nhân thật (causal), hay chỉ là tương quan (correlation)?
 
-Công cụ chính để trả lời là **activation patching**: chạy model trên hai input (clean và corrupted), lấy activation của một node từ clean run, nhét vào corrupted run tại đúng vị trí đó, rồi đo xem output có phục hồi không. Nếu phục hồi nhiều ($\Delta P$ cao), node đó nhân quả với behavior.
+Công cụ chính để trả lời là **activation patching**: chạy model trên hai input (clean và corrupted), lấy activation của một node từ clean run, nhét vào corrupted run tại đúng vị trí đó, rồi đo xem output có phục hồi không. Nếu phục hồi nhiều ($\Delta P$ cao), node đó có quan hệ nhân quả với behavior.
 
 Vấn đề nổi tiếng: *polysemanticity*. Một neuron không chứa một concept sạch — nó chứa nhiều concept chồng lên nhau (superposition). Sparse Autoencoder (SAE) học một dictionary overcomplete để tách activation thành các *features* sparse, monosemantic hơn nhiều, dễ diễn giải và dễ can thiệp hơn.
 
@@ -37,7 +37,7 @@ Vấn đề nổi tiếng: *polysemanticity*. Một neuron không chứa một c
 
 ## Mental Model
 
-> **Analogy:** Đừng nghĩ một neuron là một khái niệm. Hãy nghĩ weights của LLM như một tòa nhà có hàng triệu dây điện chạy chồng chéo nhau. Khi bạn tắt một bóng đèn (neuron), bạn không biết có bao nhiêu căn phòng bị ảnh hưởng. Circuit discovery giống như đi theo từng dây điện từ công tắc đến bóng đèn để vẽ sơ đồ mạch thật sự. SAE giống như tách bundle dây chằng chịt thành từng dây đơn có nhãn.
+> **Analogy:** Đừng nghĩ một neuron là một khái niệm. Hãy nghĩ weights của LLM như một tòa nhà có hàng triệu dây điện chạy chồng chéo nhau. Tắt một bóng đèn (neuron), ta không biết có bao nhiêu căn phòng bị ảnh hưởng. Circuit discovery giống như đi theo từng dây điện từ công tắc đến bóng đèn để vẽ sơ đồ mạch thật sự. SAE giống như tách bó dây chằng chịt thành từng dây đơn có nhãn.
 
 **Các điểm cốt lõi cần nhớ:**
 
@@ -61,7 +61,7 @@ $$
 \Delta P_i = P(y^* \mid \text{patch node } i) - P(y^* \mid \text{corrupted run})
 $$
 
-$\Delta P_i$ cao → node $i$ là nhân quả với behavior. Chạy cho tất cả nodes → **importance scores** cho từng attention head và MLP.
+$\Delta P_i$ cao → node $i$ có quan hệ nhân quả với behavior. Chạy cho tất cả nodes → **importance scores** cho từng attention head và MLP.
 
 **Path patching** (Goldowsky-Dill et al. 2023): thay vì patch node, patch *edge* giữa hai nodes để tìm information flow paths trong circuit.
 
@@ -73,7 +73,7 @@ $$
 \mathcal{C} = \{i : \Delta P_i > \epsilon\}
 $$
 
-Lặp lại: bắt đầu từ output, đi ngược lên các edges, prune edges có $\Delta P < \epsilon$, cho đến khi circuit converges.
+Lặp lại: bắt đầu từ output, đi ngược lên các edges, prune edges có $\Delta P < \epsilon$, cho đến khi circuit hội tụ.
 
 ### Sparse Autoencoder (SAE)
 
@@ -105,7 +105,7 @@ $$
 \text{KL}(P_{\text{original}} \| P_{\text{resample\_ablation}}) \approx 0
 $$
 
-Nếu resample ablation (thay activations outside circuit bằng random samples) không làm thay đổi output distribution, circuit $\mathcal{H}$ là *sufficient explanation*.
+Nếu resample ablation (thay activations ngoài circuit bằng random samples) không làm thay đổi output distribution, circuit $\mathcal{H}$ là *sufficient explanation*.
 
 ---
 
@@ -135,22 +135,22 @@ graph TD
 ## How It Works — Step-by-Step
 
 **Bước 1 — Định nghĩa behavior cần phân tích**
-Cụ thể hóa: "model dự đoán đúng indirect object trong câu như *John gave Mary the...* → *book*". Cần cặp (clean prompt, corrupted prompt) và target token. Corrupted prompt thường là swapped entities hoặc semantically broken version.
+Cụ thể hóa: "model dự đoán đúng indirect object trong câu như *John gave Mary the...* → *book*". Cần cặp (clean prompt, corrupted prompt) và target token. Corrupted prompt thường là bản hoán đổi entities hoặc bản đã làm hỏng nghĩa.
 
 **Bước 2 — Chạy activation patching**
 Với mỗi attention head $(l, h)$ và MLP $l$: patch activation từ clean run vào corrupted run, đo $\Delta P$. Kết quả là heatmap $\Delta P$ theo layer × component.
 
 **Bước 3 — Xác định circuit**
-Giữ các nodes có $\Delta P > \epsilon$ (threshold thường 0.1–0.2). Chạy path patching để xác định edges (information flow). Verify circuit bằng ablation: xóa circuit → behavior should break.
+Giữ các nodes có $\Delta P > \epsilon$ (threshold thường 0.1–0.2). Chạy path patching để xác định edges (information flow). Verify circuit bằng ablation: xóa circuit → behavior phải hỏng.
 
 **Bước 4 — (Tùy chọn) SAE decomposition**
-Nếu cần diễn giải sâu hơn: train SAE trên residual stream hoặc MLP output tại các layers trong circuit. Identify features liên quan đến behavior target. Max-activation examples: tìm dataset examples kích hoạt feature cao nhất để hiểu feature meaning.
+Nếu cần diễn giải sâu hơn: train SAE trên residual stream hoặc MLP output tại các layers trong circuit. Xác định các features liên quan đến behavior target. Max-activation examples: tìm dataset examples kích hoạt feature cao nhất để hiểu feature đó nghĩa là gì.
 
 **Bước 5 — Causal verification**
 Ablate hoặc steer circuit nodes, verify behavior thay đổi đúng hướng. Quan trọng: chạy causal scrubbing — nếu circuit đủ, behavior ngoài circuit không đổi.
 
 **Bước 6 — Side-effect audit**
-Đo performance trên ≥5 unrelated tasks sau intervention. Side effects lớn → circuit too coarse hoặc intervention too broad. Narrow down hoặc dùng softer steering.
+Đo performance trên ≥5 unrelated tasks sau intervention. Side effects lớn → circuit quá thô hoặc intervention quá rộng. Thu hẹp lại hoặc dùng steering nhẹ hơn.
 
 ---
 
@@ -406,7 +406,7 @@ def steer_with_feature(
 | Modular arithmetic | 4.7% | 87% |
 | Average across 6 tasks | ~2.9% | ~90% |
 
-Circuits nhỏ (~3% params) có thể giải thích ~90% của task behavior.
+Circuits nhỏ (~3% params) có thể giải thích ~90% task behavior.
 
 ### Meng et al. (2022) — Causal Tracing (ROME, GPT-J)
 

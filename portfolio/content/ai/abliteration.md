@@ -12,34 +12,34 @@ aliases:
   - Weight Projection Safety
 date: 2026-05-14
 status: reference
-description: 'Kỹ thuật loại bỏ vĩnh viễn "refusal direction" khỏi weights của LLM bằng cách project nó ra khỏi các write projection matrices — model vẫn coherent và capable nhưng không còn khả năng từ chối bất kỳ request nào.'
+description: 'Kỹ thuật xóa vĩnh viễn "refusal direction" khỏi weights của LLM bằng cách project nó ra khỏi các write projection matrices. Model vẫn coherent và capable, nhưng không còn từ chối request nào nữa.'
 ---
 
 # Abliteration
 
-Kỹ thuật loại bỏ vĩnh viễn "refusal direction" khỏi weights của LLM bằng cách project nó ra khỏi các write projection matrices — model vẫn coherent và capable nhưng không còn khả năng từ chối bất kỳ request nào.
+Kỹ thuật xóa vĩnh viễn "refusal direction" khỏi weights của LLM bằng cách project nó ra khỏi các write projection matrices. Model vẫn coherent và capable, nhưng không còn từ chối request nào nữa.
 
 > [!danger] Research Only — Không Dùng Production
-> Abliteration **không phải** tool để tạo "uncensored chatbot". Đây là case study về sự mong manh của safety alignment. Refusal bị xóa bao gồm cả legitimate refusal: bảo vệ người dùng, PII, nội dung tự làm hại, v.v. Chỉ 100 steps SFT là đủ để restore refusal hoàn toàn — điều này cho thấy alignment còn nông hơn người ta kỳ vọng. Triển khai model đã abliterate là vi phạm terms of service của hầu hết model providers.
+> Abliteration **không phải** tool để tạo "uncensored chatbot". Đây là case study cho thấy safety alignment mong manh đến mức nào. Nó xóa luôn cả những refusal chính đáng: bảo vệ người dùng, PII, nội dung tự làm hại, v.v. Chỉ cần 100 steps SFT là refusal quay lại hoàn toàn, tức là alignment nông hơn người ta tưởng. Triển khai model đã abliterate là vi phạm terms of service của hầu hết model providers.
 
 ## Plain English
 
-Hãy nghĩ đơn giản: một LLM được trained để từ chối câu hỏi nguy hiểm thông qua RLHF hoặc SFT. Kết quả của training đó được encode vào weights theo một cách rất cụ thể — không phải trải rộng khắp model mà tập trung trong **một hướng duy nhất** trong không gian activation (gọi là "refusal direction").
+Nói đơn giản: LLM được train bằng RLHF hoặc SFT để từ chối câu hỏi nguy hiểm. Hành vi này được encode vào weights theo một cách rất cụ thể: không trải khắp model mà dồn vào **một hướng duy nhất** trong không gian activation (gọi là "refusal direction").
 
-Abliteration tìm hướng đó và **xóa nó khỏi weights**. Sau khi xóa, model không còn "nhớ" rằng nó cần từ chối — giống như xóa một reflex cụ thể. Model vẫn viết code giỏi, vẫn giải toán, vẫn trả lời câu hỏi bình thường — nhưng bất cứ khi nào nên nói "I can't help with that", nó sẽ trả lời bình thường.
+Abliteration tìm hướng đó và **xóa nó khỏi weights**. Sau khi xóa, model không còn "nhớ" là phải từ chối, giống như mất đi một phản xạ. Model vẫn viết code giỏi, vẫn giải toán, vẫn trả lời câu hỏi bình thường, nhưng những lúc lẽ ra phải nói "I can't help with that" thì nó vẫn trả lời như thường.
 
-Điều đáng lo là quá trình này chỉ cần vài phút trên GPU thông thường, và kết quả có thể được share rộng rãi. Nhưng điều thực sự quan trọng từ góc độ nghiên cứu là: nếu 100 steps SFT đủ để phục hồi, thì safety alignment ban đầu cũng không sâu hơn 100 steps — và đó là vấn đề căn bản của alignment hiện tại.
+Đáng lo là cả quá trình chỉ mất vài phút trên GPU thông thường, và kết quả có thể share rộng rãi. Nhưng với nghiên cứu, điểm quan trọng hơn là: nếu 100 steps SFT đủ để phục hồi thì safety alignment ban đầu cũng chỉ sâu cỡ 100 steps. Đó là vấn đề căn bản của alignment hiện nay.
 
 ## Mental Model
 
 **Analogy:** Model là một nhân viên đã được đào tạo bài bản để từ chối yêu cầu trái quy định công ty. Abliteration giống như tìm đúng một "neuron phản xạ từ chối" trong não nhân viên đó và vô hiệu hóa nó. Nhân viên vẫn làm việc giỏi — kỹ năng chuyên môn còn nguyên — nhưng cái phản xạ "xin lỗi, tôi không thể làm điều đó" biến mất hoàn toàn.
 
 **Bullets:**
-- Refusal không được encode phức tạp, phân tán — nó phụ thuộc vào **một direction duy nhất** trong residual stream, nhất quán qua nhiều layers
+- Refusal không được encode phức tạp hay phân tán, mà nằm trên **một direction duy nhất** trong residual stream, nhất quán qua nhiều layers
 - Direction này có thể tìm được đơn giản bằng cách lấy mean difference giữa activations của harmful vs harmless prompts
 - Project direction đó ra khỏi write projection matrices ($W_O$, $W_{down}$) = xóa khả năng "write refusal signal" vào residual stream
-- Fine-tune 100 steps trên safety data là đủ để restore hoàn toàn — bằng chứng alignment hiện tại còn rất superficial
-- **Hệ quả cho alignment research:** nếu refusal chỉ là một direction và dễ xóa thế này, thì safety cần được built sâu hơn vào model architecture thay vì chỉ là RLHF post-training
+- Fine-tune 100 steps trên safety data là đủ để restore hoàn toàn, cho thấy alignment hiện tại còn rất superficial
+- **Hệ quả cho alignment research:** nếu refusal chỉ là một direction và dễ xóa thế này, thì safety phải được xây sâu hơn vào model architecture, không thể chỉ trông vào RLHF post-training
 
 ## Cơ Chế (Mechanism)
 
@@ -99,7 +99,7 @@ graph LR
 
 ## How It Works
 
-**Bước-by-bước để reproduce abliteration:**
+**Các bước reproduce abliteration:**
 
 1. **Chuẩn bị prompt sets** — thu thập ~50–100 harmful prompts và ~50–100 harmless prompts. Đảm bảo harmful prompts cover nhiều categories (violence, illegal, NSFW, misinfo). Harmless prompts phải đa dạng chủ đề.
 
@@ -111,7 +111,7 @@ graph LR
 
 5. **Tính refusal direction** tại mỗi layer — stack activation differences thành matrix $D$, chạy SVD, lấy top-1 right singular vector.
 
-6. **Patch weights in-place** — với mỗi target layer, modify `o_proj.weight` và `down_proj.weight` bằng projection formula. Đây là **permanent modification** đến model state.
+6. **Patch weights in-place** — với mỗi target layer, modify `o_proj.weight` và `down_proj.weight` bằng projection formula. Đây là **permanent modification** lên model state.
 
 7. **Validate** — chạy test set harmful prompts, expect refusal rate < 5%. Chạy MT-Bench hoặc subset MMLU, expect drop < 1–2 points.
 
@@ -387,13 +387,13 @@ Từ **Arditi et al. (2024)**, thử nghiệm trên Llama-3, Llama-2, Mistral-7B
 
 ## Artifacts
 
-Sau khi thực hiện abliteration experiment, cần tạo và lưu:
+Sau khi chạy abliteration experiment, cần tạo và lưu:
 
 - **Safety retain set** (`safety_retain_prompts.jsonl`): tập harmful prompts đã dùng để tính refusal direction + expected behavior pre/post — dùng để reproduce và audit
 - **Red-team report** (`redteam_report.md`): refusal rate pre/post trên harmful set, compliance rate pre/post trên harmless set, các failure cases cụ thể
 - **Merge/fine-tune regression suite** (`regression_suite/`): scripts để chạy lại evals sau mỗi lần merge hoặc fine-tune — verify safety drift
 - **Policy layer config** (`abliteration_config.json`): layer indices được target, coeff dùng, prompt sets hash — để reproduce exact kết quả
-- **Incident playbook** (`incident_playbook.md`): nếu model abliterate bị leak hoặc dùng sai, các bước response cụ thể
+- **Incident playbook** (`incident_playbook.md`): các bước xử lý cụ thể khi model abliterate bị leak hoặc bị dùng sai
 
 ## References
 

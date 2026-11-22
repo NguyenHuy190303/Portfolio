@@ -19,7 +19,7 @@ Phần lớn vấn đề có thể giải quyết mà không cần chạm model:
 - **RAG/retrieval filter**: tri thức nằm ở source layer → sửa source, không sửa model. Nếu model trả lời sai vì outdated knowledge, cập nhật knowledge base trước.
 - **Output moderation**: chặn hoặc rewrite ở output layer mà không cần đụng weights.
 
-Chỉ tiến vào model-level intervention khi: tri thức đã nằm trong weights và không thể kiểm soát từ ngoài, hoặc khi yêu cầu compliance/legal đòi hỏi proof-of-removal có thể kiểm chứng.
+Chỉ chuyển sang model-level intervention khi: tri thức đã nằm trong weights và không thể kiểm soát từ ngoài, hoặc khi compliance/legal đòi hỏi proof-of-removal kiểm chứng được.
 
 ## Intervention Ladder
 
@@ -45,7 +45,7 @@ Chỉ tiến vào model-level intervention khi: tri thức đã nằm trong weig
 [Abliteration]                      ← research only, KHÔNG production
 ```
 
-Mỗi bước xuống ladder: invasiveness tăng, reversibility giảm, cost tăng. Không bỏ qua bước nếu bước trên chưa được thử.
+Mỗi bước xuống ladder: invasiveness tăng, reversibility giảm, cost tăng. Chưa thử bước trên thì đừng nhảy xuống bước dưới.
 
 ## Tradeoff Matrix
 
@@ -88,7 +88,7 @@ Mọi intervention cần ba loại eval: forget quality eval (model đã quên g
 
 **2. Defense in depth**
 
-Model-level safety không thể là single point of failure. Hệ thống production cần ít nhất ba layer: prompt/policy layer + moderation layer + model-level. Bất kỳ layer nào cũng có thể bypass, nhưng bypass cả ba cùng lúc khó hơn nhiều.
+Model-level safety không thể là single point of failure. Hệ thống production cần ít nhất ba layer: prompt/policy layer + moderation layer + model-level. Layer nào cũng có thể bị bypass, nhưng bypass cả ba cùng lúc khó hơn nhiều.
 
 **3. Retain set bắt buộc**
 
@@ -96,7 +96,7 @@ Với bất kỳ intervention nào, định nghĩa retain set trước khi bắt
 
 **4. Rollback plan**
 
-Luôn giữ source checkpoint và intervention config được version-controlled. Rollback phải là một thao tác đơn giản, lý tưởng nhất là một command duy nhất. Nếu rollback phức tạp hơn thế, intervention chưa sẵn sàng production.
+Source checkpoint và intervention config phải luôn được version-controlled. Rollback phải là một thao tác đơn giản, lý tưởng nhất là một command duy nhất. Nếu rollback phức tạp hơn thế, intervention chưa sẵn sàng production.
 
 **5. Kiểm tra sau mỗi pipeline step**
 
